@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>QSS/ElegantDark.qss</file>
+        <file>QSS/AMOLED.qss</file>
+        <file>QSS/Aqua.qss</file>
+        <file>QSS/ConsoleStyle.qss</file>
+        <file>QSS/LICENSE</file>
+        <file>QSS/MacOS.qss</file>
+        <file>QSS/ManjaroMix.qss</file>
+        <file>QSS/MaterialDark.qss</file>
+        <file>QSS/NeonButtons.qss</file>
+    </qresource>
+</RCC>
