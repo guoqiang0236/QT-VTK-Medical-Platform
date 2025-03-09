@@ -167,6 +167,22 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="pushButton_6">
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LayoutDirection::LeftToRight</enum>
+             </property>
+             <property name="text">
+              <string>打开DICOM文件夹</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QFrame" name="frame">
              <property name="enabled">
               <bool>false</bool>
@@ -643,22 +659,12 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QVTKOpenGLNativeWidget" name="VTKopenGLWidget"/>
-       </item>
       </layout>
      </widget>
     </item>
    </layout>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QVTKOpenGLNativeWidget</class>
-   <extends>QOpenGLWidget</extends>
-   <header location="global">qvtkopenglnativewidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../QtGuiApp/resources.qrc"/>
  </resources>

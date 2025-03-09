@@ -6,57 +6,53 @@
 #include <vtkRenderWindow.h>
 #include <Qdebug.h>
 #include <QIcon>
+#include <QFileDialog>
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent) 
+    : QMainWindow(parent) ,
+    m_filemanager(std::make_unique<FileManager>())
 {
     // 设置无边框窗口
     setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/icon/favicon.ico")); // 覆盖可能的默认值
     ui.setupUi(this);
     initsolt();
-    test();
+    UpdateGUI();
+    //test();
 }
 
 MainWindow::~MainWindow() = default;
 
 void MainWindow::test()
 {
-    // ========== VTK 初始化 =====
-
-
-    auto m_render_window = ui.VTKopenGLWidget->renderWindow();
-    // 3. 创建渲染器
-    m_render_window->AddRenderer(m_renderer);
-
-    // 4. 设置渲染器背景色
-    m_renderer->SetBackground(0.2, 0.3, 0.4);
-
-    // ===== 添加一个示例三维对象（球体）=====
-    // 1. 创建数据源
-    auto sphereSource = vtkSmartPointer<vtkSphereSource>::New();
-    sphereSource->SetRadius(2.0);
-
-    // 2. 创建映射器
-    auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputConnection(sphereSource->GetOutputPort());
-
-    // 3. 创建演员
-    auto actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper);
-
-    // 4. 将演员添加到渲染器
-    m_renderer->AddActor(actor);
-
-    // 5. 重置相机视角
-    m_renderer->ResetCamera();
-
-    // 6. 触发渲染
-    m_render_window->Render();
+    m_filemanager->testVTK();
 }
 
 void MainWindow::ReadDicomFile()
 {
-    std::cout << "test click" << std::endl;
+    QString fileName = QFileDialog::getOpenFileName(
+        this, "选择文件", "", "All files (*.*)");
+    if (!fileName.isEmpty()&&m_filemanager) {
+        m_filemanager->UpdatePlotFile(fileName.toStdString());
+    }
+}
+
+void MainWindow::ReadDicomFiles()
+{
+    // 打开文件夹选择对话框
+    QString folderPath = QFileDialog::getExistingDirectory(
+        this,                  // 父窗口
+        "选择文件夹",           // 对话框标题
+        QDir::homePath(),      // 初始目录（用户主目录）
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
+
+    // 检查路径是否有效
+    if (!folderPath.isEmpty() && m_filemanager)
+    {
+        m_filemanager->UpdatePlotFiles(folderPath.toStdString());
+    } 
+       
+   
 }
 
 void MainWindow::StyleChanged(const QString &style)
@@ -74,8 +70,20 @@ void MainWindow::ShutDown()
 void MainWindow::initsolt()
 {
     QObject::connect(ui.pushButton, &QPushButton::clicked, this, &MainWindow::ReadDicomFile);
+    QObject::connect(ui.pushButton_6, &QPushButton::clicked, this, &MainWindow::ReadDicomFiles);
     QObject::connect(ui.comboBox, &QComboBox::currentTextChanged,this, &MainWindow::StyleChanged);
     QObject::connect(ui.pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
+}
+
+void MainWindow::UpdateGUI()
+{
+    if (!m_filemanager)
+        return;
+    m_filemanager->GetVTKopenGLWidget()->setParent(ui.frame_vtkrender);
+    m_filemanager->GetVTKopenGLWidget()->setObjectName("VTKopenGLWidget");
+    ui.horizontalLayout_2->addWidget(m_filemanager->GetVTKopenGLWidget());
+
+
 }
 
 void MainWindow::loadStyleSheet(const QString& path)

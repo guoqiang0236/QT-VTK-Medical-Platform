@@ -22,7 +22,6 @@
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include <qvtkopenglnativewidget.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,6 +44,7 @@ public:
     QLabel *label_4;
     QLineEdit *lineEdit_4;
     QPushButton *pushButton;
+    QPushButton *pushButton_6;
     QFrame *frame;
     QWidget *tab_4;
     QPushButton *pushButton_2;
@@ -62,7 +62,6 @@ public:
     QLabel *label_5;
     QFrame *frame_vtkrender;
     QHBoxLayout *horizontalLayout_2;
-    QVTKOpenGLNativeWidget *VTKopenGLWidget;
 
     void setupUi(QMainWindow *MainWindow_UI)
     {
@@ -147,6 +146,13 @@ public:
         pushButton->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
         verticalLayout_2->addWidget(pushButton);
+
+        pushButton_6 = new QPushButton(tab_3);
+        pushButton_6->setObjectName("pushButton_6");
+        pushButton_6->setMaximumSize(QSize(120, 16777215));
+        pushButton_6->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+
+        verticalLayout_2->addWidget(pushButton_6);
 
         frame = new QFrame(tab_3);
         frame->setObjectName("frame");
@@ -277,11 +283,6 @@ public:
         horizontalLayout_2->setSpacing(0);
         horizontalLayout_2->setObjectName("horizontalLayout_2");
         horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
-        VTKopenGLWidget = new QVTKOpenGLNativeWidget(frame_vtkrender);
-        VTKopenGLWidget->setObjectName("VTKopenGLWidget");
-
-        horizontalLayout_2->addWidget(VTKopenGLWidget);
-
 
         horizontalLayout_3->addWidget(frame_vtkrender);
 
@@ -306,6 +307,7 @@ public:
         label_3->setText(QCoreApplication::translate("MainWindow_UI", "\347\224\265\350\257\235", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow_UI", "\345\234\260\345\235\200", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266", nullptr));
+        pushButton_6->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainWindow_UI", "\346\202\243\350\200\205\344\277\241\346\201\257", nullptr));
         pushButton_2->setText(QString());
         pushButton_3->setText(QString());
