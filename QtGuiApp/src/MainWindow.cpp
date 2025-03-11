@@ -11,6 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,
     m_filemanager(std::make_unique<FileManager>())
 {
+    LoadingWidget = new QQuickWidget(this);
+    LoadingWidget->setSource(QUrl("qrc:/Qml/loading.qml"));
+    QQuickItem* rootObject = LoadingWidget->rootObject();
+    connect(rootObject, SIGNAL(animationFinished()), this, SLOT(onAnimationFinished()));
+
     // 设置无边框窗口
     setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/icon/favicon.ico")); // 覆盖可能的默认值
@@ -55,6 +60,23 @@ void MainWindow::ReadDicomFiles()
    
 }
 
+void MainWindow::ReadDicomFiles3D()
+{
+    // 打开文件夹选择对话框
+    QString folderPath = QFileDialog::getExistingDirectory(
+        this,                  // 父窗口
+        "选择文件夹",           // 对话框标题
+        QDir::homePath(),      // 初始目录（用户主目录）
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
+
+    // 检查路径是否有效
+    if (!folderPath.isEmpty() && m_filemanager)
+    {
+        m_filemanager->UpdatePlotFiles3D(folderPath.toStdString());
+    }
+}
+
 void MainWindow::StyleChanged(const QString &style)
 {
     qDebug() << "当前选中文本：" << style;
@@ -67,10 +89,15 @@ void MainWindow::ShutDown()
     QApplication::quit();
 }
 
+void MainWindow::OnAnimationFinished()
+{
+}
+
 void MainWindow::initsolt()
 {
     QObject::connect(ui.pushButton, &QPushButton::clicked, this, &MainWindow::ReadDicomFile);
     QObject::connect(ui.pushButton_6, &QPushButton::clicked, this, &MainWindow::ReadDicomFiles);
+    QObject::connect(ui.pushButton_12, &QPushButton::clicked, this, &MainWindow::ReadDicomFiles3D);
     QObject::connect(ui.comboBox, &QComboBox::currentTextChanged,this, &MainWindow::StyleChanged);
     QObject::connect(ui.pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
 }

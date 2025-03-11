@@ -14,8 +14,8 @@ qt_add_resources(RESOURCES resources.qrc)
 
 # 创建可执行文件
 # 根据构建类型动态设置 WIN32 选项
-#add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES})  # Release 模式：无控制台
-add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  icon/apprc.rc)
+add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} icon/apprc.rc)  # Release 模式：无控制台
+#add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  icon/apprc.rc)
 
 # 包含目录（修正路径）
 target_include_directories(QtGuiApp PRIVATE
@@ -30,6 +30,8 @@ target_link_libraries(QtGuiApp PRIVATE
     Qt6::Gui
     Qt6::Widgets
     Qt6::OpenGLWidgets
+    Qt6::Quick
+    Qt6::QuickWidgets
     VTK::GUISupportQt  # 必须链接此模块以支持 QVTKOpenGLNativeWidget
     VTK::RenderingOpenGL2
     VTK::InteractionStyle

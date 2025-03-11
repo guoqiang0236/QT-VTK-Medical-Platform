@@ -21,11 +21,13 @@ public:
     void processData() const;
     void UpdatePlotFile(const std::string fileaddr);
     void UpdatePlotFiles(const std::string fileaddr);
+    void UpdatePlotFiles3D(const std::string fileaddr);
     sysconfig::VtkFileType getFileTypeByExtension(const std::string& extension);
     void GraphicsRendering(sysconfig::VtkFileType filetype);
     void DicomGraphics();
     void CleanupVTKResources();
     void DicomFilesGraphics();
+    void DicomFilesGraphics3D();
     QVTKOpenGLNativeWidget* GetVTKopenGLWidget();
     void testVTK();
 
@@ -35,12 +37,15 @@ private:
 //vtk 成员
 private:
     QVTKOpenGLNativeWidget* m_VTKopenGLWidget;
-    vtkNew<vtkRenderer> m_renderer;
+    vtkSmartPointer<vtkRenderWindow> m_renderWindow;
+    vtkSmartPointer<vtkRenderer> m_renderer;
     vtkSmartPointer<vtkRenderWindowInteractor> m_interactor;
     vtkSmartPointer<vtkImageViewer2> m_viewer;
     vtkSmartPointer<vtkGPUVolumeRayCastMapper> m_volumeMapper;
     vtkSmartPointer<vtkDICOMImageReader> DICOMreader;
     vtkNew<VtkDemoClass> m_test;
     vtkNew<myVtkInteractorStyleImage> myInteractorStyle;
+    vtkSmartPointer<vtkPolyDataMapper> m_mapper;
+    vtkSmartPointer<vtkActor> m_actor;
     // 可添加其他私有成员...
 };

@@ -22,7 +22,22 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
-
+#include <vtkErrorCode.h>
+#include "vtkMarchingCubes.h"
+#include "vtkStripper.h"
+#include "vtkProperty.h"
+#include "vtkBoxWidget.h" 
+#include "vtkTriangleFilter.h"
+#include "vtkMassProperties.h"
+#include "vtkSmoothPolyDataFilter.h"
+#include "vtkPolyDataNormals.h"
+#include "vtkContourFilter.h"
+#include "vtkRecursiveDividingCubes.h"
+#include "vtkRendererCollection.h"
+#include <vtkAutoInit.h>  // 添加必要的初始化头文件
+VTK_MODULE_INIT(vtkRenderingOpenGL2);
+VTK_MODULE_INIT(vtkInteractionStyle);
+VTK_MODULE_INIT(vtkRenderingFreeType);  // 如果用到文字渲染
 FileManager::FileManager():
 	m_filename(""),
 	m_filtype(sysconfig::VtkFileType::UNKNOWN),
@@ -49,6 +64,13 @@ void FileManager::UpdatePlotFiles(const std::string fileaddr)
 {
     m_filename = fileaddr;
     sysconfig::VtkFileType filetype = sysconfig::VtkFileType::DICOMS;
+    GraphicsRendering(filetype);
+}
+
+void FileManager::UpdatePlotFiles3D(const std::string fileaddr)
+{
+    m_filename = fileaddr;
+    sysconfig::VtkFileType filetype = sysconfig::VtkFileType::DICOMS3D;
     GraphicsRendering(filetype);
 }
 
@@ -124,6 +146,9 @@ void FileManager::GraphicsRendering(sysconfig::VtkFileType filetype)
     case sysconfig::VtkFileType::DICOMS:
         DicomFilesGraphics();
         break;
+    case sysconfig::VtkFileType::DICOMS3D:
+        DicomFilesGraphics3D();
+        break;
     case sysconfig::VtkFileType::NIFTI:
         break;
     case sysconfig::VtkFileType::META_IMAGE:
@@ -153,8 +178,16 @@ void FileManager::DicomGraphics() {
     DICOMreader = vtkSmartPointer<vtkDICOMImageReader>::New();
     DICOMreader->SetFileName(m_filename.c_str());
     DICOMreader->Update();
-  
-
+    // 检查错误码
+    if (DICOMreader->GetErrorCode() != vtkErrorCode::NoError) {
+        std::cerr << "DICOM 读取失败！错误码：" << DICOMreader->GetErrorCode() << std::endl;
+        return;
+    }
+    vtkImageData* imageData = DICOMreader->GetOutput();
+    if (!imageData) {
+        std::cerr << "错误：DICOM 数据为空！" << std::endl;
+        return;
+    }
     // 初始化新的Viewer和Interactor
     vtkNew<vtkNamedColors> colors;
     m_viewer = vtkSmartPointer<vtkImageViewer2>::New();
@@ -196,16 +229,29 @@ void FileManager::CleanupVTKResources() {
         m_interactor = vtkSmartPointer <vtkRenderWindowInteractor>::New();
     }
     DICOMreader = nullptr; // 重置DICOM读取器
+  /*  if(m_VTKopenGLWidget->renderWindow()->has)
+    m_VTKopenGLWidget->renderWindow()->RemoveAllObservers();*/
     //m_VTKopenGLWidget->renderWindow()->RemoveAllObservers(); // 移除所有观察者
     //m_VTKopenGLWidget->renderWindow()->Render(); // 强制清空窗口
 }
 void FileManager::DicomFilesGraphics()
 {
     // ====== 二维切片文件夹渲染部分 ======
+    
     CleanupVTKResources();
     DICOMreader = vtkSmartPointer<vtkDICOMImageReader>::New();
     DICOMreader->SetDirectoryName(m_filename.c_str());
     DICOMreader->Update();
+    // 检查错误码
+    if (DICOMreader->GetErrorCode() != vtkErrorCode::NoError) {
+        std::cerr << "DICOM 读取失败！错误码：" << DICOMreader->GetErrorCode() << std::endl;
+        return;
+    }
+    vtkImageData* imageData = DICOMreader->GetOutput();
+    if (!imageData) {
+        std::cerr << "错误：DICOM 数据为空！" << std::endl;
+        return;
+    }
     vtkNew<vtkNamedColors> colors;
     m_viewer = vtkSmartPointer<vtkImageViewer2>::New();
     m_viewer->SetRenderWindow(m_VTKopenGLWidget->renderWindow());
@@ -277,6 +323,84 @@ void FileManager::DicomFilesGraphics()
         colors->GetColor3d("Black").GetData());
     m_viewer->GetRenderWindow()->SetWindowName("ReadDICOMSeries");
     m_viewer->Render();
+    m_interactor->Start();
+}
+
+void FileManager::DicomFilesGraphics3D()
+{
+    CleanupVTKResources();
+    DICOMreader = vtkSmartPointer<vtkDICOMImageReader>::New();
+    DICOMreader->SetDirectoryName(m_filename.c_str());
+    DICOMreader->Update();
+    // 检查错误码
+    if (DICOMreader->GetErrorCode() != vtkErrorCode::NoError) {
+        std::cerr << "DICOM 读取失败！错误码：" << DICOMreader->GetErrorCode() << std::endl;
+        return;
+    }
+    vtkImageData* imageData = DICOMreader->GetOutput();
+    if (!imageData) {
+        std::cerr << "错误：DICOM 数据为空！" << std::endl;
+        return;
+    }
+
+    // 4. 提取等值面（调整阈值是关键！）
+    vtkSmartPointer<vtkMarchingCubes> boneExtractor =
+        vtkSmartPointer<vtkMarchingCubes>::New();
+    boneExtractor->SetInputConnection(DICOMreader->GetOutputPort());
+    boneExtractor->SetValue(0, 180);  // 典型CT骨骼阈值约300-2000，需要根据数据调整
+    boneExtractor->Update();
+
+    // 5. 平滑处理
+    vtkSmartPointer<vtkSmoothPolyDataFilter> smoother =
+        vtkSmartPointer<vtkSmoothPolyDataFilter>::New();
+    smoother->SetInputConnection(boneExtractor->GetOutputPort());
+    smoother->SetNumberOfIterations(50);
+    smoother->SetRelaxationFactor(0.1);
+    smoother->Update();
+
+    // 6. 创建Mapper和Actor
+    m_mapper =vtkSmartPointer<vtkPolyDataMapper>::New();
+    m_mapper->SetInputConnection(smoother->GetOutputPort());
+    m_mapper->ScalarVisibilityOff();
+
+    m_actor =vtkSmartPointer<vtkActor>::New();
+    m_actor->SetMapper(m_mapper);
+    m_actor->GetProperty()->SetColor(1, 1, 1);  // 设置模型颜色
+
+    m_renderer = vtkSmartPointer<vtkRenderer>::New();
+    m_renderer->SetBackground(0,0,0);  // 黑色背景
+    m_renderer = m_VTKopenGLWidget->renderWindow()->GetRenderers()->GetFirstRenderer();
+    if (!m_renderer) {
+        m_renderer = vtkSmartPointer<vtkRenderer>::New();
+        m_VTKopenGLWidget->renderWindow()->AddRenderer(m_renderer);
+    }
+
+    m_renderer->AddActor(m_actor);
+    
+    // 8. 调整相机视角
+    vtkCamera* camera = m_viewer->GetRenderer()->GetActiveCamera();
+    camera->SetPosition(0, 1, 0);   // 调整相机位置
+    camera->SetFocalPoint(1, 0, 0);
+    camera->SetViewUp(0, 1, 0);
+    m_renderer->SetActiveCamera(camera);
+    m_renderer->ResetCamera();
+
+
+    //m_renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+    //m_VTKopenGLWidget->setRenderWindow(m_renderWindow);
+   
+    m_VTKopenGLWidget->renderWindow()->AddRenderer(m_renderer);
+    
+    // 6. 设置交互风格
+    m_interactor = vtkSmartPointer <vtkRenderWindowInteractor>::New();
+    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
+        vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    m_interactor->SetInteractorStyle(style);
+
+    // 7. 初始化并启动交互
+    m_VTKopenGLWidget->renderWindow()->SetInteractor(m_interactor);
+    m_interactor->Initialize();  // 必须调用！
+    m_VTKopenGLWidget->renderWindow()->Render();
     m_interactor->Start();
 }
 

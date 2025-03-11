@@ -9,5 +9,6 @@
         <file>QSS/ManjaroMix.qss</file>
         <file>QSS/MaterialDark.qss</file>
         <file>QSS/NeonButtons.qss</file>
+        <file>Qml/loading.qml</file>
     </qresource>
 </RCC>

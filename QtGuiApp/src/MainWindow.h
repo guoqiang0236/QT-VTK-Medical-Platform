@@ -8,7 +8,7 @@
 #include <MainWindow-MEDQT.h>
 #include <QFile>
 #include <FileManager.h>
-
+#include <QQuickWidget>
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -21,8 +21,10 @@ public:
 private slots:
     void ReadDicomFile();
     void ReadDicomFiles();
+    void ReadDicomFiles3D();
     void StyleChanged(const QString &style);
     void ShutDown();
+    void OnAnimationFinished();
 private:
     void initsolt();
     void UpdateGUI();
@@ -30,7 +32,8 @@ private:
 private:
     std::unique_ptr<FileManager> m_filemanager;
     Ui::MainWindow_UI ui;
-    
+   
+    QQuickWidget* LoadingWidget;
 };
 
 #endif // MED_IMG_MAINWINDOW_H

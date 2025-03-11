@@ -23,7 +23,7 @@ set(VTK_COMPONENTS
 )
 
 # 查找依赖
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets Quick QuickWidgets)
 find_package(VTK REQUIRED)
 
 if(NOT VTK_FOUND)

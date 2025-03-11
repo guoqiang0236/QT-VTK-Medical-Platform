@@ -10,7 +10,8 @@ namespace sysconfig {
         OBJ,          // .obj
         CSV,          // .csv
         DICOM,        // .dcm
-        DICOMS,        // .dcm files
+        DICOMS,       // .dcm files
+        DICOMS3D,     // .dcm files3D
         NIFTI,        // .nii/.nii.gz
         META_IMAGE,   // .mhd/.mha
         JPEG,         // .jpg/.jpeg

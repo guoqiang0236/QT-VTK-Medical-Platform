@@ -45,6 +45,7 @@ public:
     QLineEdit *lineEdit_4;
     QPushButton *pushButton;
     QPushButton *pushButton_6;
+    QPushButton *pushButton_12;
     QFrame *frame;
     QWidget *tab_4;
     QPushButton *pushButton_2;
@@ -153,6 +154,11 @@ public:
         pushButton_6->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
         verticalLayout_2->addWidget(pushButton_6);
+
+        pushButton_12 = new QPushButton(tab_3);
+        pushButton_12->setObjectName("pushButton_12");
+
+        verticalLayout_2->addWidget(pushButton_12);
 
         frame = new QFrame(tab_3);
         frame->setObjectName("frame");
@@ -308,6 +314,7 @@ public:
         label_4->setText(QCoreApplication::translate("MainWindow_UI", "\345\234\260\345\235\200", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266", nullptr));
         pushButton_6->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
+        pushButton_12->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266\357\274\214\351\230\210\345\200\274\345\267\262\347\273\217\345\206\231\346\255\273", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainWindow_UI", "\346\202\243\350\200\205\344\277\241\346\201\257", nullptr));
         pushButton_2->setText(QString());
         pushButton_3->setText(QString());

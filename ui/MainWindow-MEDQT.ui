@@ -183,6 +183,13 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="pushButton_12">
+             <property name="text">
+              <string>体绘制，阈值已经写死</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QFrame" name="frame">
              <property name="enabled">
               <bool>false</bool>
