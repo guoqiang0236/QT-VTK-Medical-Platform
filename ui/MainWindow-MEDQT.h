@@ -69,7 +69,7 @@ public:
     {
         if (MainWindow_UI->objectName().isEmpty())
             MainWindow_UI->setObjectName("MainWindow_UI");
-        MainWindow_UI->resize(1049, 619);
+        MainWindow_UI->resize(1600, 900);
         centralwidget = new QWidget(MainWindow_UI);
         centralwidget->setObjectName("centralwidget");
         centralwidget->setLayoutDirection(Qt::LayoutDirection::LeftToRight);

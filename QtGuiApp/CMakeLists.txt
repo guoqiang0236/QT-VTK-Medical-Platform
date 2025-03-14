@@ -6,22 +6,22 @@ set(CMAKE_AUTOMOC ON)
 
 # 收集源文件（显式列出头文件）
 file(GLOB SRC_FILES CONFIGURE_DEPENDS
-    "src/*.cpp"
-    "src/*.h"  # 显式包含头文件以触发 moc
+    "source/*.cpp"
+    "include/*.h"  # 显式包含头文件以触发 moc
 )
 
 qt_add_resources(RESOURCES resources.qrc)
 
 # 创建可执行文件
 # 根据构建类型动态设置 WIN32 选项
-add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} icon/apprc.rc)  # Release 模式：无控制台
-#add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  icon/apprc.rc)
+add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} res/icon/apprc.rc)  # Release 模式：无控制台
+#add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
 
 # 包含目录（修正路径）
 target_include_directories(QtGuiApp PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"  # 头文件路径
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"  # 头文件路径
     ${VTK_INCLUDE_DIRS}
-    "${CMAKE_SOURCE_DIR}/VtkApp/src"
+    "${CMAKE_SOURCE_DIR}/VtkApp/include"
 )
 
 # 链接库（补充关键 VTK 模块）
@@ -53,7 +53,7 @@ target_link_libraries(QtGuiApp PRIVATE
 )
 # 链接VtkApp库
 # 包含 vtkapp 的头文件目录
-include_directories("${CMAKE_SOURCE_DIR}/VtkAPP/src")
+include_directories("${CMAKE_SOURCE_DIR}/VtkAPP/include")
 # 设置 VTK 模块依赖（确保头文件正确处理）
 if(TARGET VTK::moc)
     add_dependencies(QtGuiApp VTK::moc)

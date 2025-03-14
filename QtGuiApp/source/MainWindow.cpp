@@ -13,12 +13,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
    /* QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/Qml/loading.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/res/Qml/loading.qml")));
 
     
-     engine.load(QUrl(QStringLiteral("qrc:/Qml/loading.qml")));
+     engine.load(QUrl(QStringLiteral("qrc:/res/Qml/loading.qml")));
     LoadingWidget = new QQuickWidget(this);
-    LoadingWidget->setSource(QUrl("qrc:/Qml/loading.qml"));
+    LoadingWidget->setSource(QUrl("qrc:/res/Qml/loading.qml"));
     auto list = engine.rootObjects();
     auto item = list.first()->findChild<QObject*>("repeater");
    
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setVisible(false);*/
     // 设置无边框窗口
     setWindowFlags(Qt::FramelessWindowHint);
-    setWindowIcon(QIcon(":/icon/favicon.ico")); // 覆盖可能的默认值
+    setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
     ui.setupUi(this);
     initsolt();
     UpdateGUI();
@@ -89,7 +89,7 @@ void MainWindow::ReadDicomFiles3D()
 void MainWindow::StyleChanged(const QString &style)
 {
     qDebug() << "当前选中文本：" << style;
-    QString styledir = ":/QSS/" + style + ".qss";
+    QString styledir = ":/res/QSS/" + style + ".qss";
     loadStyleSheet(styledir);
 }
 
