@@ -1,0 +1,1 @@
+D:\QT\6.8.2\msvc2022_64\bin\qml login.qml
