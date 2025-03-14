@@ -6,8 +6,10 @@ Window {
     width: 640
     height: 320
     id: root
-    title: qsTr("win10 loading")
+    title: qsTr("guoqiang loading")
     color : "#1086a2"
+
+    signal animationFinished()
 
     Repeater{
         model: 5
@@ -66,6 +68,15 @@ Window {
                 PauseAnimation { duration: (repeater.count - index - 1) * 200}
             }
         }
-        }
+    }
 
+    Timer {
+        id: animationTimer
+        interval: 5000
+        running: true
+        repeat: false
+        onTriggered: {
+            animationFinished()
+        }
+    }
 }

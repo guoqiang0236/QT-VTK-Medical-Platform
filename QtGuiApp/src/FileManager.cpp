@@ -40,12 +40,14 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 VTK_MODULE_INIT(vtkRenderingFreeType);  // 如果用到文字渲染
 FileManager::FileManager():
 	m_filename(""),
-	m_filtype(sysconfig::VtkFileType::UNKNOWN),
-    m_VTKopenGLWidget(new QVTKOpenGLNativeWidget)
+	m_filtype(sysconfig::VtkFileType::UNKNOWN)
+    //
 {
+
     m_viewer = vtkSmartPointer<vtkImageViewer2>::New();
     m_interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
     DICOMreader = vtkSmartPointer<vtkDICOMImageReader>::New();
+    m_VTKopenGLWidget = new QVTKOpenGLNativeWidget;
 }
 
 void FileManager::processData() const
@@ -347,7 +349,7 @@ void FileManager::DicomFilesGraphics3D()
     vtkSmartPointer<vtkMarchingCubes> boneExtractor =
         vtkSmartPointer<vtkMarchingCubes>::New();
     boneExtractor->SetInputConnection(DICOMreader->GetOutputPort());
-    boneExtractor->SetValue(0, 180);  // 典型CT骨骼阈值约300-2000，需要根据数据调整
+    boneExtractor->SetValue(0, 70);  // 典型CT骨骼阈值约300-2000，需要根据数据调整
     boneExtractor->Update();
 
     // 5. 平滑处理
@@ -402,6 +404,16 @@ void FileManager::DicomFilesGraphics3D()
     m_interactor->Initialize();  // 必须调用！
     m_VTKopenGLWidget->renderWindow()->Render();
     m_interactor->Start();
+}
+
+void FileManager::ViewChanged(const std::string viewport)
+{
+    int view = std::stoi(viewport);
+    if (m_viewer)
+    {
+        m_viewer->SetSliceOrientation(view);
+        m_viewer->Render();
+    }
 }
 
 QVTKOpenGLNativeWidget* FileManager::GetVTKopenGLWidget()

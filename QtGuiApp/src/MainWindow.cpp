@@ -11,11 +11,20 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,
     m_filemanager(std::make_unique<FileManager>())
 {
+
+   /* QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/Qml/loading.qml")));
+
+    
+     engine.load(QUrl(QStringLiteral("qrc:/Qml/loading.qml")));
     LoadingWidget = new QQuickWidget(this);
     LoadingWidget->setSource(QUrl("qrc:/Qml/loading.qml"));
-    QQuickItem* rootObject = LoadingWidget->rootObject();
-    connect(rootObject, SIGNAL(animationFinished()), this, SLOT(onAnimationFinished()));
-
+    auto list = engine.rootObjects();
+    auto item = list.first()->findChild<QObject*>("repeater");
+   
+    connect(item, SIGNAL(animationFinished()), this, SLOT(OnAnimationFinished()));
+    
+    this->setVisible(false);*/
     // 设置无边框窗口
     setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/icon/favicon.ico")); // 覆盖可能的默认值
@@ -84,6 +93,11 @@ void MainWindow::StyleChanged(const QString &style)
     loadStyleSheet(styledir);
 }
 
+void MainWindow::ViewChange(const QString& viewport)
+{
+    m_filemanager->ViewChanged(viewport.toStdString());
+}
+
 void MainWindow::ShutDown()
 {
     QApplication::quit();
@@ -91,6 +105,7 @@ void MainWindow::ShutDown()
 
 void MainWindow::OnAnimationFinished()
 {
+    //this->show();
 }
 
 void MainWindow::initsolt()
@@ -100,6 +115,7 @@ void MainWindow::initsolt()
     QObject::connect(ui.pushButton_12, &QPushButton::clicked, this, &MainWindow::ReadDicomFiles3D);
     QObject::connect(ui.comboBox, &QComboBox::currentTextChanged,this, &MainWindow::StyleChanged);
     QObject::connect(ui.pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
+    QObject::connect(ui.comboBox_2, &QComboBox::currentTextChanged, this, &MainWindow::ViewChange);
 }
 
 void MainWindow::UpdateGUI()

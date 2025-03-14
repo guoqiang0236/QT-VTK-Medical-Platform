@@ -9,6 +9,9 @@
 #include <QFile>
 #include <FileManager.h>
 #include <QQuickWidget>
+#include <QObject>
+#include <QUrl>
+#include <QQmlApplicationEngine>
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -23,6 +26,7 @@ private slots:
     void ReadDicomFiles();
     void ReadDicomFiles3D();
     void StyleChanged(const QString &style);
+    void ViewChange(const QString& viewport);
     void ShutDown();
     void OnAnimationFinished();
 private:
@@ -32,7 +36,6 @@ private:
 private:
     std::unique_ptr<FileManager> m_filemanager;
     Ui::MainWindow_UI ui;
-   
     QQuickWidget* LoadingWidget;
 };
 

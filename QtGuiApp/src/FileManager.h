@@ -28,6 +28,7 @@ public:
     void CleanupVTKResources();
     void DicomFilesGraphics();
     void DicomFilesGraphics3D();
+    void ViewChanged(const std::string viewport);
     QVTKOpenGLNativeWidget* GetVTKopenGLWidget();
     void testVTK();
 
