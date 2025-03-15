@@ -193,17 +193,17 @@
             <widget class="QComboBox" name="comboBox_2">
              <item>
               <property name="text">
-               <string>0</string>
+               <string>横断面</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>1</string>
+               <string>冠状面</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>2</string>
+               <string>矢状面</string>
               </property>
              </item>
             </widget>

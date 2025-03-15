@@ -324,9 +324,9 @@ public:
         pushButton->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266", nullptr));
         pushButton_6->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
         pushButton_12->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266\357\274\214\351\230\210\345\200\274\345\267\262\347\273\217\345\206\231\346\255\273", nullptr));
-        comboBox_2->setItemText(0, QCoreApplication::translate("MainWindow_UI", "0", nullptr));
-        comboBox_2->setItemText(1, QCoreApplication::translate("MainWindow_UI", "1", nullptr));
-        comboBox_2->setItemText(2, QCoreApplication::translate("MainWindow_UI", "2", nullptr));
+        comboBox_2->setItemText(0, QCoreApplication::translate("MainWindow_UI", "\346\250\252\346\226\255\351\235\242", nullptr));
+        comboBox_2->setItemText(1, QCoreApplication::translate("MainWindow_UI", "\345\206\240\347\212\266\351\235\242", nullptr));
+        comboBox_2->setItemText(2, QCoreApplication::translate("MainWindow_UI", "\347\237\242\347\212\266\351\235\242", nullptr));
 
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainWindow_UI", "\346\202\243\350\200\205\344\277\241\346\201\257", nullptr));
         pushButton_2->setText(QString());

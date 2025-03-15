@@ -6,6 +6,7 @@
 #include "CustomSplashScreen.h"
 #include<vtkAutoInit.h>
 #include <vtkOutputWindow.h>
+#include <QFile>
 //VTK_MODULE_INIT(vtkRenderingOpenGL);
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -21,7 +22,6 @@ int main(int argc, char* argv[]) {
     format.setVersion(4, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
-    QSurfaceFormat::setDefaultFormat(format);
     QApplication app(argc, argv);
     vtkOutputWindow::SetGlobalWarningDisplay(0);
     //loading加载界面
@@ -33,10 +33,11 @@ int main(int argc, char* argv[]) {
         app.setStyleSheet(qss.readAll());
         qss.close();
     }
-    MainWindow* mainWindow = new MainWindow();
+    auto mainWindow = std::make_unique<MainWindow>();
+
     
     mainWindow->show();
 
-    loadingflash.finish(mainWindow);
+    loadingflash.finish(mainWindow.get());
     return app.exec();
 }

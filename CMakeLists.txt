@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(medcical-QT)
-
+# 设置 CMake 编码为 UTF - 8
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
 # 全局设置
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
