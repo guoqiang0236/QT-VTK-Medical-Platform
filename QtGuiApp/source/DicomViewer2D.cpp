@@ -14,6 +14,12 @@ DicomViewer2D::DicomViewer2D(QVTKOpenGLNativeWidget* widget)
     m_imageViewer = vtkSmartPointer<vtkImageViewer2>::New();
     m_interactor = vtkSmartPointer< vtkRenderWindowInteractor>::New();
     m_interactorStyle = vtkSmartPointer<myVtkInteractorStyleImage>::New();
+    m_interactorStyle = vtkSmartPointer<myVtkInteractorStyleImage>::New();
+    m_interactorStyle->SetSliceChangedCallback([this](int slice) 
+        {
+            emit sliceChanged(slice);
+        });
+    message = "";
 }
 
 DicomViewer2D::~DicomViewer2D()
@@ -32,13 +38,14 @@ void DicomViewer2D::loadDirectory(const std::string& path)
     try {
         cleanup();
         initializeReader(path);
+        setViewOrientation(static_cast<SliceOrientation>(m_orientation));
         setupViewer();
         setupAnnotations();
         setupInteractor();
         resetCamera();
-        setViewOrientation(static_cast<SliceOrientation>(m_orientation));
+       
         m_vtkWidget->renderWindow()->Render();
-        m_vtkWidget->renderWindow()->GetInteractor()->Start();
+        //m_vtkWidget->renderWindow()->GetInteractor()->Start();
     }
     catch (const std::runtime_error& e) {
         std::cerr << "Runtime error: " << e.what() << std::endl;
@@ -59,6 +66,9 @@ void DicomViewer2D::setupViewer() {
     m_imageViewer->SetInputConnection(m_reader->GetOutputPort());
     m_interactorStyle = vtkSmartPointer<myVtkInteractorStyleImage>::New();
     m_interactorStyle->SetImageViewer(m_imageViewer);
+    m_interactorStyle->SetSliceChangedCallback([this](int slice) {
+        emit sliceChanged(slice);
+        });
     m_interactor->SetInteractorStyle(m_interactorStyle);
     m_imageViewer->GetRenderWindow()->SetInteractor(m_interactor);
     m_imageViewer->Render();
@@ -92,7 +102,7 @@ void DicomViewer2D::setupAnnotations()
 
     vtkNew<vtkTextMapper> usageTextMapper;
     usageTextMapper->SetInput(
-        " test dicom\n ");
+        message.c_str());
     usageTextMapper->SetTextProperty(usageTextProp);
 
     vtkNew<vtkActor2D> usageTextActor;
@@ -166,4 +176,21 @@ void DicomViewer2D::cleanup()
     m_interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
     m_reader = nullptr;
 }
-// 类似方式实现DicomViewer3D和其他文件类型的Viewer
+void DicomViewer2D::startInteractor()
+{
+    if (!m_vtkWidget)
+        return;
+    m_vtkWidget->renderWindow()->GetInteractor()->Start();
+}
+int DicomViewer2D::getTotalSlices() const {
+    return m_imageViewer->GetSliceMax() - m_imageViewer->GetSliceMin() + 1;
+}
+void DicomViewer2D::setSlice(int slice) {
+    m_imageViewer->SetSlice(slice);
+    if (m_interactorStyle) {
+        std::string msg = StatusMessage::Format(slice, m_imageViewer->GetSliceMax());
+        m_interactorStyle->SetStatusMapper(msg.c_str());
+        //m_interactorStyle->SetCurrentSliceNumberNow(slice);
+    }
+    m_vtkWidget->renderWindow()->Render();
+}

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1600</width>
-    <height>900</height>
+    <width>1920</width>
+    <height>1080</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -183,9 +183,16 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_12">
+            <widget class="QPushButton" name="pushButton_ti">
              <property name="text">
-              <string>体绘制，阈值已经写死</string>
+              <string>体绘制</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_mian">
+             <property name="text">
+              <string>面绘制</string>
              </property>
             </widget>
            </item>
@@ -663,6 +670,18 @@
     </item>
     <item>
      <widget class="QFrame" name="frame_vtkrender">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+    background-color: transparent; /* 背景透明 */
+    border: none;                /* 移除边框 */
+}</string>
+      </property>
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
       </property>
@@ -687,6 +706,292 @@
        </property>
        <item>
         <widget class="QVTKOpenGLNativeWidget" name="openGLWidget"/>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame_XYZ">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>500</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>500</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QFrame {
+    background-color: transparent; /* 背景透明 */
+    border: none;                /* 移除边框 */
+}</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <widget class="QFrame" name="frame_AXIAL">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>450</width>
+            <height>350</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QFrame {
+    background-color: transparent; /* 背景透明 */
+    border: none;                /* 移除边框 */
+}</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Shape::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Raised</enum>
+          </property>
+          <widget class="QOpenGLWidget" name="openGLWidget_AXIAL">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QSlider" name="Slider_AXIAL">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>320</y>
+             <width>301</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_AXIALMIN">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>0</y>
+             <width>54</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>横断面</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_AXIAL_2">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>320</y>
+             <width>21</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_AXIALMAX">
+           <property name="geometry">
+            <rect>
+             <x>400</x>
+             <y>320</y>
+             <width>54</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>100</string>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QFrame" name="frame_CORONAL">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>370</y>
+            <width>450</width>
+            <height>350</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QFrame {
+    background-color: transparent; /* 背景透明 */
+    border: none;                /* 移除边框 */
+}</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Shape::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Raised</enum>
+          </property>
+          <widget class="QOpenGLWidget" name="openGLWidget_CORONAL">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QSlider" name="Slider_CORONAL">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>320</y>
+             <width>301</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_CORONAL">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>0</y>
+             <width>54</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>冠状面</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_CORONALMIN">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>320</y>
+             <width>21</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_CORONALMAX">
+           <property name="geometry">
+            <rect>
+             <x>400</x>
+             <y>320</y>
+             <width>31</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>100</string>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QFrame" name="frame_SAGITTAL">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>730</y>
+            <width>450</width>
+            <height>350</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QFrame {
+    background-color: transparent; /* 背景透明 */
+    border: none;                /* 移除边框 */
+}</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Shape::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Raised</enum>
+          </property>
+          <widget class="QOpenGLWidget" name="openGLWidget_SAGITTAL">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QSlider" name="Slider_SAGITTAL">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>320</y>
+             <width>301</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_SAGITTAL">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>0</y>
+             <width>54</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>矢状面</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_SAGITTALMIN">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>320</y>
+             <width>21</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_SAGITTALMAX">
+           <property name="geometry">
+            <rect>
+             <x>400</x>
+             <y>320</y>
+             <width>31</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>100</string>
+           </property>
+          </widget>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>

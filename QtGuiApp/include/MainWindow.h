@@ -23,8 +23,14 @@ private slots:
     void ReadDicomFile();
     void ReadDicomFiles();
     void ReadDicomFiles3D();
+    void ReadDicomFiles3DVolume();
+    void ReadDicomFiles3DSurface();
     void StyleChanged(const QString& style);
     void ViewChange(const QString& viewport);
+    void SetSliderTotal();
+    void SetCurrentAXIALSliderValue(int slice);
+	void SetCurrentCORONALSliderValue(int slice);
+	void SetCurrentSAGITTALSliderValue(int slice);
     void ShutDown();
     void OnAnimationFinished();
 

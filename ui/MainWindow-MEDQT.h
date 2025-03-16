@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtGui/QIcon>
+#include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
@@ -19,6 +20,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -46,7 +48,8 @@ public:
     QLineEdit *lineEdit_4;
     QPushButton *pushButton;
     QPushButton *pushButton_6;
-    QPushButton *pushButton_12;
+    QPushButton *pushButton_ti;
+    QPushButton *pushButton_mian;
     QComboBox *comboBox_2;
     QFrame *frame;
     QWidget *tab_4;
@@ -66,12 +69,31 @@ public:
     QFrame *frame_vtkrender;
     QHBoxLayout *horizontalLayout_2;
     QVTKOpenGLNativeWidget *openGLWidget;
+    QFrame *frame_XYZ;
+    QFrame *frame_AXIAL;
+    QOpenGLWidget *openGLWidget_AXIAL;
+    QSlider *Slider_AXIAL;
+    QLabel *label_AXIALMIN;
+    QLabel *label_AXIAL_2;
+    QLabel *label_AXIALMAX;
+    QFrame *frame_CORONAL;
+    QOpenGLWidget *openGLWidget_CORONAL;
+    QSlider *Slider_CORONAL;
+    QLabel *label_CORONAL;
+    QLabel *label_CORONALMIN;
+    QLabel *label_CORONALMAX;
+    QFrame *frame_SAGITTAL;
+    QOpenGLWidget *openGLWidget_SAGITTAL;
+    QSlider *Slider_SAGITTAL;
+    QLabel *label_SAGITTAL;
+    QLabel *label_SAGITTALMIN;
+    QLabel *label_SAGITTALMAX;
 
     void setupUi(QMainWindow *MainWindow_UI)
     {
         if (MainWindow_UI->objectName().isEmpty())
             MainWindow_UI->setObjectName("MainWindow_UI");
-        MainWindow_UI->resize(1600, 900);
+        MainWindow_UI->resize(1920, 1080);
         centralwidget = new QWidget(MainWindow_UI);
         centralwidget->setObjectName("centralwidget");
         centralwidget->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
@@ -158,10 +180,15 @@ public:
 
         verticalLayout_2->addWidget(pushButton_6);
 
-        pushButton_12 = new QPushButton(tab_3);
-        pushButton_12->setObjectName("pushButton_12");
+        pushButton_ti = new QPushButton(tab_3);
+        pushButton_ti->setObjectName("pushButton_ti");
 
-        verticalLayout_2->addWidget(pushButton_12);
+        verticalLayout_2->addWidget(pushButton_ti);
+
+        pushButton_mian = new QPushButton(tab_3);
+        pushButton_mian->setObjectName("pushButton_mian");
+
+        verticalLayout_2->addWidget(pushButton_mian);
 
         comboBox_2 = new QComboBox(tab_3);
         comboBox_2->addItem(QString());
@@ -294,6 +321,11 @@ public:
 
         frame_vtkrender = new QFrame(centralwidget);
         frame_vtkrender->setObjectName("frame_vtkrender");
+        frame_vtkrender->setMinimumSize(QSize(0, 0));
+        frame_vtkrender->setStyleSheet(QString::fromUtf8("QFrame {\n"
+"    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
+"    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
+"}"));
         frame_vtkrender->setFrameShape(QFrame::Shape::StyledPanel);
         frame_vtkrender->setFrameShadow(QFrame::Shadow::Raised);
         horizontalLayout_2 = new QHBoxLayout(frame_vtkrender);
@@ -304,6 +336,99 @@ public:
         openGLWidget->setObjectName("openGLWidget");
 
         horizontalLayout_2->addWidget(openGLWidget);
+
+        frame_XYZ = new QFrame(frame_vtkrender);
+        frame_XYZ->setObjectName("frame_XYZ");
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(frame_XYZ->sizePolicy().hasHeightForWidth());
+        frame_XYZ->setSizePolicy(sizePolicy);
+        frame_XYZ->setMinimumSize(QSize(500, 0));
+        frame_XYZ->setMaximumSize(QSize(500, 16777215));
+        frame_XYZ->setStyleSheet(QString::fromUtf8("QFrame {\n"
+"    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
+"    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
+"}"));
+        frame_XYZ->setFrameShape(QFrame::Shape::StyledPanel);
+        frame_XYZ->setFrameShadow(QFrame::Shadow::Raised);
+        frame_AXIAL = new QFrame(frame_XYZ);
+        frame_AXIAL->setObjectName("frame_AXIAL");
+        frame_AXIAL->setGeometry(QRect(50, 10, 450, 350));
+        frame_AXIAL->setStyleSheet(QString::fromUtf8("QFrame {\n"
+"    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
+"    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
+"}"));
+        frame_AXIAL->setFrameShape(QFrame::Shape::StyledPanel);
+        frame_AXIAL->setFrameShadow(QFrame::Shadow::Raised);
+        openGLWidget_AXIAL = new QOpenGLWidget(frame_AXIAL);
+        openGLWidget_AXIAL->setObjectName("openGLWidget_AXIAL");
+        openGLWidget_AXIAL->setGeometry(QRect(90, 0, 300, 300));
+        Slider_AXIAL = new QSlider(frame_AXIAL);
+        Slider_AXIAL->setObjectName("Slider_AXIAL");
+        Slider_AXIAL->setGeometry(QRect(90, 320, 301, 16));
+        Slider_AXIAL->setOrientation(Qt::Orientation::Horizontal);
+        label_AXIALMIN = new QLabel(frame_AXIAL);
+        label_AXIALMIN->setObjectName("label_AXIALMIN");
+        label_AXIALMIN->setGeometry(QRect(20, 0, 54, 16));
+        label_AXIAL_2 = new QLabel(frame_AXIAL);
+        label_AXIAL_2->setObjectName("label_AXIAL_2");
+        label_AXIAL_2->setGeometry(QRect(60, 320, 21, 16));
+        label_AXIALMAX = new QLabel(frame_AXIAL);
+        label_AXIALMAX->setObjectName("label_AXIALMAX");
+        label_AXIALMAX->setGeometry(QRect(400, 320, 54, 16));
+        frame_CORONAL = new QFrame(frame_XYZ);
+        frame_CORONAL->setObjectName("frame_CORONAL");
+        frame_CORONAL->setGeometry(QRect(50, 370, 450, 350));
+        frame_CORONAL->setStyleSheet(QString::fromUtf8("QFrame {\n"
+"    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
+"    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
+"}"));
+        frame_CORONAL->setFrameShape(QFrame::Shape::StyledPanel);
+        frame_CORONAL->setFrameShadow(QFrame::Shadow::Raised);
+        openGLWidget_CORONAL = new QOpenGLWidget(frame_CORONAL);
+        openGLWidget_CORONAL->setObjectName("openGLWidget_CORONAL");
+        openGLWidget_CORONAL->setGeometry(QRect(90, 0, 300, 300));
+        Slider_CORONAL = new QSlider(frame_CORONAL);
+        Slider_CORONAL->setObjectName("Slider_CORONAL");
+        Slider_CORONAL->setGeometry(QRect(90, 320, 301, 16));
+        Slider_CORONAL->setOrientation(Qt::Orientation::Horizontal);
+        label_CORONAL = new QLabel(frame_CORONAL);
+        label_CORONAL->setObjectName("label_CORONAL");
+        label_CORONAL->setGeometry(QRect(20, 0, 54, 16));
+        label_CORONALMIN = new QLabel(frame_CORONAL);
+        label_CORONALMIN->setObjectName("label_CORONALMIN");
+        label_CORONALMIN->setGeometry(QRect(60, 320, 21, 16));
+        label_CORONALMAX = new QLabel(frame_CORONAL);
+        label_CORONALMAX->setObjectName("label_CORONALMAX");
+        label_CORONALMAX->setGeometry(QRect(400, 320, 31, 16));
+        frame_SAGITTAL = new QFrame(frame_XYZ);
+        frame_SAGITTAL->setObjectName("frame_SAGITTAL");
+        frame_SAGITTAL->setGeometry(QRect(50, 730, 450, 350));
+        frame_SAGITTAL->setStyleSheet(QString::fromUtf8("QFrame {\n"
+"    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
+"    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
+"}"));
+        frame_SAGITTAL->setFrameShape(QFrame::Shape::StyledPanel);
+        frame_SAGITTAL->setFrameShadow(QFrame::Shadow::Raised);
+        openGLWidget_SAGITTAL = new QOpenGLWidget(frame_SAGITTAL);
+        openGLWidget_SAGITTAL->setObjectName("openGLWidget_SAGITTAL");
+        openGLWidget_SAGITTAL->setGeometry(QRect(90, 0, 300, 300));
+        Slider_SAGITTAL = new QSlider(frame_SAGITTAL);
+        Slider_SAGITTAL->setObjectName("Slider_SAGITTAL");
+        Slider_SAGITTAL->setGeometry(QRect(90, 320, 301, 16));
+        Slider_SAGITTAL->setOrientation(Qt::Orientation::Horizontal);
+        label_SAGITTAL = new QLabel(frame_SAGITTAL);
+        label_SAGITTAL->setObjectName("label_SAGITTAL");
+        label_SAGITTAL->setGeometry(QRect(20, 0, 54, 16));
+        label_SAGITTALMIN = new QLabel(frame_SAGITTAL);
+        label_SAGITTALMIN->setObjectName("label_SAGITTALMIN");
+        label_SAGITTALMIN->setGeometry(QRect(60, 320, 21, 16));
+        label_SAGITTALMAX = new QLabel(frame_SAGITTAL);
+        label_SAGITTALMAX->setObjectName("label_SAGITTALMAX");
+        label_SAGITTALMAX->setGeometry(QRect(400, 320, 31, 16));
+
+        horizontalLayout_2->addWidget(frame_XYZ);
 
 
         horizontalLayout_3->addWidget(frame_vtkrender);
@@ -330,7 +455,8 @@ public:
         label_4->setText(QCoreApplication::translate("MainWindow_UI", "\345\234\260\345\235\200", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266", nullptr));
         pushButton_6->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
-        pushButton_12->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266\357\274\214\351\230\210\345\200\274\345\267\262\347\273\217\345\206\231\346\255\273", nullptr));
+        pushButton_ti->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266", nullptr));
+        pushButton_mian->setText(QCoreApplication::translate("MainWindow_UI", "\351\235\242\347\273\230\345\210\266", nullptr));
         comboBox_2->setItemText(0, QCoreApplication::translate("MainWindow_UI", "\346\250\252\346\226\255\351\235\242", nullptr));
         comboBox_2->setItemText(1, QCoreApplication::translate("MainWindow_UI", "\345\206\240\347\212\266\351\235\242", nullptr));
         comboBox_2->setItemText(2, QCoreApplication::translate("MainWindow_UI", "\347\237\242\347\212\266\351\235\242", nullptr));
@@ -359,6 +485,15 @@ public:
 
         label_5->setText(QCoreApplication::translate("MainWindow_UI", "\344\270\273\351\242\230", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainWindow_UI", "\347\263\273\347\273\237\350\256\276\347\275\256", nullptr));
+        label_AXIALMIN->setText(QCoreApplication::translate("MainWindow_UI", "\346\250\252\346\226\255\351\235\242", nullptr));
+        label_AXIAL_2->setText(QCoreApplication::translate("MainWindow_UI", "0", nullptr));
+        label_AXIALMAX->setText(QCoreApplication::translate("MainWindow_UI", "100", nullptr));
+        label_CORONAL->setText(QCoreApplication::translate("MainWindow_UI", "\345\206\240\347\212\266\351\235\242", nullptr));
+        label_CORONALMIN->setText(QCoreApplication::translate("MainWindow_UI", "0", nullptr));
+        label_CORONALMAX->setText(QCoreApplication::translate("MainWindow_UI", "100", nullptr));
+        label_SAGITTAL->setText(QCoreApplication::translate("MainWindow_UI", "\347\237\242\347\212\266\351\235\242", nullptr));
+        label_SAGITTALMIN->setText(QCoreApplication::translate("MainWindow_UI", "0", nullptr));
+        label_SAGITTALMAX->setText(QCoreApplication::translate("MainWindow_UI", "100", nullptr));
     } // retranslateUi
 
 };

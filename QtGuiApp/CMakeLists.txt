@@ -3,6 +3,8 @@ project(QtGuiApp LANGUAGES CXX)
 
 # 启用 AUTOMOC（关键！）
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 # 收集源文件（显式列出头文件）
 file(GLOB SRC_FILES CONFIGURE_DEPENDS
@@ -14,8 +16,8 @@ qt_add_resources(RESOURCES resources.qrc)
 
 # 创建可执行文件
 # 根据构建类型动态设置 WIN32 选项
-#add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} res/icon/apprc.rc)  # Release 模式：无控制台
-add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
+add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} res/icon/apprc.rc)  # Release 模式：无控制台
+#add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
 
 # 包含目录（修正路径）
 target_include_directories(QtGuiApp PRIVATE
@@ -36,7 +38,6 @@ target_link_libraries(QtGuiApp PRIVATE
     VTK::RenderingOpenGL2
     VTK::InteractionStyle
     VTK::CommonCore
-    VTK::RenderingVolume   # 关键模块
     VTK::RenderingImage     # vtkImageViewer2 的依赖模块
     VTK::IOImage
     VTK::ViewsContext2D
@@ -48,7 +49,12 @@ target_link_libraries(QtGuiApp PRIVATE
     VTK::RenderingContextOpenGL2
     VTK::RenderingFreeType
     VTK::RenderingGL2PSOpenGL2
-    VTK::InteractionStyle
+    VTK::RenderingVolumeOpenGL2
+    VTK::RenderingAnnotation 
+    VTK::RenderingVolume
+    VTK::FiltersGeneral
+    VTK::FiltersGeometry
+    VTK::FiltersModeling
     VtkApp
 )
 # 链接VtkApp库

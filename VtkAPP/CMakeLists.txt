@@ -1,3 +1,13 @@
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+if (NOT Qt6_FOUND)
+  message(FATAL_ERROR "Unable to find the Qt6 build folder.")
+endif()
+
+# 启用自动 MOC、UIC 和 RCC
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
 # 自动追踪源文件变化（CONFIGURE_DEPENDS是CMake 3.20+特性）
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"
@@ -22,7 +32,8 @@ message(STATUS "VTK_VERSION: ${VTK_VERSION}")
 message(STATUS "VTK_INCLUDE_DIRS: ${VTK_INCLUDE_DIRS}")
 target_link_libraries(VtkApp PRIVATE ${VTK_LIBRARIES})
 
-
+# 链接Qt6库
+target_link_libraries(VtkApp PRIVATE Qt6::Core Qt6::Widgets)
 
 
 # 自动初始化VTK模块

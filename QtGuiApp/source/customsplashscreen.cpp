@@ -19,7 +19,7 @@ CustomSplashScreen::CustomSplashScreen(QWidget* parent)
     // 设置像素图
     QString strScreen = ":/res/picture/loading.jpg";
     QPixmap loadingPix(strScreen);
-    setPixmap(loadingPix.scaled(1600, 900));
+    setPixmap(loadingPix.scaled(1920, 1080));
    
 
     //字体大小
