@@ -22,6 +22,7 @@
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include <qvtkopenglnativewidget.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +65,7 @@ public:
     QLabel *label_5;
     QFrame *frame_vtkrender;
     QHBoxLayout *horizontalLayout_2;
+    QVTKOpenGLNativeWidget *openGLWidget;
 
     void setupUi(QMainWindow *MainWindow_UI)
     {
@@ -298,6 +300,11 @@ public:
         horizontalLayout_2->setSpacing(0);
         horizontalLayout_2->setObjectName("horizontalLayout_2");
         horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+        openGLWidget = new QVTKOpenGLNativeWidget(frame_vtkrender);
+        openGLWidget->setObjectName("openGLWidget");
+
+        horizontalLayout_2->addWidget(openGLWidget);
+
 
         horizontalLayout_3->addWidget(frame_vtkrender);
 

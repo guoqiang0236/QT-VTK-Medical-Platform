@@ -19,7 +19,7 @@ public:
     void resetCamera();
     void setViewOrientation(SliceOrientation orientation);
     void cleanup()override;
-    void setOrientation(int orientationation) { m_orientation = orientationation; }
+	void setOrientation(int orientationation) { m_orientation = orientationation; }
 private:
     int m_orientation;
     void setupViewer();

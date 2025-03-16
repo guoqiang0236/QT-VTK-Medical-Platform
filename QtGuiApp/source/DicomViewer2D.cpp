@@ -30,7 +30,7 @@ void DicomViewer2D::loadFile(const std::string& path) {
 void DicomViewer2D::loadDirectory(const std::string& path)
 {
     try {
-        cleanup();  // 继承自基类的清理方法
+        cleanup();
         initializeReader(path);
         setupViewer();
         setupAnnotations();
@@ -40,8 +40,13 @@ void DicomViewer2D::loadDirectory(const std::string& path)
         m_vtkWidget->renderWindow()->Render();
         m_vtkWidget->renderWindow()->GetInteractor()->Start();
     }
-    catch (const std::exception& e) {
+    catch (const std::runtime_error& e) {
+        std::cerr << "Runtime error: " << e.what() << std::endl;
         throw std::runtime_error("2D DICOM series loading failed: " + std::string(e.what()));
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        throw std::runtime_error("An error occurred: " + std::string(e.what()));
     }
 }
 

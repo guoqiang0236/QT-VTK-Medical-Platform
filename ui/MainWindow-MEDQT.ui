@@ -685,12 +685,22 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <widget class="QVTKOpenGLNativeWidget" name="openGLWidget"/>
+       </item>
       </layout>
      </widget>
     </item>
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QVTKOpenGLNativeWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header location="global">qvtkopenglnativewidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../QtGuiApp/resources.qrc"/>
  </resources>

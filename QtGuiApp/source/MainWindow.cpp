@@ -11,10 +11,11 @@
 #include <QFileDialog>
 #include <memory>
 #include "VisualizationManager.h"
-
+#include "MainWindow-MEDQT.h"
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
-    m_VisualManager(std::make_unique<VisualizationManager>())
+    m_VisualManager(std::make_unique<VisualizationManager>()),
+    m_ui(std::make_unique<Ui::MainWindow_UI>())
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
@@ -70,7 +71,7 @@ void MainWindow::ViewChange(const QString& viewport)
 {
     if (!m_VisualManager)
         return;
-    int view = std::stoi(viewport.toStdString());
+	int view = m_ui->comboBox_2->currentIndex();
     m_VisualManager->changeViewOrientation(view);
 }
 
@@ -95,8 +96,18 @@ void MainWindow::initSlots()
 
 void MainWindow::UpdateGUI()
 {
-    if (!m_VisualManager)
+    if (!m_ui || !m_VisualManager)
         return;
+
+    auto vtkWidget = m_VisualManager->getVTKWidget();
+    if (!vtkWidget)
+        return;
+
+    // 移除旧的 openGLWidget
+    if (m_ui->openGLWidget) {
+        m_ui->openGLWidget->setParent(nullptr);
+        m_ui->openGLWidget->deleteLater();
+    }
     m_VisualManager->getVTKWidget()->setParent(m_ui->frame_vtkrender);
     m_VisualManager->getVTKWidget()->setObjectName("VTKopenGLWidget");
     m_ui->horizontalLayout_2->addWidget(m_VisualManager->getVTKWidget());
