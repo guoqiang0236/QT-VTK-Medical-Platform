@@ -37,6 +37,8 @@ public:
     void SetStatusMapper(const std::string& msg);
     void SetSliceChangedCallback(SliceChangedCallback callback);
     void SetCurrentSliceNumberNow(int slice);
+
+    void EnableMouseWheel(bool enable); // 新增的方法
 protected:
     vtkImageViewer2* _ImageViewer;
     vtkTextMapper* _StatusMapper;
@@ -51,6 +53,7 @@ protected:
     void OnKeyDown() override;
     void OnMouseWheelForward() override;
     void OnMouseWheelBackward() override;
+    bool _MouseWheelEnabled = true; // 新增的标志
 };
 
 #endif // MY_VTK_INTERACTOR_STYLE_IMAGE_H

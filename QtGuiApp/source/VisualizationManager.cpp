@@ -127,16 +127,19 @@ void VisualizationManager::loadDicomSeries(const QString& dirPath) {
     m_dicom2DViewer_axial->setOrientation(0);
 	m_dicom2DViewer_axial->setmessage("AXIAL");
     m_dicom2DViewer_axial->loadDirectory(dirPath.toStdString());
+    m_dicom2DViewer_axial->getInteractorStyle()->EnableMouseWheel(false);
 
     m_dicom2DViewer_coronal = std::make_unique<DicomViewer2D>(m_vtkWidget_coronal);
     m_dicom2DViewer_coronal->setOrientation(1);
     m_dicom2DViewer_coronal->setmessage("CORONAL");
     m_dicom2DViewer_coronal->loadDirectory(dirPath.toStdString());
+	m_dicom2DViewer_coronal->getInteractorStyle()->EnableMouseWheel(false);
 
     m_dicom2DViewer_sagittal = std::make_unique<DicomViewer2D>(m_vtkWidget_sagittal);
     m_dicom2DViewer_sagittal->setOrientation(2);
     m_dicom2DViewer_sagittal->setmessage("SAGITTAL");
     m_dicom2DViewer_sagittal->loadDirectory(dirPath.toStdString());
+	m_dicom2DViewer_sagittal->getInteractorStyle()->EnableMouseWheel(false);
 
 	//获取每个视图的切片数
 	m_axial_sliceall = m_dicom2DViewer_axial->getTotalSlices();

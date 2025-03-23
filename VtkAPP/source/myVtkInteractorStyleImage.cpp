@@ -61,13 +61,21 @@ void myVtkInteractorStyleImage::OnKeyDown() {
     vtkInteractorStyleImage::OnKeyDown();
 }
 
+void myVtkInteractorStyleImage::EnableMouseWheel(bool enable) {
+    _MouseWheelEnabled = enable;
+}
+
 void myVtkInteractorStyleImage::OnMouseWheelForward() {
-    MoveSliceForward();
+    if (_MouseWheelEnabled) {
+        MoveSliceForward();
+    }
 }
 
 void myVtkInteractorStyleImage::OnMouseWheelBackward() {
-    if (_Slice > _MinSlice) {
-        MoveSliceBackward();
+    if (_MouseWheelEnabled) {
+        if (_Slice > _MinSlice) {
+            MoveSliceBackward();
+        }
     }
 }
 

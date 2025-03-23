@@ -14,7 +14,6 @@ DicomViewer2D::DicomViewer2D(QVTKOpenGLNativeWidget* widget)
     m_imageViewer = vtkSmartPointer<vtkImageViewer2>::New();
     m_interactor = vtkSmartPointer< vtkRenderWindowInteractor>::New();
     m_interactorStyle = vtkSmartPointer<myVtkInteractorStyleImage>::New();
-    m_interactorStyle = vtkSmartPointer<myVtkInteractorStyleImage>::New();
     m_interactorStyle->SetSliceChangedCallback([this](int slice) 
         {
             emit sliceChanged(slice);
@@ -147,6 +146,9 @@ void DicomViewer2D::setViewOrientation(SliceOrientation orientation) {
         break;
     case SliceOrientation::SAGITTAL:
         m_imageViewer->SetSliceOrientation(vtkImageViewer2::SLICE_ORIENTATION_XZ);
+        break;
+    default:
+        m_interactorStyle->EnableMouseWheel(true);
         break;
     }
     resetCamera();
