@@ -45,6 +45,10 @@ void MainWindow::ReadDicomFiles()
     if (!folderPath.isEmpty() && m_VisualManager) 
     {
         m_VisualManager->loadDicomSeries(folderPath);     
+        // 方案1: 转换为本地编码
+        //QByteArray pathBytes = folderPath.toLocal8Bit();
+        //QString convertedPath = QString::fromLocal8Bit(pathBytes.constData());
+        //m_VisualManager->loadDicomSeries(convertedPath);
     }
 }
 

@@ -174,7 +174,15 @@ void DicomViewer3D::loadVolumeRendering(const std::string& path)
     cubeAxesActor->GetLabelTextProperty(1)->SetColor(1, 1, 1);
     cubeAxesActor->GetTitleTextProperty(2)->SetColor(1, 1, 1);
     cubeAxesActor->GetLabelTextProperty(2)->SetColor(1, 1, 1);
+    // 设置轴线颜色
+    cubeAxesActor->GetXAxesLinesProperty()->SetColor(1, 0, 0);  // 红色X轴
+    cubeAxesActor->GetYAxesLinesProperty()->SetColor(0, 1, 0);  // 绿色Y轴
+    cubeAxesActor->GetZAxesLinesProperty()->SetColor(0, 0, 1);  // 蓝色Z轴
     cubeAxesActor->SetFlyModeToStaticTriad();
+    //// 确保显示所有刻度和网格
+    //cubeAxesActor->SetDrawXGridlines(1);
+    //cubeAxesActor->SetDrawYGridlines(1);
+    //cubeAxesActor->SetDrawZGridlines(1);
     m_renderer->AddActor(cubeAxesActor);
     // 设置交互样式
     auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
