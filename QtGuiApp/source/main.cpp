@@ -25,8 +25,8 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     vtkOutputWindow::SetGlobalWarningDisplay(0);
     //loading加载界面
-    CustomSplashScreen loadingflash;
-    loadingflash.init();
+    //CustomSplashScreen loadingflash;
+    //loadingflash.init();
     // 加载样式表
     QFile qss(":/res/QSS/ElegantDark.qss");
     if (qss.open(QFile::ReadOnly)) {
@@ -34,10 +34,10 @@ int main(int argc, char* argv[]) {
         qss.close();
     }
     auto mainWindow = std::make_unique<MainWindow>();
-
+  
     
     mainWindow->show();
 
-    loadingflash.finish(mainWindow.get());
+    //loadingflash.finish(mainWindow.get());
     return app.exec();
 }

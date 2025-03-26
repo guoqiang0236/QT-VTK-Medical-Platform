@@ -24,6 +24,8 @@ DicomViewer3D::DicomViewer3D(QVTKOpenGLNativeWidget* widget)
 
 void DicomViewer3D::loadDirectory(const std::string& path) {
     try {
+        //const char* ss = path.c_str();
+
         initializeReader(path);
         setupPipeline();
         resetCamera();

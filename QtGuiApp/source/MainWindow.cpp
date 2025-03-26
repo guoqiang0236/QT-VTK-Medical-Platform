@@ -44,11 +44,11 @@ void MainWindow::ReadDicomFiles()
 
     if (!folderPath.isEmpty() && m_VisualManager) 
     {
-        m_VisualManager->loadDicomSeries(folderPath);     
+        //..m_VisualManager->loadDicomSeries(folderPath);     
         // 方案1: 转换为本地编码
-        //QByteArray pathBytes = folderPath.toLocal8Bit();
-        //QString convertedPath = QString::fromLocal8Bit(pathBytes.constData());
-        //m_VisualManager->loadDicomSeries(convertedPath);
+        QByteArray utf8Path = folderPath.toUtf8();
+        QString utf8FolderPath = QString::fromUtf8(utf8Path.constData());
+        m_VisualManager->loadDicomSeries(utf8FolderPath);
     }
 }
 
@@ -61,6 +61,7 @@ void MainWindow::ReadDicomFiles3D()
     if (!folderPath.isEmpty() && m_VisualManager) 
     {
         m_VisualManager->loadVolumeData(folderPath);
+   
     }
    
 
