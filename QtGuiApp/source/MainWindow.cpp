@@ -110,11 +110,14 @@ void MainWindow::SetSliderTotal()
 {
     if (!m_ui)
         return;
-    m_ui->label_AXIALMAX->setText(QString::number(m_VisualManager->getm_axial_sliceall()));
+	m_ui->label_AXIAL_2->setText("1");
+    m_ui->label_AXIALMAX->setText(QString::number(m_VisualManager->getm_axial_sliceall()+1));
     m_ui->Slider_AXIAL->setMaximum(m_VisualManager->getm_axial_sliceall());
-	m_ui->label_CORONALMAX->setText(QString::number(m_VisualManager->getm_coronal_sliceall()));
+    m_ui->label_CORONALMIN->setText("1");
+	m_ui->label_CORONALMAX->setText(QString::number(m_VisualManager->getm_coronal_sliceall()+1));
     m_ui->Slider_CORONAL->setMaximum(m_VisualManager->getm_coronal_sliceall());
-	m_ui->label_SAGITTALMAX->setText(QString::number(m_VisualManager->getm_sagittal_sliceall()));
+	m_ui->label_SAGITTALMIN->setText("1");
+	m_ui->label_SAGITTALMAX->setText(QString::number(m_VisualManager->getm_sagittal_sliceall()+1));
     m_ui->Slider_SAGITTAL->setMaximum(m_VisualManager->getm_sagittal_sliceall());
 
 

@@ -181,11 +181,18 @@ void DicomViewer3D::loadVolumeRendering(const std::string& path)
     cubeAxesActor->GetYAxesLinesProperty()->SetColor(0, 1, 0);  // 绿色Y轴
     cubeAxesActor->GetZAxesLinesProperty()->SetColor(0, 0, 1);  // 蓝色Z轴
     cubeAxesActor->SetFlyModeToStaticTriad();
-    //// 确保显示所有刻度和网格
-    //cubeAxesActor->SetDrawXGridlines(1);
-    //cubeAxesActor->SetDrawYGridlines(1);
-    //cubeAxesActor->SetDrawZGridlines(1);
+    
     m_renderer->AddActor(cubeAxesActor);
+
+    // 初始化并配置方向标记
+	m_axes = vtkSmartPointer<vtkAxesActor>::New();
+    m_orientationMarker = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+    m_orientationMarker->SetOrientationMarker(m_axes);
+	m_orientationMarker->SetInteractor(m_vtkWidget->renderWindow()->GetInteractor());
+	m_orientationMarker->SetViewport(0.0, 0.0, 0.2, 0.2);
+	m_orientationMarker->SetEnabled(1);
+    m_orientationMarker->InteractiveOff();
+
     // 设置交互样式
     auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
     m_vtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);

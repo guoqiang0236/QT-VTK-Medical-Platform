@@ -7,8 +7,8 @@ vtkStandardNewMacro(myVtkInteractorStyleImage);
 
 void myVtkInteractorStyleImage::SetImageViewer(vtkImageViewer2* imageViewer) {
     _ImageViewer = imageViewer;
-    _MinSlice = imageViewer->GetSliceMin();
-    _MaxSlice = imageViewer->GetSliceMax();
+    _MinSlice = imageViewer->GetSliceMin()+1;
+    _MaxSlice = imageViewer->GetSliceMax()+1;
     _Slice = _MinSlice;
 }
 
@@ -23,7 +23,7 @@ void myVtkInteractorStyleImage::SetSliceChangedCallback(SliceChangedCallback cal
 void myVtkInteractorStyleImage::MoveSliceForward() {
     if (_Slice < _MaxSlice) {
         _Slice += 1;
-        _ImageViewer->SetSlice(_Slice);
+        _ImageViewer->SetSlice(_Slice-1);
         std::string msg = StatusMessage::Format(_Slice, _MaxSlice);
         _StatusMapper->SetInput(msg.c_str());
         _ImageViewer->Render();
@@ -36,7 +36,7 @@ void myVtkInteractorStyleImage::MoveSliceForward() {
 void myVtkInteractorStyleImage::MoveSliceBackward() {
     if (_Slice > _MinSlice) {
         _Slice -= 1;
-        _ImageViewer->SetSlice(_Slice);
+        _ImageViewer->SetSlice(_Slice-1);
         std::string msg = StatusMessage::Format(_Slice, _MaxSlice);
         _StatusMapper->SetInput(msg.c_str());
         _ImageViewer->Render();

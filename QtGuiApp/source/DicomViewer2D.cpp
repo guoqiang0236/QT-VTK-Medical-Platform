@@ -84,7 +84,7 @@ void DicomViewer2D::setupAnnotations()
 
     vtkNew<vtkTextMapper> sliceTextMapper;
     std::string msg = StatusMessage::Format(m_imageViewer->GetSliceMin(),
-        m_imageViewer->GetSliceMax());
+        m_imageViewer->GetSliceMax()+1);
     sliceTextMapper->SetInput(msg.c_str());
     sliceTextMapper->SetTextProperty(textProp);
     
@@ -190,7 +190,7 @@ int DicomViewer2D::getTotalSlices() const {
 void DicomViewer2D::setSlice(int slice) {
     m_imageViewer->SetSlice(slice);
     if (m_interactorStyle) {
-        std::string msg = StatusMessage::Format(slice, m_imageViewer->GetSliceMax());
+        std::string msg = StatusMessage::Format(slice, m_imageViewer->GetSliceMax()+1);
         m_interactorStyle->SetStatusMapper(msg.c_str());
         //m_interactorStyle->SetCurrentSliceNumberNow(slice);
     }

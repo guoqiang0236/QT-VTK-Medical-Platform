@@ -20,6 +20,8 @@
 #include <vtkTextProperty.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
 #include <vtkAbstractVolumeMapper.h>  // ³éÏó»ùÀà
+#include <vtkOrientationMarkerWidget.h>
+#include <vtkAxesActor.h>
 class DicomViewer3D : public DicomViewerBase {
     Q_OBJECT
 public:
@@ -45,6 +47,8 @@ private:
     vtkSmartPointer<vtkPolyDataMapper> m_mapper;
     vtkSmartPointer<vtkActor> m_actor;
     vtkSmartPointer<vtkGPUVolumeRayCastMapper> m_volumeMapper;
+    vtkSmartPointer<vtkOrientationMarkerWidget> m_orientationMarker; 
+    vtkSmartPointer<vtkAxesActor> m_axes; 
     double m_threshold = 70.0;
     int m_smoothIterations = 50;
     double m_smoothRelaxation = 0.1;
