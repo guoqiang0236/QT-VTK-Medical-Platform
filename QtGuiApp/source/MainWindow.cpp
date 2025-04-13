@@ -26,17 +26,19 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow() = default;
 
-void MainWindow::ReadDicomFile()
+void MainWindow::ReadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(
         this, "选择文件", "", "DICOM files (*.dcm);;All files (*.*)");
     if (!fileName.isEmpty() && m_VisualManager)
-    { m_VisualManager->loadFile(fileName);
-        
+    { 
+        m_VisualManager->loadFile(fileName);
+       
     }
+
 }
 
-void MainWindow::ReadDicomFiles()
+void MainWindow::ReadFiles()
 {
     QString folderPath = QFileDialog::getExistingDirectory(
         this, "选择文件夹", QDir::homePath(),
@@ -48,11 +50,17 @@ void MainWindow::ReadDicomFiles()
         // 方案1: 转换为本地编码
         QByteArray utf8Path = folderPath.toUtf8();
         QString utf8FolderPath = QString::fromUtf8(utf8Path.constData());
-        m_VisualManager->loadDicomSeries(utf8FolderPath);
+        m_VisualManager->setFlieType(VtkFileType::DICOM_SERIES);
+        m_VisualManager->loadFiles(utf8FolderPath);
+        //m_VisualManager->loadDicomSeries(utf8FolderPath);
     }
 }
 
-void MainWindow::ReadDicomFiles3D()
+void MainWindow::ReadRawFile()
+{
+}
+
+void MainWindow::ReadFiles3D()
 {
     QString folderPath = QFileDialog::getExistingDirectory(
         this, "选择文件夹", QDir::homePath(),
@@ -67,7 +75,7 @@ void MainWindow::ReadDicomFiles3D()
 
 }
 
-void MainWindow::ReadDicomFiles3DVolume()
+void MainWindow::ReadFiles3DVolume()
 {
     auto test = m_VisualManager->getDirPath();
    if (m_VisualManager->getDirPath() != "")
@@ -79,7 +87,7 @@ void MainWindow::ReadDicomFiles3DVolume()
    return;
 }
 
-void MainWindow::ReadDicomFiles3DSurface()
+void MainWindow::ReadFiles3DSurface()
 {
     auto test = m_VisualManager->getDirPath();
     if (m_VisualManager->getDirPath() != "")
@@ -106,21 +114,35 @@ void MainWindow::ViewChange(const QString& viewport)
     m_VisualManager->changeViewOrientation(view);
 }
 
-void MainWindow::SetSliderTotal()
+void MainWindow::LoadDicomFinished()
+{
+    SetCurrentSliderEnable(false);
+    m_ui->Slider_AXIAL->setValue(0);
+    m_ui->Slider_CORONAL->setValue(0);
+    m_ui->Slider_SAGITTAL->setValue(0);
+}
+
+void MainWindow::LoadDicomsFinished()
 {
     if (!m_ui)
         return;
 	m_ui->label_AXIAL_2->setText("1");
     m_ui->label_AXIALMAX->setText(QString::number(m_VisualManager->getm_axial_sliceall()+1));
     m_ui->Slider_AXIAL->setMaximum(m_VisualManager->getm_axial_sliceall());
+    m_ui->Slider_AXIAL->setValue(0);
+
     m_ui->label_CORONALMIN->setText("1");
 	m_ui->label_CORONALMAX->setText(QString::number(m_VisualManager->getm_coronal_sliceall()+1));
     m_ui->Slider_CORONAL->setMaximum(m_VisualManager->getm_coronal_sliceall());
+    m_ui->Slider_CORONAL->setValue(0);
+  
 	m_ui->label_SAGITTALMIN->setText("1");
 	m_ui->label_SAGITTALMAX->setText(QString::number(m_VisualManager->getm_sagittal_sliceall()+1));
     m_ui->Slider_SAGITTAL->setMaximum(m_VisualManager->getm_sagittal_sliceall());
-
-
+    m_ui->Slider_SAGITTAL->setValue(0);
+    
+    SetCurrentSliderEnable(true);
+     // 禁止 AXIAL 滑块
     if(!m_VisualManager)
 		return;
     disconnect(m_VisualManager->getDicom2DViewer_axial(), &DicomViewer2D::sliceChanged, this, nullptr);
@@ -130,6 +152,13 @@ void MainWindow::SetSliderTotal()
     connect(m_VisualManager->getDicom2DViewer_axial(), &DicomViewer2D::sliceChanged, this, &MainWindow::SetCurrentAXIALSliderValue);
     connect(m_VisualManager->getDicom2DViewer_coronal(), &DicomViewer2D::sliceChanged, this, &MainWindow::SetCurrentCORONALSliderValue);
     connect(m_VisualManager->getDicom2DViewer_sagittal(), &DicomViewer2D::sliceChanged, this, &MainWindow::SetCurrentSAGITTALSliderValue);
+}
+
+void MainWindow::SetCurrentSliderEnable(bool enable)
+{
+    m_ui->Slider_AXIAL->setEnabled(enable);   // 禁止 AXIAL 滑块
+    m_ui->Slider_CORONAL->setEnabled(enable); // 禁止 CORONAL 滑块
+    m_ui->Slider_SAGITTAL->setEnabled(enable); // 禁止 SAGITTAL 滑块
 }
 
 
@@ -168,16 +197,17 @@ void MainWindow::OnAnimationFinished()
 
 void MainWindow::initSlots()
 {
-    connect(m_ui->pushButton, &QPushButton::clicked, this, &MainWindow::ReadDicomFile);
-    connect(m_ui->pushButton_6, &QPushButton::clicked, this, &MainWindow::ReadDicomFiles);
-    connect(m_ui->pushButton_ti, &QPushButton::clicked, this, &MainWindow::ReadDicomFiles3DVolume);
-	connect(m_ui->pushButton_mian, & QPushButton::clicked, this, & MainWindow::ReadDicomFiles3DSurface);
+    connect(m_ui->pushButton_opendicom, &QPushButton::clicked, this, &MainWindow::ReadFile);
+    connect(m_ui->pushButton_opendicoms, &QPushButton::clicked, this, &MainWindow::ReadFiles);
+    connect(m_ui->pushButton_ti, &QPushButton::clicked, this, &MainWindow::ReadFiles3DVolume);
+	connect(m_ui->pushButton_mian, & QPushButton::clicked, this, & MainWindow::ReadFiles3DSurface);
     connect(m_ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::StyleChanged);
     connect(m_ui->pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
     connect(m_ui->comboBox_2, &QComboBox::currentTextChanged, this, &MainWindow::ViewChange);
     if (!m_VisualManager)
         return;
-    connect(m_VisualManager.get(), &VisualizationManager::loadDicomSeriesFinish, this, &MainWindow::SetSliderTotal);
+    connect(m_VisualManager.get(), &VisualizationManager::loadDicomFileFinish, this, &MainWindow::LoadDicomFinished);
+    connect(m_VisualManager.get(), &VisualizationManager::loadDicomSeriesFinish, this, &MainWindow::LoadDicomsFinished);
 	connect(m_ui->Slider_AXIAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setAxialSlice);
 	connect(m_ui->Slider_CORONAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setCoronalSlice);
 	connect(m_ui->Slider_SAGITTAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setSagittalSlice);

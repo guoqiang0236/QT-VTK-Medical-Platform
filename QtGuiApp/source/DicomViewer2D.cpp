@@ -25,14 +25,14 @@ DicomViewer2D::~DicomViewer2D()
 {
 }
 
-void DicomViewer2D::loadFile(const std::string& path) {
+void DicomViewer2D::loadDicomFile(const std::string& path) {
     cleanup();
     initializeReader(path);
     setupViewer();
     resetCamera();
 }
 
-void DicomViewer2D::loadDirectory(const std::string& path)
+void DicomViewer2D::loadDicomDirectory(const std::string& path)
 {
     try {
         cleanup();
@@ -134,6 +134,7 @@ void DicomViewer2D::resetCamera() {
     m_renderer->ResetCamera();
     m_renderer->GetActiveCamera()->Zoom(1.5); // 适当缩放
     m_vtkWidget->renderWindow()->Render();
+   
 }
 
 void DicomViewer2D::setViewOrientation(SliceOrientation orientation) {
@@ -164,6 +165,7 @@ void DicomViewer2D::cleanup()
 
     if (m_imageViewer) {
         m_imageViewer->GetRenderWindow()->Finalize(); // 终止渲染窗口
+        m_imageViewer->GetRenderer()->RemoveAllViewProps(); // 清理渲染器内容
         m_imageViewer = nullptr; // 重置智能指针
     }
 

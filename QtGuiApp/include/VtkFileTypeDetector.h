@@ -5,8 +5,7 @@
 enum class VtkFileType {
     DICOM,
     DICOM_SERIES,
-    NIFTI,
-    STL,
+    RAW,
     UNKNOWN
 };
 

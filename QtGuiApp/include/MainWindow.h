@@ -20,14 +20,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void ReadDicomFile();
-    void ReadDicomFiles();
-    void ReadDicomFiles3D();
-    void ReadDicomFiles3DVolume();
-    void ReadDicomFiles3DSurface();
+    void ReadFile();
+    void ReadFiles();
+    void ReadFiles3D();
+    void ReadFiles3DVolume();
+    void ReadFiles3DSurface();
+    void ReadRawFile();
     void StyleChanged(const QString& style);
     void ViewChange(const QString& viewport);
-    void SetSliderTotal();
+    void LoadDicomFinished();
+    void LoadDicomsFinished();
+    void SetCurrentSliderEnable(bool enable);
     void SetCurrentAXIALSliderValue(int slice);
 	void SetCurrentCORONALSliderValue(int slice);
 	void SetCurrentSAGITTALSliderValue(int slice);
@@ -43,6 +46,7 @@ private:
     std::unique_ptr <Ui::MainWindow_UI> m_ui;
     std::unique_ptr <QQuickWidget> m_LoadingWidget;
     std::unique_ptr<VisualizationManager> m_VisualManager;
+	
 };
 
 #endif // MED_IMG_MAINWINDOW_H

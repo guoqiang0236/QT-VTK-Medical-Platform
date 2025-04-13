@@ -17,7 +17,6 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
@@ -38,16 +37,9 @@ public:
     QTabWidget *tabWidget;
     QWidget *tab_3;
     QVBoxLayout *verticalLayout_2;
-    QLabel *label;
-    QLineEdit *lineEdit;
-    QLabel *label_2;
-    QLineEdit *lineEdit_2;
-    QLabel *label_3;
-    QLineEdit *lineEdit_3;
-    QLabel *label_4;
-    QLineEdit *lineEdit_4;
-    QPushButton *pushButton;
-    QPushButton *pushButton_6;
+    QPushButton *pushButton_opendicom;
+    QPushButton *pushButton_opendicoms;
+    QPushButton *pushButton_openraw;
     QPushButton *pushButton_ti;
     QPushButton *pushButton_mian;
     QComboBox *comboBox_2;
@@ -121,64 +113,24 @@ public:
         verticalLayout_2 = new QVBoxLayout(tab_3);
         verticalLayout_2->setObjectName("verticalLayout_2");
         verticalLayout_2->setContentsMargins(-1, 0, -1, -1);
-        label = new QLabel(tab_3);
-        label->setObjectName("label");
-        label->setMaximumSize(QSize(16777215, 20));
+        pushButton_opendicom = new QPushButton(tab_3);
+        pushButton_opendicom->setObjectName("pushButton_opendicom");
+        pushButton_opendicom->setMaximumSize(QSize(16777215, 16777215));
+        pushButton_opendicom->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
-        verticalLayout_2->addWidget(label);
+        verticalLayout_2->addWidget(pushButton_opendicom);
 
-        lineEdit = new QLineEdit(tab_3);
-        lineEdit->setObjectName("lineEdit");
+        pushButton_opendicoms = new QPushButton(tab_3);
+        pushButton_opendicoms->setObjectName("pushButton_opendicoms");
+        pushButton_opendicoms->setMaximumSize(QSize(16777215, 16777215));
+        pushButton_opendicoms->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
-        verticalLayout_2->addWidget(lineEdit);
+        verticalLayout_2->addWidget(pushButton_opendicoms);
 
-        label_2 = new QLabel(tab_3);
-        label_2->setObjectName("label_2");
-        label_2->setMaximumSize(QSize(16777215, 20));
+        pushButton_openraw = new QPushButton(tab_3);
+        pushButton_openraw->setObjectName("pushButton_openraw");
 
-        verticalLayout_2->addWidget(label_2);
-
-        lineEdit_2 = new QLineEdit(tab_3);
-        lineEdit_2->setObjectName("lineEdit_2");
-        lineEdit_2->setLayoutDirection(Qt::LayoutDirection::RightToLeft);
-
-        verticalLayout_2->addWidget(lineEdit_2);
-
-        label_3 = new QLabel(tab_3);
-        label_3->setObjectName("label_3");
-        label_3->setMaximumSize(QSize(16777215, 20));
-
-        verticalLayout_2->addWidget(label_3);
-
-        lineEdit_3 = new QLineEdit(tab_3);
-        lineEdit_3->setObjectName("lineEdit_3");
-
-        verticalLayout_2->addWidget(lineEdit_3);
-
-        label_4 = new QLabel(tab_3);
-        label_4->setObjectName("label_4");
-        label_4->setMaximumSize(QSize(16777215, 20));
-
-        verticalLayout_2->addWidget(label_4);
-
-        lineEdit_4 = new QLineEdit(tab_3);
-        lineEdit_4->setObjectName("lineEdit_4");
-
-        verticalLayout_2->addWidget(lineEdit_4);
-
-        pushButton = new QPushButton(tab_3);
-        pushButton->setObjectName("pushButton");
-        pushButton->setMaximumSize(QSize(120, 16777215));
-        pushButton->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
-
-        verticalLayout_2->addWidget(pushButton);
-
-        pushButton_6 = new QPushButton(tab_3);
-        pushButton_6->setObjectName("pushButton_6");
-        pushButton_6->setMaximumSize(QSize(120, 16777215));
-        pushButton_6->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
-
-        verticalLayout_2->addWidget(pushButton_6);
+        verticalLayout_2->addWidget(pushButton_openraw);
 
         pushButton_ti = new QPushButton(tab_3);
         pushButton_ti->setObjectName("pushButton_ti");
@@ -449,12 +401,9 @@ public:
     void retranslateUi(QMainWindow *MainWindow_UI)
     {
         MainWindow_UI->setWindowTitle(QCoreApplication::translate("MainWindow_UI", "MainWindow", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow_UI", "\345\247\223\345\220\215", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow_UI", "\345\207\272\347\224\237\346\227\245\346\234\237", nullptr));
-        label_3->setText(QCoreApplication::translate("MainWindow_UI", "\347\224\265\350\257\235", nullptr));
-        label_4->setText(QCoreApplication::translate("MainWindow_UI", "\345\234\260\345\235\200", nullptr));
-        pushButton->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266", nullptr));
-        pushButton_6->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
+        pushButton_opendicom->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266", nullptr));
+        pushButton_opendicoms->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
+        pushButton_openraw->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200.raw\346\226\207\344\273\266", nullptr));
         pushButton_ti->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266", nullptr));
         pushButton_mian->setText(QCoreApplication::translate("MainWindow_UI", "\351\235\242\347\273\230\345\210\266", nullptr));
         comboBox_2->setItemText(0, QCoreApplication::translate("MainWindow_UI", "\346\250\252\346\226\255\351\235\242", nullptr));

@@ -15,8 +15,8 @@ public:
     explicit DicomViewer2D(QVTKOpenGLNativeWidget* widget);
     ~DicomViewer2D();
 
-    void loadFile(const std::string& path);
-    void loadDirectory(const std::string& path);
+    void loadDicomFile(const std::string& path);
+    void loadDicomDirectory(const std::string& path);
     void resetCamera();
     void setViewOrientation(SliceOrientation orientation);
     void cleanup()override;

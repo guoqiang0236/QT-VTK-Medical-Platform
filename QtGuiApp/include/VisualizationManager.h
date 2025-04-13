@@ -28,11 +28,14 @@ public:
 	void setCoronalSlice(int slice);
 	void setSagittalSlice(int slice);
     QString getDirPath() { return dir_path; }
-signals:
+	void setFlieType(VtkFileType fileType) { m_fileType = fileType; }
+signals: 
+    void loadDicomFileFinish();
 	void loadDicomSeriesFinish();
     void sliceChanged(int slice);
 public slots:
     void loadFile(const QString& filePath);
+    void loadFiles(const QString& filePath);
     void loadDicomSeries(const QString& dirPath);
     void loadVolumeData(const QString& dirPath);
     void loadDataVolume(const QString& dirPath);
@@ -59,4 +62,5 @@ private:
 	int m_sagittal_sliceall;
     vtkRenderer* m_mainRenderer;
     QString dir_path;
+    VtkFileType m_fileType;
 };

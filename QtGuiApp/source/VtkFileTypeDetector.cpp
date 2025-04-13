@@ -14,8 +14,7 @@ VtkFileType VtkFileTypeDetector::detect(const std::string& path) const {
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
     if(ext == ".dcm") return VtkFileType::DICOM;
-    if(ext == ".nii" || ext == ".nii.gz") return VtkFileType::NIFTI;
-    if(ext == ".stl") return VtkFileType::STL;
+    if(ext == ".raw") return VtkFileType::RAW;
     
     return VtkFileType::UNKNOWN;
 }

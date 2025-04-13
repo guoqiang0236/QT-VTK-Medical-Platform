@@ -11,13 +11,14 @@ class DicomViewerBase:public QObject {
 public:
 	void setm_reader(vtkSmartPointer<vtkDICOMImageReader> reader) { m_reader = reader; }
 	vtkDICOMImageReader* getm_reader() { return m_reader.Get(); }
+    vtkRenderer* GetRenderer() const { return m_renderer; }
 protected:
     explicit DicomViewerBase(QVTKOpenGLNativeWidget* widget);
     int GBKToUTF8(unsigned char* lpGBKStr, unsigned char* lpUTF8Str, int nUTF8StrLen);
     virtual ~DicomViewerBase() = default;
 
     std::string gbk_to_utf8(const char* strGBK);
-
+	
     void initializeReader(const std::string& path);
     void setupRenderWindow();
     virtual void cleanup();
