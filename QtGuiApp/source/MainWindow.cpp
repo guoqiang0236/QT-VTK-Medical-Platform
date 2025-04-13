@@ -29,11 +29,10 @@ MainWindow::~MainWindow() = default;
 void MainWindow::ReadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(
-        this, "选择文件", "", "DICOM files (*.dcm);;All files (*.*)");
+        this, "选择文件", "", "All files (*.*)");
     if (!fileName.isEmpty() && m_VisualManager)
     { 
-        m_VisualManager->loadFile(fileName);
-       
+        m_VisualManager->loadFile(fileName);   
     }
 
 }
@@ -130,13 +129,13 @@ void MainWindow::LoadDicomsFinished()
      // 禁止 AXIAL 滑块
     if(!m_VisualManager)
 		return;
-    disconnect(m_VisualManager->getDicom2DViewer_axial(), &DicomViewer2D::sliceChanged, this, nullptr);
-    disconnect(m_VisualManager->getDicom2DViewer_coronal(), &DicomViewer2D::sliceChanged, this, nullptr);
-    disconnect(m_VisualManager->getDicom2DViewer_sagittal(), &DicomViewer2D::sliceChanged, this, nullptr);
+    disconnect(m_VisualManager->getDicom2DViewer_axial(), &Viewer2D::sliceChanged, this, nullptr);
+    disconnect(m_VisualManager->getDicom2DViewer_coronal(), &Viewer2D::sliceChanged, this, nullptr);
+    disconnect(m_VisualManager->getDicom2DViewer_sagittal(), &Viewer2D::sliceChanged, this, nullptr);
 
-    connect(m_VisualManager->getDicom2DViewer_axial(), &DicomViewer2D::sliceChanged, this, &MainWindow::SetCurrentAXIALSliderValue);
-    connect(m_VisualManager->getDicom2DViewer_coronal(), &DicomViewer2D::sliceChanged, this, &MainWindow::SetCurrentCORONALSliderValue);
-    connect(m_VisualManager->getDicom2DViewer_sagittal(), &DicomViewer2D::sliceChanged, this, &MainWindow::SetCurrentSAGITTALSliderValue);
+    connect(m_VisualManager->getDicom2DViewer_axial(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentAXIALSliderValue);
+    connect(m_VisualManager->getDicom2DViewer_coronal(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentCORONALSliderValue);
+    connect(m_VisualManager->getDicom2DViewer_sagittal(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentSAGITTALSliderValue);
 }
 
 void MainWindow::SetCurrentSliderEnable(bool enable)
@@ -183,7 +182,7 @@ void MainWindow::OnAnimationFinished()
 void MainWindow::initSlots()
 {
     connect(m_ui->pushButton_opendicom, &QPushButton::clicked, this, &MainWindow::ReadFile);
-    connect(m_ui->pushButton_openraw, &QPushButton::clicked, this, &MainWindow::ReadFile);
+
     connect(m_ui->pushButton_opendicoms, &QPushButton::clicked, this, &MainWindow::ReadFiles);
     connect(m_ui->pushButton_ti, &QPushButton::clicked, this, &MainWindow::DataTo3DVolume);
 	connect(m_ui->pushButton_mian, & QPushButton::clicked, this, & MainWindow::DataTo3DSurface);

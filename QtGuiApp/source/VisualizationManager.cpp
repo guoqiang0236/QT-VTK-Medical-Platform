@@ -1,12 +1,14 @@
 // VisualizationManager.cpp
 #include "VisualizationManager.h"
 #include "VtkFileTypeDetector.h"
-#include "DicomViewer2D.h"
-#include "DicomViewer3D.h"
+#include "Viewer2D.h"
+#include "Viewer3D.h"
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <QFile>
 #include <vtkRendererCollection.h>
+#include <QMessageBox>
+#include <vtkImageReader.h>
 VisualizationManager::VisualizationManager(QObject* parent)
     : QObject(parent), m_vtkWidget(new QVTKOpenGLNativeWidget()),
       m_mainRenderer(vtkRenderer::New()) , m_orientation(0),
@@ -51,7 +53,7 @@ QVTKOpenGLNativeWidget* VisualizationManager::getVTKWidget_Sagittal() const
     return m_vtkWidget_sagittal;
 }
 
-DicomViewer2D* VisualizationManager::getDicom2DViewer_axial() const
+Viewer2D* VisualizationManager::getDicom2DViewer_axial() const
 {
 	if (m_dicom2DViewer_axial) {
 		return m_dicom2DViewer_axial.get();
@@ -59,7 +61,7 @@ DicomViewer2D* VisualizationManager::getDicom2DViewer_axial() const
     return nullptr;
 }
 
-DicomViewer2D* VisualizationManager::getDicom2DViewer_coronal() const
+Viewer2D* VisualizationManager::getDicom2DViewer_coronal() const
 {
 	if (m_dicom2DViewer_coronal) {
 		return m_dicom2DViewer_coronal.get();
@@ -67,7 +69,7 @@ DicomViewer2D* VisualizationManager::getDicom2DViewer_coronal() const
     return nullptr;
 }
 
-DicomViewer2D* VisualizationManager::getDicom2DViewer_sagittal() const
+Viewer2D* VisualizationManager::getDicom2DViewer_sagittal() const
 {
     if (m_dicom2DViewer_sagittal)
     {
@@ -102,20 +104,27 @@ void VisualizationManager::setSagittalSlice(int slice)
 
 void VisualizationManager::loadFile(const QString& filePath) {
     cleanupCurrentViewer();
-    
+
     m_fileType = m_fileDetector->detect(filePath.toStdString());
-    
-    switch(m_fileType) {
+
+    switch (m_fileType) {
     case VtkFileType::DICOM:
         loadDicomSingleFile(filePath);
         break;
     case VtkFileType::RAW:
+        loadRawData(filePath);
         break;
-	case VtkFileType::UNKNOWN:
-		break;
-    // 添加其他文件类型处理
+    case VtkFileType::UNKNOWN: {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle("Error");
+        msgBox.setText("不支持此数据类型");
+        msgBox.setStyleSheet("QLabel { color: black; }"); // 将警告文字设置为红色  
+        msgBox.exec();
+        break;
+    }
     default:
-        //emit errorOccurred("Unsupported file format");
+        // Handle other file types if necessary  
         break;
     }
 }
@@ -135,13 +144,24 @@ void VisualizationManager::loadFiles(const QString& filePath)
     }
 }
 
-void VisualizationManager::loadRawData(const QString& dirPath)
+void VisualizationManager::loadRawData(const QString& filePath)
 {
+    // 读取 RAW 文件
+    vtkSmartPointer<vtkImageReader> reader = vtkSmartPointer<vtkImageReader>::New();
+    reader->SetFileName("Head_256x256x256.raw");
+    reader->SetFileDimensionality(3);
+    reader->SetDataScalarType(VTK_UNSIGNED_CHAR);
+    reader->SetDataExtent(0, 255, 0, 255, 0, 255);
+    reader->SetDataSpacing(0.9, 0.9, 0.9);
+    reader->Update();
+    m_dicom2DViewer = std::make_unique<Viewer2D>(m_vtkWidget);
+    m_dicom2DViewer->loadDicomFile(filePath.toStdString());
+    emit loadDicomFileFinish();
 }
 
 void VisualizationManager::loadDicomSingleFile(const QString& filePath)
 {
-    m_dicom2DViewer = std::make_unique<DicomViewer2D>(m_vtkWidget);
+    m_dicom2DViewer = std::make_unique<Viewer2D>(m_vtkWidget);
     m_dicom2DViewer->loadDicomFile(filePath.toStdString());
     emit loadDicomFileFinish();
 }
@@ -153,24 +173,24 @@ void VisualizationManager::loadDicomSeries(const QString& dirPath) {
     // 使用本地编码而不是UTF-8，适应Windows文件系统API
     QByteArray localPath = QFile::encodeName(dirPath);
  
-    m_dicom2DViewer = std::make_unique<DicomViewer2D>(m_vtkWidget);
+    m_dicom2DViewer = std::make_unique<Viewer2D>(m_vtkWidget);
     m_dicom2DViewer->setOrientation(m_orientation);
 	m_dicom2DViewer->setmessage("MAIN");
     m_dicom2DViewer->loadDicomDirectory(std::string(localPath.constData()));
 
-    m_dicom2DViewer_axial = std::make_unique<DicomViewer2D>(m_vtkWidget_axial);
+    m_dicom2DViewer_axial = std::make_unique<Viewer2D>(m_vtkWidget_axial);
     m_dicom2DViewer_axial->setOrientation(0);
 	m_dicom2DViewer_axial->setmessage("AXIAL");
     m_dicom2DViewer_axial->loadDicomDirectory(std::string(localPath.constData()));
     m_dicom2DViewer_axial->getInteractorStyle()->EnableMouseWheel(false);
 
-    m_dicom2DViewer_coronal = std::make_unique<DicomViewer2D>(m_vtkWidget_coronal);
+    m_dicom2DViewer_coronal = std::make_unique<Viewer2D>(m_vtkWidget_coronal);
     m_dicom2DViewer_coronal->setOrientation(1);
     m_dicom2DViewer_coronal->setmessage("CORONAL");
     m_dicom2DViewer_coronal->loadDicomDirectory(std::string(localPath.constData()));
 	m_dicom2DViewer_coronal->getInteractorStyle()->EnableMouseWheel(false);
 
-    m_dicom2DViewer_sagittal = std::make_unique<DicomViewer2D>(m_vtkWidget_sagittal);
+    m_dicom2DViewer_sagittal = std::make_unique<Viewer2D>(m_vtkWidget_sagittal);
     m_dicom2DViewer_sagittal->setOrientation(2);
     m_dicom2DViewer_sagittal->setmessage("SAGITTAL");
     m_dicom2DViewer_sagittal->loadDicomDirectory(std::string(localPath.constData()));
@@ -216,7 +236,7 @@ void VisualizationManager::DataToVolume(const QString& dirPath)
 
 void VisualizationManager::VolumeDicomSeries(const QString& dirPath)
 {
-    m_dicom3DViewer = std::make_unique<DicomViewer3D>(m_vtkWidget);
+    m_dicom3DViewer = std::make_unique<Viewer3D>(m_vtkWidget);
     // 使用本地编码而不是UTF-8，适应Windows文件系统API
     QByteArray localPath = QFile::encodeName(dirPath);
     m_dicom3DViewer->loadDirectory_Body(std::string(localPath.constData()));
@@ -224,7 +244,7 @@ void VisualizationManager::VolumeDicomSeries(const QString& dirPath)
 
 void VisualizationManager::SurFaceDicomSeries(const QString& dirPath)
 {
-    m_dicom3DViewer = std::make_unique<DicomViewer3D>(m_vtkWidget);
+    m_dicom3DViewer = std::make_unique<Viewer3D>(m_vtkWidget);
     // 使用本地编码而不是UTF-8，适应Windows文件系统API
     QByteArray localPath = QFile::encodeName(dirPath);
     m_dicom3DViewer->loadDirectory_Surface(std::string(localPath.constData()));
@@ -261,22 +281,22 @@ void VisualizationManager::changeViewOrientation(int orientation) {
 void VisualizationManager::initxyzSlots()
 {
     if (m_dicom2DViewer_axial) {
-        disconnect(m_dicom2DViewer_axial.get(), &DicomViewer2D::sliceChanged, this, nullptr);
-        connect(m_dicom2DViewer_axial.get(), &DicomViewer2D::sliceChanged, this, [this](int slice) {
+        disconnect(m_dicom2DViewer_axial.get(), &Viewer2D::sliceChanged, this, nullptr);
+        connect(m_dicom2DViewer_axial.get(), &Viewer2D::sliceChanged, this, [this](int slice) {
             emit sliceChanged(slice);
             });
     }
 
     if (m_dicom2DViewer_coronal) {
-        disconnect(m_dicom2DViewer_coronal.get(), &DicomViewer2D::sliceChanged, this, nullptr);
-        connect(m_dicom2DViewer_coronal.get(), &DicomViewer2D::sliceChanged, this, [this](int slice) {
+        disconnect(m_dicom2DViewer_coronal.get(), &Viewer2D::sliceChanged, this, nullptr);
+        connect(m_dicom2DViewer_coronal.get(), &Viewer2D::sliceChanged, this, [this](int slice) {
             emit sliceChanged(slice);
             });
     }
 
     if (m_dicom2DViewer_sagittal) {
-        disconnect(m_dicom2DViewer_sagittal.get(), &DicomViewer2D::sliceChanged, this, nullptr);
-        connect(m_dicom2DViewer_sagittal.get(), &DicomViewer2D::sliceChanged, this, [this](int slice) {
+        disconnect(m_dicom2DViewer_sagittal.get(), &Viewer2D::sliceChanged, this, nullptr);
+        connect(m_dicom2DViewer_sagittal.get(), &Viewer2D::sliceChanged, this, [this](int slice) {
             emit sliceChanged(slice);
             });
     }

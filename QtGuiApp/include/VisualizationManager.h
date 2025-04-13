@@ -4,8 +4,8 @@
 #include <string>
 #include <memory>
 #include "VtkFileTypeDetector.h"
-#include "DicomViewer2D.h"
-#include "DicomViewer3D.h"
+#include "Viewer2D.h"
+#include "Viewer3D.h"
 #include <QVTKOpenGLNativeWidget.h>
 
 class VisualizationManager : public QObject {
@@ -18,9 +18,9 @@ public:
     QVTKOpenGLNativeWidget* getVTKWidget_Axial() const;
     QVTKOpenGLNativeWidget* getVTKWidget_Coronal() const;
     QVTKOpenGLNativeWidget* getVTKWidget_Sagittal() const;
-	DicomViewer2D* getDicom2DViewer_axial() const;
-	DicomViewer2D* getDicom2DViewer_coronal() const;
-	DicomViewer2D* getDicom2DViewer_sagittal() const;
+	Viewer2D* getDicom2DViewer_axial() const;
+	Viewer2D* getDicom2DViewer_coronal() const;
+	Viewer2D* getDicom2DViewer_sagittal() const;
 	int getm_axial_sliceall() const { return m_axial_sliceall; }
 	int getm_coronal_sliceall() const { return m_coronal_sliceall; }
 	int getm_sagittal_sliceall() const { return m_sagittal_sliceall; }
@@ -34,7 +34,7 @@ public:
     void changeViewOrientation(int orientation);
     void loadFile(const QString& filePath);
     void loadFiles(const QString& filePath);
-    void loadRawData(const QString& dirPath);
+    void loadRawData(const QString& filePath);
     void loadDicomSingleFile(const QString& filePath);
     void loadDicomSeries(const QString& dirPath);
     void DataToSurFace(const QString& dirPath);
@@ -58,11 +58,11 @@ private:
 	void cleanupMainViewer();
     int m_orientation;
     std::unique_ptr<VtkFileTypeDetector> m_fileDetector;
-    std::unique_ptr<DicomViewer2D> m_dicom2DViewer;
-    std::unique_ptr<DicomViewer2D> m_dicom2DViewer_axial;
-    std::unique_ptr<DicomViewer2D> m_dicom2DViewer_coronal;
-    std::unique_ptr<DicomViewer2D> m_dicom2DViewer_sagittal;
-    std::unique_ptr<DicomViewer3D> m_dicom3DViewer;
+    std::unique_ptr<Viewer2D> m_dicom2DViewer;
+    std::unique_ptr<Viewer2D> m_dicom2DViewer_axial;
+    std::unique_ptr<Viewer2D> m_dicom2DViewer_coronal;
+    std::unique_ptr<Viewer2D> m_dicom2DViewer_sagittal;
+    std::unique_ptr<Viewer3D> m_dicom3DViewer;
     QVTKOpenGLNativeWidget* m_vtkWidget;
     QVTKOpenGLNativeWidget* m_vtkWidget_axial;
     QVTKOpenGLNativeWidget* m_vtkWidget_coronal;
