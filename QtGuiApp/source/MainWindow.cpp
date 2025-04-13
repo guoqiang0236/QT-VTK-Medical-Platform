@@ -60,40 +60,25 @@ void MainWindow::ReadRawFile()
 {
 }
 
-void MainWindow::ReadFiles3D()
-{
-    QString folderPath = QFileDialog::getExistingDirectory(
-        this, "选择文件夹", QDir::homePath(),
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-    if (!folderPath.isEmpty() && m_VisualManager) 
-    {
-        m_VisualManager->loadVolumeData(folderPath);
-   
-    }
-   
 
-}
-
-void MainWindow::ReadFiles3DVolume()
+void MainWindow::DataTo3DVolume()
 {
     auto test = m_VisualManager->getDirPath();
    if (m_VisualManager->getDirPath() != "")
    {
-
-       m_VisualManager->loadDataVolume(m_VisualManager->getDirPath());
-
+       m_VisualManager->DataToVolume(m_VisualManager->getDirPath());
    }
    return;
 }
 
-void MainWindow::ReadFiles3DSurface()
+void MainWindow::DataTo3DSurface()
 {
     auto test = m_VisualManager->getDirPath();
     if (m_VisualManager->getDirPath() != "")
     {
 
-        m_VisualManager->loadDataSurFace(m_VisualManager->getDirPath());
+        m_VisualManager->DataToSurFace(m_VisualManager->getDirPath());
 
     }
     return;
@@ -198,9 +183,10 @@ void MainWindow::OnAnimationFinished()
 void MainWindow::initSlots()
 {
     connect(m_ui->pushButton_opendicom, &QPushButton::clicked, this, &MainWindow::ReadFile);
+    connect(m_ui->pushButton_openraw, &QPushButton::clicked, this, &MainWindow::ReadFile);
     connect(m_ui->pushButton_opendicoms, &QPushButton::clicked, this, &MainWindow::ReadFiles);
-    connect(m_ui->pushButton_ti, &QPushButton::clicked, this, &MainWindow::ReadFiles3DVolume);
-	connect(m_ui->pushButton_mian, & QPushButton::clicked, this, & MainWindow::ReadFiles3DSurface);
+    connect(m_ui->pushButton_ti, &QPushButton::clicked, this, &MainWindow::DataTo3DVolume);
+	connect(m_ui->pushButton_mian, & QPushButton::clicked, this, & MainWindow::DataTo3DSurface);
     connect(m_ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::StyleChanged);
     connect(m_ui->pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
     connect(m_ui->comboBox_2, &QComboBox::currentTextChanged, this, &MainWindow::ViewChange);

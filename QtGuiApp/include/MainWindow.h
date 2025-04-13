@@ -22,9 +22,8 @@ public:
 private slots:
     void ReadFile();
     void ReadFiles();
-    void ReadFiles3D();
-    void ReadFiles3DVolume();
-    void ReadFiles3DSurface();
+    void DataTo3DVolume();
+    void DataTo3DSurface();
     void ReadRawFile();
     void StyleChanged(const QString& style);
     void ViewChange(const QString& viewport);

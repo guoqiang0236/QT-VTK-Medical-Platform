@@ -29,19 +29,29 @@ public:
 	void setSagittalSlice(int slice);
     QString getDirPath() { return dir_path; }
 	void setFlieType(VtkFileType fileType) { m_fileType = fileType; }
+
+public:
+    void changeViewOrientation(int orientation);
+    void loadFile(const QString& filePath);
+    void loadFiles(const QString& filePath);
+    void loadRawData(const QString& dirPath);
+    void loadDicomSingleFile(const QString& filePath);
+    void loadDicomSeries(const QString& dirPath);
+    void DataToSurFace(const QString& dirPath);
+    void DataToVolume(const QString& dirPath);
+    void initxyzSlots();
+    void VolumeDicomSeries(const QString& dirPath);
+    void SurFaceDicomSeries(const QString& dirPath);
 signals: 
     void loadDicomFileFinish();
 	void loadDicomSeriesFinish();
     void sliceChanged(int slice);
 public slots:
-    void loadFile(const QString& filePath);
-    void loadFiles(const QString& filePath);
-    void loadDicomSeries(const QString& dirPath);
-    void loadVolumeData(const QString& dirPath);
-    void loadDataVolume(const QString& dirPath);
-    void loadDataSurFace(const QString& dirPath);
-    void changeViewOrientation(int orientation);
-    void initxyzSlots();
+   
+	
+  
+    
+   
 private:
     void initializeResources();
     void cleanupCurrentViewer();
