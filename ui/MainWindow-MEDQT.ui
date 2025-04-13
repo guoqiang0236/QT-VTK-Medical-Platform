@@ -83,7 +83,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QPushButton" name="pushButton_opendicom">
+            <widget class="QPushButton" name="pushButton_openfile">
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -94,7 +94,7 @@
               <enum>Qt::LayoutDirection::LeftToRight</enum>
              </property>
              <property name="text">
-              <string>打开DICOM文件</string>
+              <string>打开文件(.raw/.dicom)</string>
              </property>
             </widget>
            </item>
@@ -111,13 +111,6 @@
              </property>
              <property name="text">
               <string>打开DICOM文件夹</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_openraw">
-             <property name="text">
-              <string>打开.raw文件</string>
              </property>
             </widget>
            </item>

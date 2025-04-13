@@ -37,9 +37,8 @@ public:
     QTabWidget *tabWidget;
     QWidget *tab_3;
     QVBoxLayout *verticalLayout_2;
-    QPushButton *pushButton_opendicom;
+    QPushButton *pushButton_openfile;
     QPushButton *pushButton_opendicoms;
-    QPushButton *pushButton_openraw;
     QPushButton *pushButton_ti;
     QPushButton *pushButton_mian;
     QComboBox *comboBox_2;
@@ -113,12 +112,12 @@ public:
         verticalLayout_2 = new QVBoxLayout(tab_3);
         verticalLayout_2->setObjectName("verticalLayout_2");
         verticalLayout_2->setContentsMargins(-1, 0, -1, -1);
-        pushButton_opendicom = new QPushButton(tab_3);
-        pushButton_opendicom->setObjectName("pushButton_opendicom");
-        pushButton_opendicom->setMaximumSize(QSize(16777215, 16777215));
-        pushButton_opendicom->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        pushButton_openfile = new QPushButton(tab_3);
+        pushButton_openfile->setObjectName("pushButton_openfile");
+        pushButton_openfile->setMaximumSize(QSize(16777215, 16777215));
+        pushButton_openfile->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
-        verticalLayout_2->addWidget(pushButton_opendicom);
+        verticalLayout_2->addWidget(pushButton_openfile);
 
         pushButton_opendicoms = new QPushButton(tab_3);
         pushButton_opendicoms->setObjectName("pushButton_opendicoms");
@@ -126,11 +125,6 @@ public:
         pushButton_opendicoms->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
         verticalLayout_2->addWidget(pushButton_opendicoms);
-
-        pushButton_openraw = new QPushButton(tab_3);
-        pushButton_openraw->setObjectName("pushButton_openraw");
-
-        verticalLayout_2->addWidget(pushButton_openraw);
 
         pushButton_ti = new QPushButton(tab_3);
         pushButton_ti->setObjectName("pushButton_ti");
@@ -401,9 +395,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow_UI)
     {
         MainWindow_UI->setWindowTitle(QCoreApplication::translate("MainWindow_UI", "MainWindow", nullptr));
-        pushButton_opendicom->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266", nullptr));
+        pushButton_openfile->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200\346\226\207\344\273\266(.raw/.dicom)", nullptr));
         pushButton_opendicoms->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
-        pushButton_openraw->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200.raw\346\226\207\344\273\266", nullptr));
         pushButton_ti->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266", nullptr));
         pushButton_mian->setText(QCoreApplication::translate("MainWindow_UI", "\351\235\242\347\273\230\345\210\266", nullptr));
         comboBox_2->setItemText(0, QCoreApplication::translate("MainWindow_UI", "\346\250\252\346\226\255\351\235\242", nullptr));

@@ -63,23 +63,54 @@ void MainWindow::ReadRawFile()
 
 void MainWindow::DataTo3DVolume()
 {
-    auto test = m_VisualManager->getDirPath();
-   if (m_VisualManager->getDirPath() != "")
-   {
-       m_VisualManager->DataToVolume(m_VisualManager->getDirPath());
-   }
+	if (!m_VisualManager)
+		return;
+    switch (m_VisualManager->getFlieType())
+    {   
+	case VtkFileType::DICOM_SERIES:
+    {
+        if (m_VisualManager->getDirPath() != "")
+        {
+            m_VisualManager->DataToVolume(m_VisualManager->getDirPath());
+        }
+    }
+    case VtkFileType::RAW:
+        if (m_VisualManager->getRawDataPath() != "")
+        {
+            m_VisualManager->DataToVolume(m_VisualManager->getRawDataPath());
+        }
+        break;
+    default:
+        break;
+    }
+   
    return;
 }
 
 void MainWindow::DataTo3DSurface()
 {
     auto test = m_VisualManager->getDirPath();
-    if (m_VisualManager->getDirPath() != "")
+    switch (m_VisualManager->getFlieType())
     {
+    case VtkFileType::DICOM_SERIES:
+    {
+        if (m_VisualManager->getDirPath() != "")
+        {
 
-        m_VisualManager->DataToSurFace(m_VisualManager->getDirPath());
+            m_VisualManager->DataToSurFace(m_VisualManager->getDirPath());
 
+        }
     }
+    case VtkFileType::RAW:
+        if (m_VisualManager->getRawDataPath() != "")
+        {
+            m_VisualManager->DataToSurFace(m_VisualManager->getRawDataPath());
+        }
+        break;
+    default:
+        break;
+    }
+    
     return;
 }
 
@@ -181,7 +212,7 @@ void MainWindow::OnAnimationFinished()
 
 void MainWindow::initSlots()
 {
-    connect(m_ui->pushButton_opendicom, &QPushButton::clicked, this, &MainWindow::ReadFile);
+    connect(m_ui->pushButton_openfile, &QPushButton::clicked, this, &MainWindow::ReadFile);
 
     connect(m_ui->pushButton_opendicoms, &QPushButton::clicked, this, &MainWindow::ReadFiles);
     connect(m_ui->pushButton_ti, &QPushButton::clicked, this, &MainWindow::DataTo3DVolume);
