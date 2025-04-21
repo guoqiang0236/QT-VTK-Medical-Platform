@@ -1,27 +1,7 @@
 // Viewer3D.h
 #pragma once
+#include "pch.h"
 #include "ViewerBase.h"
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkMarchingCubes.h>
-#include <vtkSmoothPolyDataFilter.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkGPUVolumeRayCastMapper.h>  
-#include <vtkSmartPointer.h>
-#include <vtkDICOMImageReader.h>
-#include <vtkColorTransferFunction.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkVolumeProperty.h>
-#include <vtkVolume.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkCubeAxesActor.h>
-#include <vtkCamera.h>
-#include <vtkTextProperty.h>
-#include <vtkFixedPointVolumeRayCastMapper.h>
-#include <vtkAbstractVolumeMapper.h>  // ³éÏó»ùÀà
-#include <vtkOrientationMarkerWidget.h>
-#include <vtkAxesActor.h>
 class Viewer3D : public ViewerBase {
     Q_OBJECT
 public:

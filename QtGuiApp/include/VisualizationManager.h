@@ -1,12 +1,9 @@
 // VisualizationManager.h
 #pragma once
-#include <QObject>
-#include <string>
-#include <memory>
-#include "VtkFileTypeDetector.h"
+#include "pch.h"
 #include "Viewer2D.h"
 #include "Viewer3D.h"
-#include <QVTKOpenGLNativeWidget.h>
+
 
 class VisualizationManager : public QObject {
     Q_OBJECT

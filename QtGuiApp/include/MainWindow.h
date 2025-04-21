@@ -1,11 +1,9 @@
 ﻿#ifndef MED_IMG_MAINWINDOW_H
 #define MED_IMG_MAINWINDOW_H
+#include "pch.h"
 
-#include <QMainWindow>
-#include <QQuickWidget>
-#include <QString>
 #include <memory>
-#include <QObject>
+
 class QVTKOpenGLNativeWidget;
 class vtkRenderer;
 class VisualizationManager;

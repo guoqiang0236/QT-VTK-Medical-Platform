@@ -1,10 +1,8 @@
 // Viewer2D.h
 #pragma once
-#include "ViewerBase.h"
+#include "pch.h"
 #include "myVtkInteractorStyleImage.h"
-#include "vtkCamera.h"
-#include "vtkImageReslice.h"
-#include "vtkMatrix4x4.h"
+#include <ViewerBase.h>
 enum class SliceOrientation {
     AXIAL = 0,
     CORONAL = 1,

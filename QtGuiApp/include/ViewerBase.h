@@ -1,12 +1,10 @@
 // ViewerBase.h
 #pragma once
-#include <QVTKOpenGLNativeWidget.h>
-#include <vtkSmartPointer.h>
-#include <vtkDICOMImageReader.h>
-#include <vtkImageReader.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <QObject>
+
+
+
+#include "pch.h"
+
 class ViewerBase:public QObject {
     Q_OBJECT
 public:

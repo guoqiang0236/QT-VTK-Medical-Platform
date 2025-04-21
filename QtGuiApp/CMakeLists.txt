@@ -25,6 +25,8 @@ target_include_directories(QtGuiApp PRIVATE
     ${VTK_INCLUDE_DIRS}
     "${CMAKE_SOURCE_DIR}/VtkApp/include"
 )
+# 添加预编译头支持
+target_precompile_headers(QtGuiApp PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
 
 # 链接库（补充关键 VTK 模块）
 target_link_libraries(QtGuiApp PRIVATE
