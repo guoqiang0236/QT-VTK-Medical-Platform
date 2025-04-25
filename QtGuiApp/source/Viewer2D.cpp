@@ -1,4 +1,4 @@
-// Viewer2D.cpp
+﻿// Viewer2D.cpp
 #include "Viewer2D.h"
 #include <vtkImageViewer2.h>
 #include <vtkRenderWindowInteractor.h>

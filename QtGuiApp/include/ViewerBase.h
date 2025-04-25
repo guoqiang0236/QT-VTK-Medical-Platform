@@ -1,10 +1,10 @@
-// ViewerBase.h
+﻿// ViewerBase.h
 #pragma once
 
 
 
 #include "pch.h"
-
+#include "BasebandReader.h"
 class ViewerBase:public QObject {
     Q_OBJECT
 public:
@@ -30,5 +30,5 @@ protected:
     vtkSmartPointer<vtkDICOMImageReader> m_dicomreader;
     vtkSmartPointer<vtkImageReader> m_imagereader;
     vtkRenderer* m_renderer;
-    
+	std::unique_ptr<RawReader> m_rawreader;
 };

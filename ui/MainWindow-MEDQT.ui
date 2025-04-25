@@ -99,6 +99,13 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="pushButton_rawcompany">
+             <property name="text">
+              <string>打开公司raw文件</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="pushButton_opendicoms">
              <property name="maximumSize">
               <size>

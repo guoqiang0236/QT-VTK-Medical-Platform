@@ -1,4 +1,4 @@
-// VtkFileTypeDetector.h
+﻿// VtkFileTypeDetector.h
 #pragma once
 #include <string>
 

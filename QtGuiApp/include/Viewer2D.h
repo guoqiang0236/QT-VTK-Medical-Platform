@@ -1,4 +1,4 @@
-// Viewer2D.h
+﻿// Viewer2D.h
 #pragma once
 #include "pch.h"
 #include "myVtkInteractorStyleImage.h"

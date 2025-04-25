@@ -1,4 +1,4 @@
-#include "MainWindow.h"
+﻿#include "MainWindow.h"
 // 移除不存在的头文件
 
 #include <vtkSphereSource.h>
@@ -212,8 +212,8 @@ void MainWindow::OnAnimationFinished()
 
 void MainWindow::initSlots()
 {
+    connect(m_ui->pushButton_rawcompany, &QPushButton::clicked, this, &MainWindow::ReadFile);
     connect(m_ui->pushButton_openfile, &QPushButton::clicked, this, &MainWindow::ReadFile);
-
     connect(m_ui->pushButton_opendicoms, &QPushButton::clicked, this, &MainWindow::ReadFiles);
     connect(m_ui->pushButton_ti, &QPushButton::clicked, this, &MainWindow::DataTo3DVolume);
 	connect(m_ui->pushButton_mian, & QPushButton::clicked, this, & MainWindow::DataTo3DSurface);

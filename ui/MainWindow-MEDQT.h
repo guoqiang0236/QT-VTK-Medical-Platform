@@ -38,6 +38,7 @@ public:
     QWidget *tab_3;
     QVBoxLayout *verticalLayout_2;
     QPushButton *pushButton_openfile;
+    QPushButton *pushButton_rawcompany;
     QPushButton *pushButton_opendicoms;
     QPushButton *pushButton_ti;
     QPushButton *pushButton_mian;
@@ -118,6 +119,11 @@ public:
         pushButton_openfile->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
         verticalLayout_2->addWidget(pushButton_openfile);
+
+        pushButton_rawcompany = new QPushButton(tab_3);
+        pushButton_rawcompany->setObjectName("pushButton_rawcompany");
+
+        verticalLayout_2->addWidget(pushButton_rawcompany);
 
         pushButton_opendicoms = new QPushButton(tab_3);
         pushButton_opendicoms->setObjectName("pushButton_opendicoms");
@@ -396,6 +402,7 @@ public:
     {
         MainWindow_UI->setWindowTitle(QCoreApplication::translate("MainWindow_UI", "MainWindow", nullptr));
         pushButton_openfile->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200\346\226\207\344\273\266(.raw/.dicom)", nullptr));
+        pushButton_rawcompany->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200\345\205\254\345\217\270raw\346\226\207\344\273\266", nullptr));
         pushButton_opendicoms->setText(QCoreApplication::translate("MainWindow_UI", "\346\211\223\345\274\200DICOM\346\226\207\344\273\266\345\244\271", nullptr));
         pushButton_ti->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266", nullptr));
         pushButton_mian->setText(QCoreApplication::translate("MainWindow_UI", "\351\235\242\347\273\230\345\210\266", nullptr));

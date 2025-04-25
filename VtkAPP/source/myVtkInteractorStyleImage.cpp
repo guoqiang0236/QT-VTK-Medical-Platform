@@ -1,4 +1,4 @@
-#include "myVtkInteractorStyleImage.h"
+﻿#include "myVtkInteractorStyleImage.h"
 #include <vtkObjectFactory.h>
 #include <iostream>
 #include <vtkRenderWindowInteractor.h>

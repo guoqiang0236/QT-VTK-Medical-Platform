@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+﻿cmake_minimum_required(VERSION 3.20)
 project(QtGuiApp LANGUAGES CXX)
 
 # 启用 AUTOMOC（关键！）

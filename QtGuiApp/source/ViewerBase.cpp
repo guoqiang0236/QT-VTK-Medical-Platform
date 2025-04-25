@@ -1,9 +1,10 @@
-#include "ViewerBase.h"
-#include <filesystem> // Ìí¼ÓÕâÒ»ĞĞ
-#include <windows.h> // Ìí¼ÓÕâÒ»ĞĞ
+ï»¿#include "ViewerBase.h"
+#include <filesystem> // æ·»åŠ è¿™ä¸€è¡Œ
+#include <windows.h> // æ·»åŠ è¿™ä¸€è¡Œ
 ViewerBase::ViewerBase(QVTKOpenGLNativeWidget* widget)
     : m_vtkWidget(widget),
-    m_renderer(vtkRenderer::New())
+    m_renderer(vtkRenderer::New()),
+	m_rawreader(std::make_unique<RawReader>())
 {
     m_vtkWidget->renderWindow()->AddRenderer(m_renderer);
 }
@@ -13,32 +14,32 @@ int ViewerBase::GBKToUTF8(unsigned char* lpGBKStr, unsigned char* lpUTF8Str, int
     wchar_t* lpUnicodeStr = NULL;
     int nRetLen = 0;
 
-    if (!lpGBKStr)  //Èç¹ûGBK×Ö·û´®ÎªNULLÔò³ö´íÍË³ö
+    if (!lpGBKStr)  //å¦‚æœGBKå­—ç¬¦ä¸²ä¸ºNULLåˆ™å‡ºé”™é€€å‡º
         return 0;
 
-    nRetLen = ::MultiByteToWideChar(CP_ACP, 0, (char*)lpGBKStr, -1, NULL, NULL);  //»ñÈ¡×ª»»µ½Unicode±àÂëºóËùĞèÒªµÄ×Ö·û¿Õ¼ä³¤¶È
-    lpUnicodeStr = new WCHAR[nRetLen + 1];  //ÎªUnicode×Ö·û´®¿Õ¼ä
-    nRetLen = ::MultiByteToWideChar(CP_ACP, 0, (char*)lpGBKStr, -1, lpUnicodeStr, nRetLen);  //×ª»»µ½Unicode±àÂë
-    if (!nRetLen)  //×ª»»Ê§°ÜÔò³ö´íÍË³ö
+    nRetLen = ::MultiByteToWideChar(CP_ACP, 0, (char*)lpGBKStr, -1, NULL, NULL);  //è·å–è½¬æ¢åˆ°Unicodeç¼–ç åæ‰€éœ€è¦çš„å­—ç¬¦ç©ºé—´é•¿åº¦
+    lpUnicodeStr = new WCHAR[nRetLen + 1];  //ä¸ºUnicodeå­—ç¬¦ä¸²ç©ºé—´
+    nRetLen = ::MultiByteToWideChar(CP_ACP, 0, (char*)lpGBKStr, -1, lpUnicodeStr, nRetLen);  //è½¬æ¢åˆ°Unicodeç¼–ç 
+    if (!nRetLen)  //è½¬æ¢å¤±è´¥åˆ™å‡ºé”™é€€å‡º
         return 0;
 
-    nRetLen = ::WideCharToMultiByte(CP_UTF8, 0, lpUnicodeStr, -1, NULL, 0, NULL, NULL);  //»ñÈ¡×ª»»µ½UTF8±àÂëºóËùĞèÒªµÄ×Ö·û¿Õ¼ä³¤¶È
+    nRetLen = ::WideCharToMultiByte(CP_UTF8, 0, lpUnicodeStr, -1, NULL, 0, NULL, NULL);  //è·å–è½¬æ¢åˆ°UTF8ç¼–ç åæ‰€éœ€è¦çš„å­—ç¬¦ç©ºé—´é•¿åº¦
 
-    if (!lpUTF8Str)  //Êä³ö»º³åÇøÎª¿ÕÔò·µ»Ø×ª»»ºóĞèÒªµÄ¿Õ¼ä´óĞ¡
+    if (!lpUTF8Str)  //è¾“å‡ºç¼“å†²åŒºä¸ºç©ºåˆ™è¿”å›è½¬æ¢åéœ€è¦çš„ç©ºé—´å¤§å°
     {
         if (lpUnicodeStr)
             delete[]lpUnicodeStr;
         return nRetLen;
     }
 
-    if (nUTF8StrLen < nRetLen)  //Èç¹ûÊä³ö»º³åÇø³¤¶È²»¹»ÔòÍË³ö
+    if (nUTF8StrLen < nRetLen)  //å¦‚æœè¾“å‡ºç¼“å†²åŒºé•¿åº¦ä¸å¤Ÿåˆ™é€€å‡º
     {
         if (lpUnicodeStr)
             delete[]lpUnicodeStr;
         return 0;
     }
 
-    nRetLen = ::WideCharToMultiByte(CP_UTF8, 0, lpUnicodeStr, -1, (char*)lpUTF8Str, nUTF8StrLen, NULL, NULL);  //×ª»»µ½UTF8±àÂë
+    nRetLen = ::WideCharToMultiByte(CP_UTF8, 0, lpUnicodeStr, -1, (char*)lpUTF8Str, nUTF8StrLen, NULL, NULL);  //è½¬æ¢åˆ°UTF8ç¼–ç 
 
     if (lpUnicodeStr)
         delete[]lpUnicodeStr;
@@ -48,7 +49,7 @@ int ViewerBase::GBKToUTF8(unsigned char* lpGBKStr, unsigned char* lpUTF8Str, int
 
 
 
-//gbk×ªutf-8
+//gbkè½¬utf-8
 std::string ViewerBase::gbk_to_utf8(const char* strGBK)
 {
     int nRetLen = 0;

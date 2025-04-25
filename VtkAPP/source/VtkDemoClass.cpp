@@ -1,4 +1,4 @@
-// VtkDemoClass.cpp - 示例类实现
+﻿// VtkDemoClass.cpp - 示例类实现
 #include "VtkDemoClass.h"
 #include <vtkObjectFactory.h>  // VTK对象工厂
 #include <vtkOutputWindow.h>  // 确保包含vtkOutputWindow的定义

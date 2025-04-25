@@ -1,4 +1,4 @@
-#ifndef CUSTOMSPLASHSCREEN_H
+﻿#ifndef CUSTOMSPLASHSCREEN_H
 #define CUSTOMSPLASHSCREEN_H
 
 #include <QSplashScreen>

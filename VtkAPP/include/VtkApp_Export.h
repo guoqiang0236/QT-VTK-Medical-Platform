@@ -1,4 +1,4 @@
-// VtkApp_Export.h - 动态库导出宏定义
+﻿// VtkApp_Export.h - 动态库导出宏定义
 #pragma once
 // VTK前置声明（解决类型识别问题）
 class vtkRenderer;  // 添加基类声明

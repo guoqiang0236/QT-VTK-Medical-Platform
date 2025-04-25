@@ -1,4 +1,4 @@
-#include "GlobalConfig.h"
+﻿#include "GlobalConfig.h"
 
 // 实现单例获取方法
 sysconfig::GlobalConfig& sysconfig::GlobalConfig::get() {

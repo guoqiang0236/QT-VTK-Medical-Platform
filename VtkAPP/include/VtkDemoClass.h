@@ -1,4 +1,4 @@
-// VtkDemoClass.h - VTK动态库示例类
+﻿// VtkDemoClass.h - VTK动态库示例类
 #pragma once
 #include "VtkApp_Export.h"  // 导出宏头文件
 #include <vtkObject.h>       // VTK基础类

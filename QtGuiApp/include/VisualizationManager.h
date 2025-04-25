@@ -1,4 +1,4 @@
-// VisualizationManager.h
+﻿// VisualizationManager.h
 #pragma once
 #include "pch.h"
 #include "Viewer2D.h"

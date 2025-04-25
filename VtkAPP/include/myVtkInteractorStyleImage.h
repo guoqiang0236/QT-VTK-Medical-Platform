@@ -1,4 +1,4 @@
-#ifndef MY_VTK_INTERACTOR_STYLE_IMAGE_H
+ï»¿#ifndef MY_VTK_INTERACTOR_STYLE_IMAGE_H
 #define MY_VTK_INTERACTOR_STYLE_IMAGE_H
 
 #include "VtkApp_Export.h"
@@ -38,13 +38,13 @@ public:
     void SetSliceChangedCallback(SliceChangedCallback callback);
     void SetCurrentSliceNumberNow(int slice);
 
-    void EnableMouseWheel(bool enable); // ÐÂÔöµÄ·½·¨
+    void EnableMouseWheel(bool enable); // æ–°å¢žçš„æ–¹æ³•
 protected:
-    vtkImageViewer2* _ImageViewer;
-    vtkTextMapper* _StatusMapper;
-    int _Slice;
-    int _MinSlice;
-    int _MaxSlice;
+    vtkImageViewer2* _ImageViewer = nullptr;
+    vtkTextMapper* _StatusMapper = nullptr;
+    int _Slice = 0;
+    int _MinSlice = 0 ;
+    int _MaxSlice = 0 ;
     SliceChangedCallback _SliceChangedCallback;
 
     void MoveSliceForward();
@@ -53,7 +53,7 @@ protected:
     void OnKeyDown() override;
     void OnMouseWheelForward() override;
     void OnMouseWheelBackward() override;
-    bool _MouseWheelEnabled = true; // ÐÂÔöµÄ±êÖ¾
+    bool _MouseWheelEnabled = true; // æ–°å¢žçš„æ ‡å¿—
 };
 
 #endif // MY_VTK_INTERACTOR_STYLE_IMAGE_H

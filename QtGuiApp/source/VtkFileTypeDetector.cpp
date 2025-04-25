@@ -1,4 +1,4 @@
-// VtkFileTypeDetector.cpp
+﻿// VtkFileTypeDetector.cpp
 #include "VtkFileTypeDetector.h"
 #include <algorithm>
 #include <filesystem>
