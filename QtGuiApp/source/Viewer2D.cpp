@@ -7,6 +7,7 @@
 #include <vtkActor2D.h>
 #include <vtkErrorCode.h>
 #include <stdexcept>
+#include <vtkLookupTable.h>
 
 Viewer2D::Viewer2D(QVTKOpenGLNativeWidget* widget)
     : ViewerBase(widget) 
@@ -22,10 +23,15 @@ Viewer2D::Viewer2D(QVTKOpenGLNativeWidget* widget)
 	m_reslice = vtkSmartPointer<vtkImageReslice>::New();
 	m_matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     message = "";
+	m_fanshapecallback = vtkSmartPointer<vtkFanShapeTimerCallback>::New();
 }
 
 Viewer2D::~Viewer2D()
 {
+    if (m_fanshapecallback) {
+        m_fanshapecallback->Stop(m_vtkWidget->renderWindow()->GetInteractor()); // 停止定时器
+        m_fanshapecallback = nullptr; // 重置智能指针
+    }
 }
 
 void Viewer2D::loadDicomFile(const std::string& path) {
@@ -82,6 +88,118 @@ void Viewer2D::loadRawData()
         std::cerr << "Exception: " << e.what() << std::endl;
         throw std::runtime_error("An error occurred: " + std::string(e.what()));
     }
+}
+
+void Viewer2D::loadCompanyRawData(const std::string& path)
+{
+    cleanup();
+    if (!m_rawreader)
+        return;
+    if (!m_rawreader->open(path)) {
+        std::cerr << "Failed to open file: " << path << std::endl;
+        return;
+    }
+    if (!m_rawreader->readAllFrames(*m_rawdataheaders, *m_rawdata_allData)) {
+        std::cerr << "Failed to read frames from file: " << path << std::endl;
+        m_rawreader->close();
+        return;
+    }
+    m_rawreader->close();
+    float testGlobalMax = m_rawreader->getGlobalMax();
+    if (m_rawdata_allData.get()->size() == 0)
+    {
+        std::cerr << "No data read from file: " << path << std::endl;
+        return;
+    }
+
+
+    auto points = vtkSmartPointer<vtkPoints>::New();
+    auto cells = vtkSmartPointer<vtkCellArray>::New();
+    auto scalars = vtkSmartPointer<vtkFloatArray>::New();
+    scalars->SetName("Intensity");
+
+    const size_t nx = m_rawreader->getnx_();
+    const size_t nz = m_rawreader->getnz_()*2;
+    const float theta_start = m_rawreader->getThetaStart();
+    const float theta_end = m_rawreader->getThetaEnd();
+    const float r_max = m_rawreader->getRMax();
+    for (size_t x = 0; x < nx; ++x) {
+        for (size_t z = 0; z < nz; ++z) {
+            // 计算极坐标
+            float theta = theta_start + x * (theta_end - theta_start) / (nx - 1);
+            float r = z * r_max / (nz - 1);
+
+            // 转换为笛卡尔坐标
+            float cartesian_x = r * cos(theta);
+            float cartesian_y = r * sin(theta);
+
+
+            vtkIdType id = points->InsertNextPoint(cartesian_x, cartesian_y, 0.0);
+
+            if (x < nx - 1 && z < nz - 1) {
+                vtkIdType ids[4] = {
+                    id,
+                    id + 1,
+                    id + nz + 1,
+                    id + nz
+                };
+                cells->InsertNextCell(4, ids);
+            }
+        }
+    }
+
+
+    auto polyData = vtkSmartPointer<vtkPolyData>::New();
+    polyData->SetPoints(points);
+    polyData->SetPolys(cells);
+    polyData->GetPointData()->SetScalars(scalars);
+
+
+    auto lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->SetRange(-80.0, 0.0);
+    lut->SetValueRange(0.0, 1.0);
+    lut->SetSaturationRange(0.0, 0.0);
+    lut->Build();
+
+    auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputData(polyData);
+    mapper->SetLookupTable(lut);
+    mapper->SetScalarRange(-80.0, 0.0);
+
+    auto actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
+    actor->RotateZ(-90);
+
+    auto renderer = vtkSmartPointer<vtkRenderer>::New();
+    renderer->AddActor(actor);
+    renderer->SetBackground(0.0, 0.0, 0.0);
+
+	m_vtkWidget->renderWindow()->AddRenderer(renderer);
+    
+    // Initialize must be called prior to creating timer events.
+    m_vtkWidget->renderWindow()->Render();
+    m_vtkWidget->renderWindow()->GetInteractor()->Initialize();
+
+
+
+    int timerId = m_vtkWidget->renderWindow()->GetInteractor()->CreateRepeatingTimer(10);
+    std::cout << "timerId: " << timerId << std::endl;
+
+    // 定义定时器回调
+	m_fanshapecallback = vtkSmartPointer<vtkFanShapeTimerCallback>::New();
+	m_fanshapecallback->globalMaxValue = testGlobalMax;
+	m_fanshapecallback->allFrames = m_rawdata_allData.get();
+    m_fanshapecallback->polyData = polyData;
+    m_fanshapecallback->scalars = scalars;
+
+    m_vtkWidget->renderWindow()->GetInteractor()->AddObserver(vtkCommand::TimerEvent, m_fanshapecallback);
+
+
+    m_fanshapecallback->timerId = timerId;
+
+
+    m_vtkWidget->renderWindow()->Render();
+    m_vtkWidget->renderWindow()->GetInteractor()->Start();
 }
 
 
@@ -250,6 +368,10 @@ void Viewer2D::setrawdataViewOrientation(SliceOrientation orientation)
 }
 void Viewer2D::cleanup()
 {
+    if (m_fanshapecallback) {
+        m_fanshapecallback->Stop(m_vtkWidget->renderWindow()->GetInteractor()); // 停止定时器
+        m_fanshapecallback = nullptr; // 重置智能指针
+    }
     if (m_renderer) {
         m_renderer->RemoveAllViewProps();
         m_vtkWidget->renderWindow()->RemoveRenderer(m_renderer);
@@ -267,7 +389,7 @@ void Viewer2D::cleanup()
         m_interactor->TerminateApp(); // 终止交互器
         m_interactor = nullptr; // 重置智能指针
     }
-
+   
     // 重新分配智能指针
     m_renderer = vtkRenderer::New();
     m_imageViewer = vtkSmartPointer<vtkImageViewer2>::New();

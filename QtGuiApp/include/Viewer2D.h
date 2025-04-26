@@ -2,7 +2,8 @@
 #pragma once
 #include "pch.h"
 #include "myVtkInteractorStyleImage.h"
-#include <ViewerBase.h>
+#include "ViewerBase.h"
+#include "vtkFanShapeTimerCallback.h"
 enum class SliceOrientation {
     AXIAL = 0,
     CORONAL = 1,
@@ -18,6 +19,7 @@ public:
     void loadDicomFile(const std::string& path);
     void loadDicomDirectory(const std::string& path);
 	void loadRawData();
+    void loadCompanyRawData(const std::string& path);
     void resetCamera();
     void setViewOrientation(SliceOrientation orientation);
     
@@ -48,4 +50,5 @@ private:
     vtkSmartPointer<vtkImageReslice> m_reslice;
     vtkSmartPointer<vtkMatrix4x4> m_matrix;
     std::string message;
+    vtkSmartPointer<vtkFanShapeTimerCallback> m_fanshapecallback;
 };

@@ -13,7 +13,6 @@ public:
 	vtkImageReader* getm_imagereader() { return m_imagereader.Get(); }
 	void setm__imagereader(vtkSmartPointer<vtkImageReader> reader) { m_imagereader = reader; }
     vtkRenderer* GetRenderer() const { return m_renderer; }
-	
 protected:
     explicit ViewerBase(QVTKOpenGLNativeWidget* widget);
     int GBKToUTF8(unsigned char* lpGBKStr, unsigned char* lpUTF8Str, int nUTF8StrLen);
@@ -31,4 +30,6 @@ protected:
     vtkSmartPointer<vtkImageReader> m_imagereader;
     vtkRenderer* m_renderer;
 	std::unique_ptr<RawReader> m_rawreader;
+    std::unique_ptr<std::vector<BMFMDataHeader>> m_rawdataheaders = std::make_unique<std::vector<BMFMDataHeader>>();
+    std::unique_ptr<std::vector<std::vector<std::complex<float>>>> m_rawdata_allData = std::make_unique<std::vector<std::vector<std::complex<float>>>>();
 };

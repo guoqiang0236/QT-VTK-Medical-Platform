@@ -1,13 +1,18 @@
 ﻿#include "ViewerBase.h"
 #include <filesystem> // 添加这一行
-#include <windows.h> // 添加这一行
+#include <windows.h> 
+#include <vtkFloatArray.h>
+// 添加这一行
 ViewerBase::ViewerBase(QVTKOpenGLNativeWidget* widget)
     : m_vtkWidget(widget),
     m_renderer(vtkRenderer::New()),
-	m_rawreader(std::make_unique<RawReader>())
+	m_rawreader(std::make_unique<RawReader>()),
+	m_rawdataheaders(std::make_unique<std::vector<BMFMDataHeader>>()),
+	m_rawdata_allData(std::make_unique<std::vector<std::vector<std::complex<float>>>>())
 {
     m_vtkWidget->renderWindow()->AddRenderer(m_renderer);
 }
+
 
 int ViewerBase::GBKToUTF8(unsigned char* lpGBKStr, unsigned char* lpUTF8Str, int nUTF8StrLen)
 {

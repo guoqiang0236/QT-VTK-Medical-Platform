@@ -28,11 +28,13 @@ public:
 	QString getRawDataPath() { return rawdata_path; }
 	void setFlieType(VtkFileType fileType) { m_fileType = fileType; }
 	VtkFileType getFlieType() { return m_fileType; }
+	void setm_bcompanyrawdata(bool bcompanyrawdata) { m_bcompanyrawdata = bcompanyrawdata; }
 public:
     void changeViewOrientation(int orientation);
     void loadFile(const QString& filePath);
     void loadFiles(const QString& filePath);
     void loadRawData(const QString& filePath);
+    void loadCompanyRawData(const QString& filePath);
     void loadDicomSingleFile(const QString& filePath);
     void loadDicomSeries(const QString& dirPath);
     void DataToSurFace(const QString& dirPath);
@@ -74,4 +76,5 @@ private:
     QString dir_path;
     QString rawdata_path;
     VtkFileType m_fileType;
+    bool m_bcompanyrawdata;
 };

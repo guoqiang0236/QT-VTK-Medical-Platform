@@ -14,7 +14,8 @@ VisualizationManager::VisualizationManager(QObject* parent)
       m_mainRenderer(vtkRenderer::New()) , m_orientation(0),
 	m_vtkWidget_axial(new QVTKOpenGLNativeWidget()), m_vtkWidget_coronal(new QVTKOpenGLNativeWidget()),
     m_vtkWidget_sagittal(new QVTKOpenGLNativeWidget()),
-	m_fileType(VtkFileType::UNKNOWN) 
+	m_fileType(VtkFileType::UNKNOWN) ,
+	m_bcompanyrawdata(false)
 {
   
     m_vtkWidget->renderWindow()->AddRenderer(m_mainRenderer);
@@ -107,13 +108,19 @@ void VisualizationManager::loadFile(const QString& filePath) {
     cleanupCurrentViewer();
 
     m_fileType = m_fileDetector->detect(filePath.toStdString());
-
+	if (m_fileType == VtkFileType::RAW && m_bcompanyrawdata)
+	{
+		m_fileType = VtkFileType::COMPANYRAW;
+	}
     switch (m_fileType) {
     case VtkFileType::DICOM:
         loadDicomSingleFile(filePath);
         break;
     case VtkFileType::RAW:
         loadRawData(filePath);
+        break;
+    case VtkFileType::COMPANYRAW:
+        loadCompanyRawData(filePath);
         break;
     case VtkFileType::UNKNOWN: {
         QMessageBox msgBox;
@@ -196,6 +203,19 @@ void VisualizationManager::loadRawData(const QString& filePath)
     m_dicom2DViewer_axial->startInteractor();
     m_dicom2DViewer_coronal->startInteractor();
     m_dicom2DViewer_sagittal->startInteractor();
+}
+
+void VisualizationManager::loadCompanyRawData(const QString& filePath)
+{
+    m_dicom2DViewer = std::make_unique<Viewer2D>(m_vtkWidget);
+    m_dicom2DViewer->loadCompanyRawData(filePath.toStdString());
+
+    if (m_dicom2DViewer_axial)
+        m_dicom2DViewer_axial->cleanup();
+    if (m_dicom2DViewer_coronal)
+        m_dicom2DViewer_coronal->cleanup();
+    if (m_dicom2DViewer_sagittal)
+        m_dicom2DViewer_sagittal->cleanup();
 }
 
 void VisualizationManager::loadDicomSingleFile(const QString& filePath)
@@ -305,6 +325,8 @@ void VisualizationManager::SurFaceRawData(const QString& dirPath)
     QByteArray localPath = QFile::encodeName(dirPath);
     m_dicom3DViewer->loadRawData_Surface(std::string(localPath.constData()));
 }
+
+
 
 void VisualizationManager::DataToSurFace(const QString& dirPath)
 {

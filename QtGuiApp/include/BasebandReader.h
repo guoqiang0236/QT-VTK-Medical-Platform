@@ -93,11 +93,19 @@ public:
 	void setnx_(size_t nx) { nx_ = nx; }
 	size_t getnz_() const { return nz_; }
 	size_t getnx_() const { return nx_; }
+	float getGlobalMax() const { return m_globalMax; }
+	const float getThetaStart() const { return theta_start; }
+	const float getThetaEnd() const { return theta_end; }
+	const float getRMax() const { return r_max; }
 private:
     std::ifstream file_;
     const std::vector<int> pick_lines_ = { 0,1,2,3,4,5,6,7,8,9,10,11 }; // 默认全选12通道
-    size_t nz_ = 528;  // 与Python代码中的nz一致
-    size_t nx_ = 66;   // 与Python代码中的nx一致
+    size_t nz_ = 528;  
+    size_t nx_ = 66;  
+    float  m_globalMax = 0.0f;
+    const float theta_start = -M_PI / 4;
+    const float theta_end = M_PI / 4;
+    const float r_max = 1.0;
     bool skipBytes(size_t count);
     bool readBMode(BMFMDataHeader& header, std::vector<std::complex<float>>& data);
     bool readHMMode(BMFMDataHeader& header, std::vector<std::complex<float>>& data);

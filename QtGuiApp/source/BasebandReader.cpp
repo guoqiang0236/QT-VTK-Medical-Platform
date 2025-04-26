@@ -307,7 +307,7 @@ bool RawReader::readAllFrames(std::vector<BMFMDataHeader>& headers,
                     }
                     //std::cout << " -> Sum: " << sum << std::endl;
                     temp[x * nz_ * 2 + z] = sum; // 直接填充到 temp
-                    
+                    m_globalMax = std::max(m_globalMax, std::abs(sum));
                 }
                 xishu++;
             }

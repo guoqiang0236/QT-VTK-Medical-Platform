@@ -32,6 +32,11 @@ void MainWindow::ReadFile()
         this, "选择文件", "", "All files (*.*)");
     if (!fileName.isEmpty() && m_VisualManager)
     { 
+        QObject* senderObject = sender();
+		m_VisualManager->setm_bcompanyrawdata(false);
+        if (senderObject == m_ui->pushButton_rawcompany) {
+            m_VisualManager->setm_bcompanyrawdata(true);
+        }
         m_VisualManager->loadFile(fileName);   
     }
 
