@@ -1,0 +1,37 @@
+cmake_minimum_required(VERSION 3.24)
+cmake_policy(SET CMP0135 NEW)  # 处理时间戳警告
+project(QtGuiAppTests LANGUAGES CXX)
+
+# 启用 C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 手动指定 GTest 的路径
+set(GTEST_ROOT "D:/gtest/install") # 替换为 GTest 的根目录路径
+set(GTEST_INCLUDE_DIR "${GTEST_ROOT}/include")
+set(GTEST_LIB_DIR "${GTEST_ROOT}/lib")
+
+# 添加 GTest 的 include 和库路径
+include_directories(${GTEST_INCLUDE_DIR})
+link_directories(${GTEST_LIB_DIR})
+
+# 收集测试源文件（建议显式列出文件）
+file(GLOB TEST_SRC_FILES CONFIGURE_DEPENDS "source/*.cpp")
+
+# 创建测试目标
+add_executable(QtGuiAppTests ${TEST_SRC_FILES})
+
+# 链接 GTest 静态库和主项目库
+target_link_libraries(QtGuiAppTests PRIVATE
+    ${GTEST_LIB_DIR}/gtest.lib
+    ${GTEST_LIB_DIR}/gtest_main.lib
+)
+
+# 包含主项目头文件
+target_include_directories(QtGuiAppTests PRIVATE
+    "${CMAKE_SOURCE_DIR}/QtGuiApp/include"
+)
+
+# 启用测试
+enable_testing()
+add_test(NAME QtGuiAppTests COMMAND QtGuiAppTests)

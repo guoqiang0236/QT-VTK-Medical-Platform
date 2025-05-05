@@ -46,3 +46,4 @@ endif()
 # 添加子项目
 add_subdirectory(VtkAPP)
 add_subdirectory(QtGuiApp)
+add_subdirectory(QtGuiAppTests)
