@@ -7,6 +7,7 @@
 #include<vtkAutoInit.h>
 #include <vtkOutputWindow.h>
 #include <QFile>
+#include <GlobalConfig.h>
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -16,6 +17,8 @@ int main(int argc, char* argv[]) {
     
 
     // ... 保持全局配置代码 ...
+    sysconfig::GlobalConfig& config = sysconfig::GlobalConfig::get();
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling); // 启用高DPI缩放
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);

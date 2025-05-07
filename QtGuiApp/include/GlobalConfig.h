@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include <memory>
+#include <QSize>
 
 namespace sysconfig {
 
@@ -18,6 +19,8 @@ namespace sysconfig {
         int renderQuality;
         bool useHardwareAcceleration;
 
+        // 新增：获取调整后的尺寸
+        static QSize getAdjustedSize();
     private:
         GlobalConfig();  
     };

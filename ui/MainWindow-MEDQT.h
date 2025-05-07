@@ -15,7 +15,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
@@ -31,12 +31,12 @@ class Ui_MainWindow_UI
 {
 public:
     QWidget *centralwidget;
-    QHBoxLayout *horizontalLayout_3;
+    QGridLayout *gridLayout;
     QFrame *frame_menu;
     QVBoxLayout *verticalLayout;
     QTabWidget *tabWidget;
     QWidget *tab_3;
-    QVBoxLayout *verticalLayout_2;
+    QGridLayout *gridLayout_7;
     QPushButton *pushButton_openfile;
     QPushButton *pushButton_rawcompany;
     QPushButton *pushButton_opendicoms;
@@ -59,39 +59,43 @@ public:
     QComboBox *comboBox;
     QLabel *label_5;
     QFrame *frame_vtkrender;
-    QHBoxLayout *horizontalLayout_2;
+    QGridLayout *gridLayout_2;
     QVTKOpenGLNativeWidget *openGLWidget;
     QFrame *frame_XYZ;
+    QGridLayout *gridLayout_3;
     QFrame *frame_AXIAL;
-    QOpenGLWidget *openGLWidget_AXIAL;
-    QSlider *Slider_AXIAL;
+    QGridLayout *gridLayout_4;
     QLabel *label_AXIALMIN;
+    QOpenGLWidget *openGLWidget_AXIAL;
     QLabel *label_AXIAL_2;
+    QSlider *Slider_AXIAL;
     QLabel *label_AXIALMAX;
     QFrame *frame_CORONAL;
-    QOpenGLWidget *openGLWidget_CORONAL;
-    QSlider *Slider_CORONAL;
+    QGridLayout *gridLayout_5;
     QLabel *label_CORONAL;
+    QOpenGLWidget *openGLWidget_CORONAL;
     QLabel *label_CORONALMIN;
+    QSlider *Slider_CORONAL;
     QLabel *label_CORONALMAX;
     QFrame *frame_SAGITTAL;
-    QOpenGLWidget *openGLWidget_SAGITTAL;
-    QSlider *Slider_SAGITTAL;
+    QGridLayout *gridLayout_6;
     QLabel *label_SAGITTAL;
+    QOpenGLWidget *openGLWidget_SAGITTAL;
     QLabel *label_SAGITTALMIN;
+    QSlider *Slider_SAGITTAL;
     QLabel *label_SAGITTALMAX;
 
     void setupUi(QMainWindow *MainWindow_UI)
     {
         if (MainWindow_UI->objectName().isEmpty())
             MainWindow_UI->setObjectName("MainWindow_UI");
-        MainWindow_UI->resize(1920, 1080);
+        MainWindow_UI->resize(1307, 926);
         centralwidget = new QWidget(MainWindow_UI);
         centralwidget->setObjectName("centralwidget");
         centralwidget->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
-        horizontalLayout_3 = new QHBoxLayout(centralwidget);
-        horizontalLayout_3->setObjectName("horizontalLayout_3");
-        horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
+        gridLayout = new QGridLayout(centralwidget);
+        gridLayout->setObjectName("gridLayout");
+        gridLayout->setContentsMargins(0, 0, 0, 0);
         frame_menu = new QFrame(centralwidget);
         frame_menu->setObjectName("frame_menu");
         frame_menu->setMaximumSize(QSize(208, 16777215));
@@ -110,37 +114,37 @@ public:
         tabWidget->setAutoFillBackground(true);
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
-        verticalLayout_2 = new QVBoxLayout(tab_3);
-        verticalLayout_2->setObjectName("verticalLayout_2");
-        verticalLayout_2->setContentsMargins(-1, 0, -1, -1);
+        gridLayout_7 = new QGridLayout(tab_3);
+        gridLayout_7->setObjectName("gridLayout_7");
+        gridLayout_7->setContentsMargins(-1, 0, -1, -1);
         pushButton_openfile = new QPushButton(tab_3);
         pushButton_openfile->setObjectName("pushButton_openfile");
         pushButton_openfile->setMaximumSize(QSize(16777215, 16777215));
         pushButton_openfile->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
-        verticalLayout_2->addWidget(pushButton_openfile);
+        gridLayout_7->addWidget(pushButton_openfile, 0, 0, 1, 1);
 
         pushButton_rawcompany = new QPushButton(tab_3);
         pushButton_rawcompany->setObjectName("pushButton_rawcompany");
 
-        verticalLayout_2->addWidget(pushButton_rawcompany);
+        gridLayout_7->addWidget(pushButton_rawcompany, 1, 0, 1, 1);
 
         pushButton_opendicoms = new QPushButton(tab_3);
         pushButton_opendicoms->setObjectName("pushButton_opendicoms");
         pushButton_opendicoms->setMaximumSize(QSize(16777215, 16777215));
         pushButton_opendicoms->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
-        verticalLayout_2->addWidget(pushButton_opendicoms);
+        gridLayout_7->addWidget(pushButton_opendicoms, 2, 0, 1, 1);
 
         pushButton_ti = new QPushButton(tab_3);
         pushButton_ti->setObjectName("pushButton_ti");
 
-        verticalLayout_2->addWidget(pushButton_ti);
+        gridLayout_7->addWidget(pushButton_ti, 3, 0, 1, 1);
 
         pushButton_mian = new QPushButton(tab_3);
         pushButton_mian->setObjectName("pushButton_mian");
 
-        verticalLayout_2->addWidget(pushButton_mian);
+        gridLayout_7->addWidget(pushButton_mian, 4, 0, 1, 1);
 
         comboBox_2 = new QComboBox(tab_3);
         comboBox_2->addItem(QString());
@@ -148,7 +152,7 @@ public:
         comboBox_2->addItem(QString());
         comboBox_2->setObjectName("comboBox_2");
 
-        verticalLayout_2->addWidget(comboBox_2);
+        gridLayout_7->addWidget(comboBox_2, 5, 0, 1, 1);
 
         frame = new QFrame(tab_3);
         frame->setObjectName("frame");
@@ -161,7 +165,7 @@ public:
         frame->setFrameShape(QFrame::Shape::StyledPanel);
         frame->setFrameShadow(QFrame::Shadow::Raised);
 
-        verticalLayout_2->addWidget(frame);
+        gridLayout_7->addWidget(frame, 6, 0, 1, 1);
 
         tabWidget->addTab(tab_3, QString());
         tab_4 = new QWidget();
@@ -269,7 +273,7 @@ public:
         verticalLayout->addWidget(tabWidget);
 
 
-        horizontalLayout_3->addWidget(frame_menu);
+        gridLayout->addWidget(frame_menu, 0, 0, 1, 1);
 
         frame_vtkrender = new QFrame(centralwidget);
         frame_vtkrender->setObjectName("frame_vtkrender");
@@ -280,14 +284,14 @@ public:
 "}"));
         frame_vtkrender->setFrameShape(QFrame::Shape::StyledPanel);
         frame_vtkrender->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_2 = new QHBoxLayout(frame_vtkrender);
-        horizontalLayout_2->setSpacing(0);
-        horizontalLayout_2->setObjectName("horizontalLayout_2");
-        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+        gridLayout_2 = new QGridLayout(frame_vtkrender);
+        gridLayout_2->setObjectName("gridLayout_2");
+        gridLayout_2->setContentsMargins(0, 0, 0, 0);
         openGLWidget = new QVTKOpenGLNativeWidget(frame_vtkrender);
         openGLWidget->setObjectName("openGLWidget");
+        openGLWidget->setMinimumSize(QSize(600, 200));
 
-        horizontalLayout_2->addWidget(openGLWidget);
+        gridLayout_2->addWidget(openGLWidget, 0, 0, 1, 1);
 
         frame_XYZ = new QFrame(frame_vtkrender);
         frame_XYZ->setObjectName("frame_XYZ");
@@ -304,86 +308,133 @@ public:
 "}"));
         frame_XYZ->setFrameShape(QFrame::Shape::StyledPanel);
         frame_XYZ->setFrameShadow(QFrame::Shadow::Raised);
+        gridLayout_3 = new QGridLayout(frame_XYZ);
+        gridLayout_3->setObjectName("gridLayout_3");
         frame_AXIAL = new QFrame(frame_XYZ);
         frame_AXIAL->setObjectName("frame_AXIAL");
-        frame_AXIAL->setGeometry(QRect(50, 10, 450, 350));
         frame_AXIAL->setStyleSheet(QString::fromUtf8("QFrame {\n"
 "    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
 "    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
 "}"));
         frame_AXIAL->setFrameShape(QFrame::Shape::StyledPanel);
         frame_AXIAL->setFrameShadow(QFrame::Shadow::Raised);
-        openGLWidget_AXIAL = new QOpenGLWidget(frame_AXIAL);
-        openGLWidget_AXIAL->setObjectName("openGLWidget_AXIAL");
-        openGLWidget_AXIAL->setGeometry(QRect(90, 0, 300, 300));
-        Slider_AXIAL = new QSlider(frame_AXIAL);
-        Slider_AXIAL->setObjectName("Slider_AXIAL");
-        Slider_AXIAL->setGeometry(QRect(90, 320, 301, 16));
-        Slider_AXIAL->setOrientation(Qt::Orientation::Horizontal);
+        gridLayout_4 = new QGridLayout(frame_AXIAL);
+        gridLayout_4->setObjectName("gridLayout_4");
         label_AXIALMIN = new QLabel(frame_AXIAL);
         label_AXIALMIN->setObjectName("label_AXIALMIN");
-        label_AXIALMIN->setGeometry(QRect(20, 0, 54, 16));
+
+        gridLayout_4->addWidget(label_AXIALMIN, 0, 0, 1, 1);
+
+        openGLWidget_AXIAL = new QOpenGLWidget(frame_AXIAL);
+        openGLWidget_AXIAL->setObjectName("openGLWidget_AXIAL");
+        openGLWidget_AXIAL->setMinimumSize(QSize(100, 100));
+
+        gridLayout_4->addWidget(openGLWidget_AXIAL, 0, 1, 1, 1);
+
         label_AXIAL_2 = new QLabel(frame_AXIAL);
         label_AXIAL_2->setObjectName("label_AXIAL_2");
-        label_AXIAL_2->setGeometry(QRect(60, 320, 21, 16));
+
+        gridLayout_4->addWidget(label_AXIAL_2, 1, 0, 1, 1);
+
+        Slider_AXIAL = new QSlider(frame_AXIAL);
+        Slider_AXIAL->setObjectName("Slider_AXIAL");
+        Slider_AXIAL->setOrientation(Qt::Orientation::Horizontal);
+
+        gridLayout_4->addWidget(Slider_AXIAL, 1, 1, 1, 1);
+
         label_AXIALMAX = new QLabel(frame_AXIAL);
         label_AXIALMAX->setObjectName("label_AXIALMAX");
-        label_AXIALMAX->setGeometry(QRect(400, 320, 54, 16));
+
+        gridLayout_4->addWidget(label_AXIALMAX, 1, 2, 1, 1);
+
+
+        gridLayout_3->addWidget(frame_AXIAL, 0, 0, 1, 1);
+
         frame_CORONAL = new QFrame(frame_XYZ);
         frame_CORONAL->setObjectName("frame_CORONAL");
-        frame_CORONAL->setGeometry(QRect(50, 370, 450, 350));
         frame_CORONAL->setStyleSheet(QString::fromUtf8("QFrame {\n"
 "    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
 "    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
 "}"));
         frame_CORONAL->setFrameShape(QFrame::Shape::StyledPanel);
         frame_CORONAL->setFrameShadow(QFrame::Shadow::Raised);
-        openGLWidget_CORONAL = new QOpenGLWidget(frame_CORONAL);
-        openGLWidget_CORONAL->setObjectName("openGLWidget_CORONAL");
-        openGLWidget_CORONAL->setGeometry(QRect(90, 0, 300, 300));
-        Slider_CORONAL = new QSlider(frame_CORONAL);
-        Slider_CORONAL->setObjectName("Slider_CORONAL");
-        Slider_CORONAL->setGeometry(QRect(90, 320, 301, 16));
-        Slider_CORONAL->setOrientation(Qt::Orientation::Horizontal);
+        gridLayout_5 = new QGridLayout(frame_CORONAL);
+        gridLayout_5->setObjectName("gridLayout_5");
         label_CORONAL = new QLabel(frame_CORONAL);
         label_CORONAL->setObjectName("label_CORONAL");
-        label_CORONAL->setGeometry(QRect(20, 0, 54, 16));
+
+        gridLayout_5->addWidget(label_CORONAL, 0, 0, 1, 1);
+
+        openGLWidget_CORONAL = new QOpenGLWidget(frame_CORONAL);
+        openGLWidget_CORONAL->setObjectName("openGLWidget_CORONAL");
+        openGLWidget_CORONAL->setMinimumSize(QSize(100, 100));
+
+        gridLayout_5->addWidget(openGLWidget_CORONAL, 0, 1, 1, 1);
+
         label_CORONALMIN = new QLabel(frame_CORONAL);
         label_CORONALMIN->setObjectName("label_CORONALMIN");
-        label_CORONALMIN->setGeometry(QRect(60, 320, 21, 16));
+
+        gridLayout_5->addWidget(label_CORONALMIN, 1, 0, 1, 1);
+
+        Slider_CORONAL = new QSlider(frame_CORONAL);
+        Slider_CORONAL->setObjectName("Slider_CORONAL");
+        Slider_CORONAL->setOrientation(Qt::Orientation::Horizontal);
+
+        gridLayout_5->addWidget(Slider_CORONAL, 1, 1, 1, 1);
+
         label_CORONALMAX = new QLabel(frame_CORONAL);
         label_CORONALMAX->setObjectName("label_CORONALMAX");
-        label_CORONALMAX->setGeometry(QRect(400, 320, 31, 16));
+
+        gridLayout_5->addWidget(label_CORONALMAX, 1, 2, 1, 1);
+
+
+        gridLayout_3->addWidget(frame_CORONAL, 1, 0, 1, 1);
+
         frame_SAGITTAL = new QFrame(frame_XYZ);
         frame_SAGITTAL->setObjectName("frame_SAGITTAL");
-        frame_SAGITTAL->setGeometry(QRect(50, 730, 450, 350));
         frame_SAGITTAL->setStyleSheet(QString::fromUtf8("QFrame {\n"
 "    background-color: transparent; /* \350\203\214\346\231\257\351\200\217\346\230\216 */\n"
 "    border: none;                /* \347\247\273\351\231\244\350\276\271\346\241\206 */\n"
 "}"));
         frame_SAGITTAL->setFrameShape(QFrame::Shape::StyledPanel);
         frame_SAGITTAL->setFrameShadow(QFrame::Shadow::Raised);
-        openGLWidget_SAGITTAL = new QOpenGLWidget(frame_SAGITTAL);
-        openGLWidget_SAGITTAL->setObjectName("openGLWidget_SAGITTAL");
-        openGLWidget_SAGITTAL->setGeometry(QRect(90, 0, 300, 300));
-        Slider_SAGITTAL = new QSlider(frame_SAGITTAL);
-        Slider_SAGITTAL->setObjectName("Slider_SAGITTAL");
-        Slider_SAGITTAL->setGeometry(QRect(90, 320, 301, 16));
-        Slider_SAGITTAL->setOrientation(Qt::Orientation::Horizontal);
+        gridLayout_6 = new QGridLayout(frame_SAGITTAL);
+        gridLayout_6->setObjectName("gridLayout_6");
         label_SAGITTAL = new QLabel(frame_SAGITTAL);
         label_SAGITTAL->setObjectName("label_SAGITTAL");
-        label_SAGITTAL->setGeometry(QRect(20, 0, 54, 16));
+
+        gridLayout_6->addWidget(label_SAGITTAL, 0, 0, 1, 1);
+
+        openGLWidget_SAGITTAL = new QOpenGLWidget(frame_SAGITTAL);
+        openGLWidget_SAGITTAL->setObjectName("openGLWidget_SAGITTAL");
+        openGLWidget_SAGITTAL->setMinimumSize(QSize(100, 100));
+
+        gridLayout_6->addWidget(openGLWidget_SAGITTAL, 0, 1, 1, 1);
+
         label_SAGITTALMIN = new QLabel(frame_SAGITTAL);
         label_SAGITTALMIN->setObjectName("label_SAGITTALMIN");
-        label_SAGITTALMIN->setGeometry(QRect(60, 320, 21, 16));
+
+        gridLayout_6->addWidget(label_SAGITTALMIN, 1, 0, 1, 1);
+
+        Slider_SAGITTAL = new QSlider(frame_SAGITTAL);
+        Slider_SAGITTAL->setObjectName("Slider_SAGITTAL");
+        Slider_SAGITTAL->setOrientation(Qt::Orientation::Horizontal);
+
+        gridLayout_6->addWidget(Slider_SAGITTAL, 1, 1, 1, 1);
+
         label_SAGITTALMAX = new QLabel(frame_SAGITTAL);
         label_SAGITTALMAX->setObjectName("label_SAGITTALMAX");
-        label_SAGITTALMAX->setGeometry(QRect(400, 320, 31, 16));
 
-        horizontalLayout_2->addWidget(frame_XYZ);
+        gridLayout_6->addWidget(label_SAGITTALMAX, 1, 2, 1, 1);
 
 
-        horizontalLayout_3->addWidget(frame_vtkrender);
+        gridLayout_3->addWidget(frame_SAGITTAL, 2, 0, 1, 1);
+
+
+        gridLayout_2->addWidget(frame_XYZ, 0, 1, 1, 1);
+
+
+        gridLayout->addWidget(frame_vtkrender, 0, 1, 1, 1);
 
         MainWindow_UI->setCentralWidget(centralwidget);
 #if QT_CONFIG(shortcut)

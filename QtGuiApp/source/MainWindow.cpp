@@ -12,6 +12,7 @@
 #include <memory>
 #include "VisualizationManager.h"
 #include "MainWindow-MEDQT.h"
+#include <GlobalConfig.h>
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
     m_VisualManager(std::make_unique<VisualizationManager>()),
@@ -21,6 +22,7 @@ MainWindow::MainWindow(QWidget* parent)
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
     m_ui->setupUi(this);
     initSlots();
+    UpdateSize();
     UpdateGUI();
 }
 
@@ -242,7 +244,7 @@ void MainWindow::UpdateGUI()
     auto vtkWidget = m_VisualManager->getVTKWidget();
     if (!vtkWidget)
         return;
-
+    
     // 移除旧的 openGLWidget
     if (m_ui->openGLWidget) {
         m_ui->openGLWidget->setParent(nullptr);
@@ -250,8 +252,8 @@ void MainWindow::UpdateGUI()
     }
     m_VisualManager->getVTKWidget()->setParent(m_ui->frame_vtkrender);
     m_VisualManager->getVTKWidget()->setObjectName("VTKopenGLWidget");
-    m_ui->horizontalLayout_2->insertWidget(0,vtkWidget);
-
+    //m_ui->gridLayout_2->insertWidget(0,vtkWidget);
+    m_ui->gridLayout_2->addWidget(vtkWidget, 0, 0, 1, 1);
     // 移除旧的 openGLWidget_AXIAL
     if (m_ui->openGLWidget_AXIAL) 
     {
@@ -260,8 +262,8 @@ void MainWindow::UpdateGUI()
     }
     m_VisualManager->getVTKWidget_Axial()->setParent(m_ui->frame_AXIAL);
     m_VisualManager->getVTKWidget_Axial()->setObjectName("openGLWidget_AXIAL");
-    m_VisualManager->getVTKWidget_Axial()->setGeometry(QRect(90, 0, 300, 300));
-
+    m_VisualManager->getVTKWidget_Axial()->setMinimumSize(QSize(100, 100));
+    m_ui->gridLayout_4->addWidget(m_VisualManager->getVTKWidget_Axial(), 0, 1, 1, 1);
 	// 移除旧的 openGLWidget_CORONAL
 	if (m_ui->openGLWidget_CORONAL) 
     {
@@ -270,7 +272,8 @@ void MainWindow::UpdateGUI()
 	}
     m_VisualManager->getVTKWidget_Coronal()->setParent(m_ui->frame_CORONAL);
     m_VisualManager->getVTKWidget_Coronal()->setObjectName("openGLWidget_CORONAL");
-    m_VisualManager->getVTKWidget_Coronal()->setGeometry(QRect(90, 0, 300, 300));
+    m_VisualManager->getVTKWidget_Coronal()->setMinimumSize(QSize(100, 100));
+    m_ui->gridLayout_5->addWidget(m_VisualManager->getVTKWidget_Coronal(), 0, 1, 1, 1);
 
 	// 移除旧的 openGLWidget_SAGITTAL
 	if (m_ui->openGLWidget_SAGITTAL) {
@@ -279,8 +282,15 @@ void MainWindow::UpdateGUI()
 	}
     m_VisualManager->getVTKWidget_Sagittal()->setParent(m_ui->frame_SAGITTAL);
     m_VisualManager->getVTKWidget_Sagittal()->setObjectName("openGLWidget_SAGITTAL");
-    m_VisualManager->getVTKWidget_Sagittal()->setGeometry(QRect(90, 0, 300, 300));
+    m_VisualManager->getVTKWidget_Sagittal()->setMinimumSize(QSize(100, 100));
+    m_ui->gridLayout_6->addWidget(m_VisualManager->getVTKWidget_Sagittal(), 0, 1, 1, 1);
+}
 
+void MainWindow::UpdateSize()
+{
+	sysconfig::GlobalConfig& config = sysconfig::GlobalConfig::get();
+    QSize windowsize = config.getAdjustedSize();
+    this->resize(windowsize);
 }
 
 void MainWindow::loadStyleSheet(const QString& path)
