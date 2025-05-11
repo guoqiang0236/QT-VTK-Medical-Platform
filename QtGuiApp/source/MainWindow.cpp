@@ -233,7 +233,7 @@ void MainWindow::initSlots()
 {
 	m_current_time = new QTimer(this);
 	connect(m_current_time, &QTimer::timeout, this, &MainWindow::Change_CurrentTime);
-    m_current_time->start(200);
+    m_current_time->start(1000);
     connect(m_ui->pushButton_rawcompany, &QPushButton::clicked, this, &MainWindow::ReadFile);
     connect(m_ui->pushButton_openfile, &QPushButton::clicked, this, &MainWindow::ReadFile);
     connect(m_ui->pushButton_opendicoms, &QPushButton::clicked, this, &MainWindow::ReadFiles);
