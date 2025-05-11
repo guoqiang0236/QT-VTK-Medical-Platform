@@ -22,6 +22,7 @@ VisualizationManager::VisualizationManager(QObject* parent)
     initializeResources();
 	dir_path = "";
     rawdata_path = "";
+    
 }
 
 VisualizationManager::~VisualizationManager() {
@@ -221,35 +222,42 @@ void VisualizationManager::loadCompanyRawData(const QString& filePath)
 void VisualizationManager::loadDicomSingleFile(const QString& filePath)
 {
     m_dicom2DViewer = std::make_unique<Viewer2D>(m_vtkWidget);
+	m_dicom2DViewer->initializeReader(filePath.toStdString());
+
     m_dicom2DViewer->loadDicomFile(filePath.toStdString());
     emit loadDicomFileFinish();
 }
 
 void VisualizationManager::loadDicomSeries(const QString& dirPath) {
-    //cleanupCurrentViewer();
 
 	dir_path = dirPath;
     // 使用本地编码而不是UTF-8，适应Windows文件系统API
     QByteArray localPath = QFile::encodeName(dirPath);
  
     m_dicom2DViewer = std::make_unique<Viewer2D>(m_vtkWidget);
+    m_dicom2DViewer->initializeReader(std::string(localPath.constData()));
     m_dicom2DViewer->setOrientation(m_orientation);
 	m_dicom2DViewer->setmessage("MAIN");
     m_dicom2DViewer->loadDicomDirectory(std::string(localPath.constData()));
 
+
+    auto reader = m_dicom2DViewer->getm_dicomreader();
     m_dicom2DViewer_axial = std::make_unique<Viewer2D>(m_vtkWidget_axial);
+    m_dicom2DViewer_axial->setm_reader(reader);
     m_dicom2DViewer_axial->setOrientation(0);
 	m_dicom2DViewer_axial->setmessage("AXIAL");
     m_dicom2DViewer_axial->loadDicomDirectory(std::string(localPath.constData()));
     m_dicom2DViewer_axial->getInteractorStyle()->EnableMouseWheel(false);
 
     m_dicom2DViewer_coronal = std::make_unique<Viewer2D>(m_vtkWidget_coronal);
+    m_dicom2DViewer_coronal->setm_reader(reader);
     m_dicom2DViewer_coronal->setOrientation(1);
     m_dicom2DViewer_coronal->setmessage("CORONAL");
     m_dicom2DViewer_coronal->loadDicomDirectory(std::string(localPath.constData()));
 	m_dicom2DViewer_coronal->getInteractorStyle()->EnableMouseWheel(false);
 
     m_dicom2DViewer_sagittal = std::make_unique<Viewer2D>(m_vtkWidget_sagittal);
+    m_dicom2DViewer_sagittal->setm_reader(reader);
     m_dicom2DViewer_sagittal->setOrientation(2);
     m_dicom2DViewer_sagittal->setmessage("SAGITTAL");
     m_dicom2DViewer_sagittal->loadDicomDirectory(std::string(localPath.constData()));

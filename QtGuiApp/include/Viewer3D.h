@@ -30,9 +30,14 @@ private:
     vtkSmartPointer<vtkSmoothPolyDataFilter> m_smoother;
     vtkSmartPointer<vtkPolyDataMapper> m_mapper;
     vtkSmartPointer<vtkActor> m_actor;
-    vtkSmartPointer<vtkGPUVolumeRayCastMapper> m_volumeMapper;
+    vtkSmartPointer<vtkGPUVolumeRayCastMapper> m_GPUvolumeMapper;
+    vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> m_CPUvolumeMapper;
     vtkSmartPointer<vtkOrientationMarkerWidget> m_orientationMarker; 
     vtkSmartPointer<vtkAxesActor> m_axes; 
+    vtkSmartPointer<vtkColorTransferFunction> m_colorTransferFunction;
+    vtkSmartPointer<vtkPiecewiseFunction> m_opacityTransferFunction;
+    vtkSmartPointer<vtkVolumeProperty> m_volumeProperty;
+    vtkSmartPointer<vtkCubeAxesActor> m_cubeAxesActor;
     double m_threshold = 70.0;
     int m_smoothIterations = 50;
     double m_smoothRelaxation = 0.1;

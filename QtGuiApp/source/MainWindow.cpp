@@ -304,6 +304,9 @@ void MainWindow::UpdateGUI()
     m_VisualManager->getVTKWidget_Sagittal()->setObjectName("openGLWidget_SAGITTAL");
     m_VisualManager->getVTKWidget_Sagittal()->setMinimumSize(QSize(100, 100));
     m_ui->gridLayout_6->addWidget(m_VisualManager->getVTKWidget_Sagittal(), 0, 1, 1, 1);
+
+    //禁止使用面绘制（卡顿）
+    m_ui->pushButton_mian->setEnabled(false);
 }
 
 void MainWindow::UpdateSize()

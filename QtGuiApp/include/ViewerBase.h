@@ -13,6 +13,7 @@ public:
 	vtkImageReader* getm_imagereader() { return m_imagereader.Get(); }
 	void setm__imagereader(vtkSmartPointer<vtkImageReader> reader) { m_imagereader = reader; }
     vtkRenderer* GetRenderer() const { return m_renderer; }
+    void initializeReader(const std::string& path);
 protected:
     explicit ViewerBase(QVTKOpenGLNativeWidget* widget);
     int GBKToUTF8(unsigned char* lpGBKStr, unsigned char* lpUTF8Str, int nUTF8StrLen);
@@ -20,7 +21,7 @@ protected:
 
     std::string gbk_to_utf8(const char* strGBK);
 	
-    void initializeReader(const std::string& path);
+   
     void initializeImageReader(const std::string& path);
     void setupRenderWindow();
     virtual void cleanup();

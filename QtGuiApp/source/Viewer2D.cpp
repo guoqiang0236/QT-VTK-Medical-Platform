@@ -36,7 +36,6 @@ Viewer2D::~Viewer2D()
 
 void Viewer2D::loadDicomFile(const std::string& path) {
     cleanup();
-    initializeReader(path);
     setupViewer();
     resetCamera();
 }
@@ -45,15 +44,11 @@ void Viewer2D::loadDicomDirectory(const std::string& path)
 {
     try {
         cleanup();
-        initializeReader(path);
         setViewOrientation(static_cast<SliceOrientation>(m_orientation));
         setupViewer();
         setupAnnotations();
         setupInteractor();
         resetCamera();
-       
-        m_vtkWidget->renderWindow()->Render();
-        //m_vtkWidget->renderWindow()->GetInteractor()->Start();
     }
     catch (const std::runtime_error& e) {
         std::cerr << "Runtime error: " << e.what() << std::endl;
@@ -322,7 +317,6 @@ void Viewer2D::setViewOrientation(SliceOrientation orientation) {
         m_interactorStyle->EnableMouseWheel(true);
         break;
     }
-    resetCamera();
 }
 void Viewer2D::setrawdataViewOrientation(SliceOrientation orientation)
 {
@@ -394,7 +388,7 @@ void Viewer2D::cleanup()
     m_renderer = vtkRenderer::New();
     m_imageViewer = vtkSmartPointer<vtkImageViewer2>::New();
     m_interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    m_dicomreader = nullptr;
+    
 }
 void Viewer2D::startInteractor()
 {

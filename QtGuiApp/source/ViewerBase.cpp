@@ -73,14 +73,13 @@ std::string ViewerBase::gbk_to_utf8(const char* strGBK)
     return "";
 }
 void ViewerBase::initializeReader(const std::string& path) {
-    m_dicomreader = vtkSmartPointer<vtkDICOMImageReader>::New();
+    if(!m_dicomreader)
+        m_dicomreader = vtkSmartPointer<vtkDICOMImageReader>::New();
     if (std::filesystem::is_directory(path)) {
-        //m_dicomreader->SetDirectoryName(path.c_str());
         m_dicomreader->SetDirectoryName(gbk_to_utf8(path.c_str()).c_str());
 
     }
     else {
-        //m_dicomreader->SetFileName(path.c_str());
         m_dicomreader->SetFileName(gbk_to_utf8(path.c_str()).c_str());
 
     }
