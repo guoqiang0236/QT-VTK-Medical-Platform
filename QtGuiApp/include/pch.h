@@ -20,6 +20,8 @@
 #include <QComboBox>
 #include <QQuickWidget>
 #include <QVTKOpenGLNativeWidget.h>
+#include <QDateTime>
+#include <QTimer>
 
 // VTK 相关头文件
 #include <vtkCamera.h>

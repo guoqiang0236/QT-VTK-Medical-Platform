@@ -1,7 +1,7 @@
 ﻿#ifndef MED_IMG_MAINWINDOW_H
 #define MED_IMG_MAINWINDOW_H
 #include "pch.h"
-
+#include "MyThread.h"
 #include <memory>
 
 class QVTKOpenGLNativeWidget;
@@ -33,18 +33,23 @@ private slots:
 	void SetCurrentSAGITTALSliderValue(int slice);
     void ShutDown();
     void OnAnimationFinished();
+    void Change_CurrentTime();
+
 
 private:
     void initSlots();
     void UpdateGUI();
     void UpdateSize();
     void loadStyleSheet(const QString& path); // 动态加载 QSS
+    void InitNumThread();
+
 
 private:
     std::unique_ptr <Ui::MainWindow_UI> m_ui;
     std::unique_ptr <QQuickWidget> m_LoadingWidget;
     std::unique_ptr<VisualizationManager> m_VisualManager;
-	
+    MyThread* m_thread; 
+	QTimer* m_current_time;
 };
 
 #endif // MED_IMG_MAINWINDOW_H

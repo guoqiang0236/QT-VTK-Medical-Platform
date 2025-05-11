@@ -13,10 +13,13 @@
 #include "VisualizationManager.h"
 #include "MainWindow-MEDQT.h"
 #include <GlobalConfig.h>
+#include <thread>
+#include <iostream>
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
     m_VisualManager(std::make_unique<VisualizationManager>()),
-    m_ui(std::make_unique<Ui::MainWindow_UI>())
+    m_ui(std::make_unique<Ui::MainWindow_UI>()),
+    m_thread(new MyThread(this))
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
@@ -24,6 +27,7 @@ MainWindow::MainWindow(QWidget* parent)
     initSlots();
     UpdateSize();
     UpdateGUI();
+    InitNumThread();
 }
 
 MainWindow::~MainWindow() = default;
@@ -39,7 +43,7 @@ void MainWindow::ReadFile()
         if (senderObject == m_ui->pushButton_rawcompany) {
             m_VisualManager->setm_bcompanyrawdata(true);
         }
-        m_VisualManager->loadFile(fileName);   
+        m_VisualManager->loadFile(fileName);     
     }
 
 }
@@ -217,8 +221,19 @@ void MainWindow::OnAnimationFinished()
 {
 }
 
+void MainWindow::Change_CurrentTime()
+{
+	QString currentTime = QDateTime::currentDateTime().toString("HH:mm:ss");
+	m_ui->label_currenttime->setText(currentTime);
+}
+
+
+
 void MainWindow::initSlots()
 {
+	m_current_time = new QTimer(this);
+	connect(m_current_time, &QTimer::timeout, this, &MainWindow::Change_CurrentTime);
+    m_current_time->start(200);
     connect(m_ui->pushButton_rawcompany, &QPushButton::clicked, this, &MainWindow::ReadFile);
     connect(m_ui->pushButton_openfile, &QPushButton::clicked, this, &MainWindow::ReadFile);
     connect(m_ui->pushButton_opendicoms, &QPushButton::clicked, this, &MainWindow::ReadFiles);
@@ -234,6 +249,11 @@ void MainWindow::initSlots()
 	connect(m_ui->Slider_AXIAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setAxialSlice);
 	connect(m_ui->Slider_CORONAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setCoronalSlice);
 	connect(m_ui->Slider_SAGITTAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setSagittalSlice);
+
+    //test thread 
+	connect(m_thread, &MyThread::numberGenerated, this, [this](int num) {
+		m_ui->label_showthreadnum->setText(QString::number(num));
+		});
 }
 
 void MainWindow::UpdateGUI()
@@ -307,5 +327,23 @@ void MainWindow::loadStyleSheet(const QString& path)
     }
     else {
         qWarning() << "无法打开 QSS 文件:" << path;
+    }
+}
+
+void MainWindow::InitNumThread()
+{
+    int idealThreads = MyThread::idealThreadCount(); // 获取硬件支持的最大线程数
+    int activeThreads = MyThread::getActiveThreadCount();
+    qDebug() << "硬件支持的最大线程数: " << idealThreads;
+    qDebug() << "现在活跃的线程数: " << activeThreads;
+
+    if (!m_thread->isRunning())
+    {
+        m_thread->setPriority(QThread::LowestPriority); // 设置线程优先级
+        m_thread->start(); // 启动线程
+    }
+    else
+    {
+        qWarning() << "线程正在运行，无法启动新任务！";
     }
 }
