@@ -55,14 +55,13 @@ void MainWindow::ReadFiles()
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (!folderPath.isEmpty() && m_VisualManager) 
-    {
-        //..m_VisualManager->loadDicomSeries(folderPath);     
+    {    
         // 方案1: 转换为本地编码
         QByteArray utf8Path = folderPath.toUtf8();
         QString utf8FolderPath = QString::fromUtf8(utf8Path.constData());
         m_VisualManager->setFlieType(VtkFileType::DICOM_SERIES);
         m_VisualManager->loadFiles(utf8FolderPath);
-        //m_VisualManager->loadDicomSeries(utf8FolderPath);
+        
     }
 }
 
@@ -223,7 +222,7 @@ void MainWindow::OnAnimationFinished()
 
 void MainWindow::Change_CurrentTime()
 {
-	QString currentTime = QDateTime::currentDateTime().toString("HH:mm:ss");
+    QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
 	m_ui->label_currenttime->setText(currentTime);
 }
 
@@ -264,16 +263,15 @@ void MainWindow::UpdateGUI()
     auto vtkWidget = m_VisualManager->getVTKWidget();
     if (!vtkWidget)
         return;
-    
+	m_ui->label_hospital->setText("上海市第六人民医院临港分院");
     // 移除旧的 openGLWidget
     if (m_ui->openGLWidget) {
         m_ui->openGLWidget->setParent(nullptr);
         m_ui->openGLWidget->deleteLater();
     }
-    m_VisualManager->getVTKWidget()->setParent(m_ui->frame_vtkrender);
+    m_VisualManager->getVTKWidget()->setMinimumSize(QSize(400, 500));
     m_VisualManager->getVTKWidget()->setObjectName("VTKopenGLWidget");
-    //m_ui->gridLayout_2->insertWidget(0,vtkWidget);
-    m_ui->gridLayout_2->addWidget(vtkWidget, 0, 0, 1, 1);
+    m_ui->gridLayout_8->addWidget(vtkWidget, 1, 0, 1, 1);
     // 移除旧的 openGLWidget_AXIAL
     if (m_ui->openGLWidget_AXIAL) 
     {
