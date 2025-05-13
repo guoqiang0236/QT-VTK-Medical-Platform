@@ -22,6 +22,7 @@
 #include <QVTKOpenGLNativeWidget.h>
 #include <QDateTime>
 #include <QTimer>
+#include <QThreadPool>
 
 // VTK 相关头文件
 #include <vtkCamera.h>

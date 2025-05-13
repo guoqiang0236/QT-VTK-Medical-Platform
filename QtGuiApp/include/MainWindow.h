@@ -2,6 +2,8 @@
 #define MED_IMG_MAINWINDOW_H
 #include "pch.h"
 #include "MyThread.h"
+#include "MyThread_work.h"
+#include "MyThread_QRunnable.h"
 #include <memory>
 
 class QVTKOpenGLNativeWidget;
@@ -34,7 +36,8 @@ private slots:
     void ShutDown();
     void OnAnimationFinished();
     void Change_CurrentTime();
-
+signals:
+    void numcounttaskstarted(); // 任务开始信号
 
 private:
     void initSlots();
@@ -49,7 +52,11 @@ private:
     std::unique_ptr <QQuickWidget> m_LoadingWidget;
     std::unique_ptr<VisualizationManager> m_VisualManager;
     MyThread* m_thread; 
+	MyThread_work* m_thread_work;
+	MyThread_Runnable* m_thread_runnable;
 	QTimer* m_current_time;
+    QThread* m_sub;
+   
 };
 
 #endif // MED_IMG_MAINWINDOW_H

@@ -1,4 +1,4 @@
-/********************************************************************************
+﻿/********************************************************************************
 ** Form generated from reading UI file 'MainWindow-MEDQT.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.8.2

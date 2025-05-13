@@ -19,7 +19,10 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
     m_VisualManager(std::make_unique<VisualizationManager>()),
     m_ui(std::make_unique<Ui::MainWindow_UI>()),
-    m_thread(new MyThread(this))
+    m_thread(new MyThread(this)),
+    m_thread_work(new MyThread_work(this)),
+	m_thread_runnable(new MyThread_Runnable(this)),
+    m_sub(new QThread(this))
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
@@ -30,7 +33,17 @@ MainWindow::MainWindow(QWidget* parent)
     InitNumThread();
 }
 
-MainWindow::~MainWindow() = default;
+MainWindow::~MainWindow() 
+{
+    if (m_sub)
+    {
+        if (m_sub->isRunning())
+        {
+            m_sub->quit();
+            m_sub->wait();
+        }
+    }
+};
 
 void MainWindow::ReadFile()
 {
@@ -249,10 +262,7 @@ void MainWindow::initSlots()
 	connect(m_ui->Slider_CORONAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setCoronalSlice);
 	connect(m_ui->Slider_SAGITTAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setSagittalSlice);
 
-    //test thread 
-	connect(m_thread, &MyThread::numberGenerated, this, [this](int num) {
-		m_ui->label_showthreadnum->setText(QString::number(num));
-		});
+ 
 }
 
 void MainWindow::UpdateGUI()
@@ -333,18 +343,49 @@ void MainWindow::loadStyleSheet(const QString& path)
 
 void MainWindow::InitNumThread()
 {
-    int idealThreads = MyThread::idealThreadCount(); // 获取硬件支持的最大线程数
-    int activeThreads = MyThread::getActiveThreadCount();
-    qDebug() << "硬件支持的最大线程数: " << idealThreads;
-    qDebug() << "现在活跃的线程数: " << activeThreads;
+    //方式一QThread
+    //int idealThreads = MyThread::idealThreadCount(); // 获取硬件支持的最大线程数
+    //int activeThreads = MyThread::getActiveThreadCount();
+    //qDebug() << "硬件支持的最大线程数: " << idealThreads;
+    //qDebug() << "现在活跃的线程数: " << activeThreads;
 
-    if (!m_thread->isRunning())
+    //if (!m_thread->isRunning())
+    //{
+    //    m_thread->setPriority(QThread::LowestPriority); // 设置线程优先级
+    //    m_thread->start(); // 启动线程
+    //}
+    //else
+    //{
+    //    qWarning() << "线程正在运行，无法启动新任务！";
+    //}
+  /*  connect(m_thread, &MyThread::numberGenerated, this, [this](int num) {
+        m_ui->label_showthreadnum->setText(QString::number(num));
+        });*/
+
+    //方式二QObject
+     // 创建线程对象
+    /*
+    if (m_thread_work)
     {
-        m_thread->setPriority(QThread::LowestPriority); // 设置线程优先级
-        m_thread->start(); // 启动线程
+        m_thread_work->moveToThread(m_sub);
     }
-    else
-    {
-        qWarning() << "线程正在运行，无法启动新任务！";
-    }
+    m_sub->start();
+	connect(m_thread_work, &MyThread_work::numberGenerated, this, [this](int num) {
+		m_ui->label_showthreadnum->setText(QString::number(num));
+		});
+    connect(this, &MainWindow::numcounttaskstarted, m_thread_work, &MyThread_work::working);
+    emit numcounttaskstarted();*/
+
+    //方式三 线程池
+    QThreadPool::globalInstance()->setMaxThreadCount(4);
+	if (m_thread_runnable)
+	{
+		QThreadPool::globalInstance()->start(m_thread_runnable);
+	}
+    connect(m_thread_runnable, &MyThread_Runnable::numberGenerated, this, [this](int num) {
+
+        m_ui->label_showthreadnum->setText(QString::number(num));
+        });
+    
+
 }
