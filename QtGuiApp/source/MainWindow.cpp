@@ -1,6 +1,6 @@
 ﻿#include "MainWindow.h"
 // 移除不存在的头文件
-
+#include <vtkImageData.h>
 #include <vtkSphereSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
@@ -15,6 +15,7 @@
 #include <GlobalConfig.h>
 #include <thread>
 #include <iostream>
+#include <vtkImageFlip.h>
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
     m_VisualManager(std::make_unique<VisualizationManager>()),
@@ -22,15 +23,17 @@ MainWindow::MainWindow(QWidget* parent)
     m_thread(new MyThread(this)),
     m_thread_work(new MyThread_work(this)),
 	m_thread_runnable(new MyThread_Runnable(this)),
-    m_sub(new QThread(this))
+    m_sub(new QThread(this)),
+    m_numsub(new QThread(this)),
+    m_dcmtkscp(std::make_unique<MyCStoreSCP>())
 {
-    setWindowFlags(Qt::FramelessWindowHint);
+    //setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
     m_ui->setupUi(this);
     initSlots();
     UpdateSize();
     UpdateGUI();
-    InitNumThread();
+    InitThread();
 }
 
 MainWindow::~MainWindow() 
@@ -41,6 +44,14 @@ MainWindow::~MainWindow()
         {
             m_sub->quit();
             m_sub->wait();
+        }
+    }
+    if (m_numsub)
+    {
+        if (m_numsub->isRunning())
+        {
+            m_numsub->quit();
+            m_numsub->wait();
         }
     }
 };
@@ -341,7 +352,7 @@ void MainWindow::loadStyleSheet(const QString& path)
     }
 }
 
-void MainWindow::InitNumThread()
+void MainWindow::InitThread()
 {
     //方式一QThread
     //int idealThreads = MyThread::idealThreadCount(); // 获取硬件支持的最大线程数
@@ -364,20 +375,20 @@ void MainWindow::InitNumThread()
 
     //方式二QObject
      // 创建线程对象
-    /*
+    
     if (m_thread_work)
     {
-        m_thread_work->moveToThread(m_sub);
+        m_thread_work->moveToThread(m_numsub);
     }
-    m_sub->start();
+    m_numsub->start();
 	connect(m_thread_work, &MyThread_work::numberGenerated, this, [this](int num) {
 		m_ui->label_showthreadnum->setText(QString::number(num));
 		});
     connect(this, &MainWindow::numcounttaskstarted, m_thread_work, &MyThread_work::working);
-    emit numcounttaskstarted();*/
+    emit numcounttaskstarted();
 
     //方式三 线程池
-    QThreadPool::globalInstance()->setMaxThreadCount(4);
+    /*QThreadPool::globalInstance()->setMaxThreadCount(4);
 	if (m_thread_runnable)
 	{
 		QThreadPool::globalInstance()->start(m_thread_runnable);
@@ -386,6 +397,83 @@ void MainWindow::InitNumThread()
 
         m_ui->label_showthreadnum->setText(QString::number(num));
         });
-    
+    */
 
+
+    
+    //多线程dcmtk接收
+    // 设置 SCP 的 AE Title 和监听端口
+    m_dcmtkscp->setAETitle("MY_SCP");
+    m_dcmtkscp->setPort(11112);
+
+    // 创建一个 OFList<OFString> 并添加传输语法
+    OFList<OFString> transferSyntaxes;
+    transferSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+
+    // 调用 addPresentationContext 方法
+    m_dcmtkscp->addPresentationContext(UID_CTImageStorage, transferSyntaxes);
+    m_dcmtkscp->moveToThread(m_sub);
+   
+    // 启动监听的槽函数（假设你有 startSCP() 方法）
+    QObject::connect(m_sub, &QThread::started, [this]() {
+        m_dcmtkscp->start(); // start() 是 DcmSCP 的监听方法
+        });
+
+    // 处理信号
+    QObject::connect(m_dcmtkscp.get(), &MyCStoreSCP::dicomReceived, this, [this]() {
+        
+        ViewDataset(m_dcmtkscp.get()->getDataset());
+        });
+
+
+    QObject::connect(m_sub, &QThread::finished, m_sub, &QObject::deleteLater);
+
+    m_sub->start();
+}
+
+void MainWindow::ViewDataset(DcmDataset* dataset)
+{
+    // 1. 获取图像尺寸和像素信息
+    Uint16 rows = 0, cols = 0, bitsAllocated = 0;
+    dataset->findAndGetUint16(DCM_Rows, rows);
+    dataset->findAndGetUint16(DCM_Columns, cols);
+    dataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
+
+    // 2. 获取像素数据指针
+    const void* pixelData = nullptr;
+    dataset->findAndGetUint8Array(DCM_PixelData, (const Uint8*&)pixelData);
+    if (!pixelData) {
+        qDebug() << "像素数据为空";
+        return;
+    }
+
+    // 3. 创建 vtkImageData 并填充
+    auto imageData = vtkSmartPointer<vtkImageData>::New();
+    imageData->SetDimensions(cols, rows, 1);
+
+    if (bitsAllocated == 8) {
+        imageData->AllocateScalars(VTK_UNSIGNED_CHAR, 1);
+        memcpy(imageData->GetScalarPointer(), pixelData, rows * cols * sizeof(Uint8));
+    }
+    else if (bitsAllocated == 16) {
+        imageData->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
+        memcpy(imageData->GetScalarPointer(), pixelData, rows * cols * sizeof(Uint16));
+    }
+    else {
+        qDebug() << "不支持的像素位数:" << bitsAllocated;
+        return;
+    }
+    // 4. 添加垂直翻转（解决180度倒置问题）
+    auto flipFilter = vtkSmartPointer<vtkImageFlip>::New();
+    flipFilter->SetFilteredAxis(1);  // 沿Y轴翻转（垂直方向）
+    flipFilter->SetInputData(imageData);
+    flipFilter->Update();
+
+    // 5. 用 VTK 显示
+    auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
+    viewer->SetInputConnection(flipFilter->GetOutputPort()); // 使用翻转后的数据
+    //viewer->SetInputData(imageData);
+    viewer->SetRenderWindow(m_VisualManager->getVTKWidget()->renderWindow());
+    viewer->Render();
+   
 }

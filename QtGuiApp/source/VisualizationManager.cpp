@@ -206,6 +206,8 @@ void VisualizationManager::loadRawData(const QString& filePath)
     m_dicom2DViewer_sagittal->startInteractor();
 }
 
+
+
 void VisualizationManager::loadCompanyRawData(const QString& filePath)
 {
     m_dicom2DViewer = std::make_unique<Viewer2D>(m_vtkWidget);

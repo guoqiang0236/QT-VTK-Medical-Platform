@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.20)
 project(QtGuiApp LANGUAGES CXX)
 
 # 启用 AUTOMOC（关键！）
@@ -16,8 +16,8 @@ qt_add_resources(RESOURCES resources.qrc)
 
 # 创建可执行文件
 # 根据构建类型动态设置 WIN32 选项
-add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} res/icon/apprc.rc)  # Release 模式：无控制台
-#add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
+#add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} res/icon/apprc.rc)  # Release 模式：无控制台
+add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
 
 # 包含目录（修正路径）
 target_include_directories(QtGuiApp PRIVATE
@@ -27,6 +27,33 @@ target_include_directories(QtGuiApp PRIVATE
 )
 # 添加预编译头支持
 target_precompile_headers(QtGuiApp PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
+
+
+# 路径配置
+set(DCMTK_ROOT ${CMAKE_CURRENT_LIST_DIR}/Dcmtk3.6.9)
+message(STATUS "DCMTK ITEM Include dir: ${DCMTK_ROOT}/include")
+
+# 推荐用 target_include_directories
+target_include_directories(QtGuiApp
+    PRIVATE
+        ${DCMTK_ROOT}/include
+)
+
+target_link_directories(QtGuiApp
+    PRIVATE
+        ${DCMTK_ROOT}/lib
+)
+# 调整库列表
+set(DCMTK_LIBS
+    iphlpapi
+    ws2_32
+    wsock32
+    netapi32
+    ofstd
+    oflog
+    dcmnet 
+    dcmdata
+)
 
 # 链接库（补充关键 VTK 模块）
 target_link_libraries(QtGuiApp PRIVATE
@@ -58,10 +85,12 @@ target_link_libraries(QtGuiApp PRIVATE
     VTK::FiltersGeometry
     VTK::FiltersModeling
     VtkApp
+    ${DCMTK_LIBS}
 )
 # 链接VtkApp库
 # 包含 vtkapp 的头文件目录
 include_directories("${CMAKE_SOURCE_DIR}/VtkAPP/include")
+
 # 设置 VTK 模块依赖（确保头文件正确处理）
 if(TARGET VTK::moc)
     add_dependencies(QtGuiApp VTK::moc)

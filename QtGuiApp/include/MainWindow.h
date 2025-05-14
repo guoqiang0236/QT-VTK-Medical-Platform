@@ -4,8 +4,8 @@
 #include "MyThread.h"
 #include "MyThread_work.h"
 #include "MyThread_QRunnable.h"
+#include "MyCStoreSCP.h"
 #include <memory>
-
 class QVTKOpenGLNativeWidget;
 class vtkRenderer;
 class VisualizationManager;
@@ -44,9 +44,9 @@ private:
     void UpdateGUI();
     void UpdateSize();
     void loadStyleSheet(const QString& path); // 动态加载 QSS
-    void InitNumThread();
-
-
+    void InitThread();
+    void ViewDataset(DcmDataset* dataset);
+	
 private:
     std::unique_ptr <Ui::MainWindow_UI> m_ui;
     std::unique_ptr <QQuickWidget> m_LoadingWidget;
@@ -56,7 +56,10 @@ private:
 	MyThread_Runnable* m_thread_runnable;
 	QTimer* m_current_time;
     QThread* m_sub;
-   
+    QThread* m_numsub;
+    //DCMTKSOP
+    std::unique_ptr <MyCStoreSCP> m_dcmtkscp;
+    
 };
 
 #endif // MED_IMG_MAINWINDOW_H

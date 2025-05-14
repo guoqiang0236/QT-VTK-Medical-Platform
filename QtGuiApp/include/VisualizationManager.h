@@ -34,6 +34,7 @@ public:
     void loadFile(const QString& filePath);
     void loadFiles(const QString& filePath);
     void loadRawData(const QString& filePath);
+
     void loadCompanyRawData(const QString& filePath);
     void loadDicomSingleFile(const QString& filePath);
     void loadDicomSeries(const QString& dirPath);
