@@ -6,6 +6,8 @@
 #include "MyThread_QRunnable.h"
 #include "MyCStoreSCP.h"
 #include <memory>
+#include <mutex>
+#include "DcmCStoreSender.h"
 class QVTKOpenGLNativeWidget;
 class vtkRenderer;
 class VisualizationManager;
@@ -59,7 +61,8 @@ private:
     QThread* m_numsub;
     //DCMTKSOP
     std::unique_ptr <MyCStoreSCP> m_dcmtkscp;
-    
+    std::mutex m_mutex;
+	DcmCStoreSender m_dcmCStoreSender;
 };
 
 #endif // MED_IMG_MAINWINDOW_H

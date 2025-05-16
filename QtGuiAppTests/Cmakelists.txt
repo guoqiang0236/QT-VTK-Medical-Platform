@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 手动指定 GTest 的路径
-set(GTEST_ROOT "D:/gtest/install") # 替换为 GTest 的根目录路径
+set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/Packages/GoogleTest") # 替换为 GTest 的根目录路径
 set(GTEST_INCLUDE_DIR "${GTEST_ROOT}/include")
 set(GTEST_LIB_DIR "${GTEST_ROOT}/lib")
 

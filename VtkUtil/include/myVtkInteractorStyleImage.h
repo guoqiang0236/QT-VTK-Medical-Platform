@@ -1,7 +1,7 @@
 ﻿#ifndef MY_VTK_INTERACTOR_STYLE_IMAGE_H
 #define MY_VTK_INTERACTOR_STYLE_IMAGE_H
 
-#include "VtkApp_Export.h"
+#include "VtkUtil_Export.h"
 #include <vtkNamedColors.h>
 #include <vtkNew.h>
 #include <vtkRenderWindow.h>
@@ -25,7 +25,7 @@ public:
     }
 };
 
-class VTKAPP_API myVtkInteractorStyleImage : public vtkInteractorStyleImage {
+class VTKUTIL_API myVtkInteractorStyleImage : public vtkInteractorStyleImage {
 public:
     using SliceChangedCallback = std::function<void(int)>;
 

@@ -403,15 +403,17 @@ void MainWindow::InitThread()
     
     //多线程dcmtk接收
     // 设置 SCP 的 AE Title 和监听端口
-    m_dcmtkscp->setAETitle("MY_SCP");
+    m_dcmtkscp->setAETitle("SCP_DEMO");
     m_dcmtkscp->setPort(11112);
 
-    // 创建一个 OFList<OFString> 并添加传输语法
-    OFList<OFString> transferSyntaxes;
-    transferSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+    // 支持超声、二次捕获、CT等
+OFList<OFString> transferSyntaxes;
+transferSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+transferSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
 
-    // 调用 addPresentationContext 方法
-    m_dcmtkscp->addPresentationContext(UID_CTImageStorage, transferSyntaxes);
+m_dcmtkscp->addPresentationContext(UID_UltrasoundImageStorage, transferSyntaxes);
+// 如需支持CT也可保留
+//m_dcmtkscp->addPresentationContext(UID_CTImageStorage, transferSyntaxes);
     m_dcmtkscp->moveToThread(m_sub);
    
     // 启动监听的槽函数（假设你有 startSCP() 方法）
@@ -420,9 +422,8 @@ void MainWindow::InitThread()
         });
 
     // 处理信号
-    QObject::connect(m_dcmtkscp.get(), &MyCStoreSCP::dicomReceived, this, [this]() {
-        
-        ViewDataset(m_dcmtkscp.get()->getDataset());
+    connect(m_dcmtkscp.get(), &MyCStoreSCP::dicomReceived, this, [this](std::shared_ptr<DcmDataset> datasetPtr) {
+        if (datasetPtr) ViewDataset(datasetPtr.get());
         });
 
 
@@ -434,16 +435,27 @@ void MainWindow::InitThread()
 void MainWindow::ViewDataset(DcmDataset* dataset)
 {
     // 1. 获取图像尺寸和像素信息
-    Uint16 rows = 0, cols = 0, bitsAllocated = 0;
+    Uint16 rows = 0, cols = 0, bitsAllocated = 0, samplesPerPixel = 1;
+    OFString photoMetric;
     dataset->findAndGetUint16(DCM_Rows, rows);
     dataset->findAndGetUint16(DCM_Columns, cols);
     dataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
+    dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel);
+    dataset->findAndGetOFString(DCM_PhotometricInterpretation, photoMetric);
+
+    // 参数有效性检查
+    if (rows == 0 || cols == 0 || (samplesPerPixel != 1 && samplesPerPixel != 3) ||
+        (bitsAllocated != 8 && bitsAllocated != 16)) {
+        qDebug() << "DICOM参数异常: rows=" << rows << ", cols=" << cols
+            << ", bitsAllocated=" << bitsAllocated << ", samplesPerPixel=" << samplesPerPixel;
+        return;
+    }
 
     // 2. 获取像素数据指针
-    const void* pixelData = nullptr;
-    dataset->findAndGetUint8Array(DCM_PixelData, (const Uint8*&)pixelData);
-    if (!pixelData) {
-        qDebug() << "像素数据为空";
+    const Uint8* pixelData = nullptr;
+    OFCondition cond = dataset->findAndGetUint8Array(DCM_PixelData, pixelData);
+    if (!cond.good() || !pixelData) {
+        qDebug() << "像素数据为空或获取失败";
         return;
     }
 
@@ -451,29 +463,43 @@ void MainWindow::ViewDataset(DcmDataset* dataset)
     auto imageData = vtkSmartPointer<vtkImageData>::New();
     imageData->SetDimensions(cols, rows, 1);
 
-    if (bitsAllocated == 8) {
-        imageData->AllocateScalars(VTK_UNSIGNED_CHAR, 1);
-        memcpy(imageData->GetScalarPointer(), pixelData, rows * cols * sizeof(Uint8));
+    size_t expectedSize = 0;
+    if (bitsAllocated == 8 && samplesPerPixel == 3 && photoMetric == "RGB") {
+        expectedSize = static_cast<size_t>(rows) * cols * 3 * sizeof(Uint8);
+        imageData->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
     }
-    else if (bitsAllocated == 16) {
+    else if (bitsAllocated == 8 && samplesPerPixel == 1) {
+        expectedSize = static_cast<size_t>(rows) * cols * sizeof(Uint8);
+        imageData->AllocateScalars(VTK_UNSIGNED_CHAR, 1);
+    }
+    else if (bitsAllocated == 16 && samplesPerPixel == 1) {
+        expectedSize = static_cast<size_t>(rows) * cols * sizeof(Uint16);
         imageData->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
-        memcpy(imageData->GetScalarPointer(), pixelData, rows * cols * sizeof(Uint16));
     }
     else {
-        qDebug() << "不支持的像素位数:" << bitsAllocated;
+        qDebug() << "不支持的像素格式: bitsAllocated=" << bitsAllocated
+            << ", samplesPerPixel=" << samplesPerPixel
+            << ", photoMetric=" << photoMetric.c_str();
         return;
     }
-    // 4. 添加垂直翻转（解决180度倒置问题）
+
+    // 4. 拷贝像素数据
+    void* dest = imageData->GetScalarPointer();
+    if (!dest) {
+        qDebug() << "VTK内存分配失败";
+        return;
+    }
+    memcpy(dest, pixelData, expectedSize);
+
+    // 5. 添加垂直翻转（解决180度倒置问题）
     auto flipFilter = vtkSmartPointer<vtkImageFlip>::New();
     flipFilter->SetFilteredAxis(1);  // 沿Y轴翻转（垂直方向）
     flipFilter->SetInputData(imageData);
     flipFilter->Update();
 
-    // 5. 用 VTK 显示
+    // 6. 用 VTK 显示
     auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
     viewer->SetInputConnection(flipFilter->GetOutputPort()); // 使用翻转后的数据
-    //viewer->SetInputData(imageData);
     viewer->SetRenderWindow(m_VisualManager->getVTKWidget()->renderWindow());
     viewer->Render();
-   
 }

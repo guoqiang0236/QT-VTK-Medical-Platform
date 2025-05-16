@@ -1,0 +1,45 @@
+cmake_minimum_required(VERSION 3.20)
+set (OpenCV_DIR "${CMAKE_SOURCE_DIR}/Packages/OpenCV4100")
+
+find_package(OpenCV REQUIRED)
+
+
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
+    "source/*.cpp"
+    "include/*.h"
+)
+# 创建动态库目标（SHARED表示生成DLL）
+add_library(OpenCVUtil SHARED ${SRC_FILES})
+# 添加预编译头支持
+target_precompile_headers(OpenCVUtil PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
+# 设置DLL导出宏（Windows下需要）
+if(WIN32)
+    target_compile_definitions(OpenCVUtil PRIVATE OPENCVUTIL_EXPORTS)
+endif()
+
+# 链接OpenCV库
+target_include_directories(OpenCVUtil
+    PRIVATE
+        ${OpenCV_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_directories(OpenCVUtil
+    PRIVATE
+        ${OpenCV_LIB_DIR}
+)
+
+
+
+target_link_libraries(OpenCVUtil 
+    PRIVATE
+        ${OpenCV_LIBS}
+)
+
+# 复制 opencv_world*.dll 到可执行文件目录
+add_custom_command(TARGET OpenCVUtil POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${OpenCV_DIR}/x64/vc17/bin/opencv_world4100d.dll"
+    "${OpenCV_DIR}/x64/vc17/bin/opencv_world4100.dll"
+    $<TARGET_FILE_DIR:OpenCVUtil>
+)

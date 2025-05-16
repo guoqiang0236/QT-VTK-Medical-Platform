@@ -10,19 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 设置路径优先级
 list(APPEND CMAKE_PREFIX_PATH
     "D:/QT/6.8.2/msvc2022_64"
-    "D:/vtk9.4.1/VTK-QT/VTK-INSTALL"
+    "${CMAKE_SOURCE_DIR}/Packages/VTK9.4.1"
 )
-set(VTK_COMPONENTS
-    CommonCore
-    RenderingCore
-    GUISupportQt
-    RenderingOpenGL2
-    InteractionStyle
-    FiltersCore
-    FiltersSources
-    FiltersParallel
-    IOGeometry
-)
+
 # 现代化输出目录管理（重要！）
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
@@ -35,15 +25,9 @@ foreach(OUTPUTCONFIG IN ITEMS DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONFIG} ${CMAKE_CURRENT_LIST_DIR}/bin/${OUTPUTCONFIG})
 endforeach()
 
-# 查找依赖
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets Quick QuickWidgets)
-find_package(VTK REQUIRED)
-
-if(NOT VTK_FOUND)
-    message(FATAL_ERROR "VTK not found!")
-endif()
-
 # 添加子项目
-add_subdirectory(VtkAPP)
+add_subdirectory(VtkUtil)
 add_subdirectory(QtGuiApp)
 add_subdirectory(QtGuiAppTests)
+add_subdirectory(DcmtkUtil)
+add_subdirectory(OpencvUtil)
