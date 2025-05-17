@@ -1,4 +1,4 @@
-/*****************************************************************************
+ï»¿/*****************************************************************************
  *                                                                           *
  *      COPYRIGHT  2025  -  PULSEVISION TECHNOLOGIES SHANGHAI CO. LTD                 *
  *                                                                           *
@@ -21,7 +21,7 @@
  //
  //    Date     Author    Description
  // ------------------------------------------------------------------------
- // 12/03/2025  ¹ùÇ¿                  ÊµÏÖÊÓÆµ²¶×½ºÍ²¥·Å
+ // 12/03/2025  éƒ­å¼º                  å®ç°è§†é¢‘æ•æ‰å’Œæ’­æ”¾
  //
  //***************************************************************************
 
@@ -32,10 +32,10 @@
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: COpencvVideo()
-// ÃèÊö: COpencvVideoÀàµÄ¹¹Ôìº¯Êı£¬³õÊ¼»¯³ÉÔ±±äÁ¿
-// ÊäÈë: ÎŞ
-// Êä³ö: ÎŞ
+// å‡½æ•°å: COpencvVideo()
+// æè¿°: COpencvVideoç±»çš„æ„é€ å‡½æ•°ï¼Œåˆå§‹åŒ–æˆå‘˜å˜é‡
+// è¾“å…¥: æ— 
+// è¾“å‡º: æ— 
 //------------------------------------------------------------------
 COpencvVideo::COpencvVideo()
 	: m_bPlaying(false), m_bPaused(false), m_hWnd(nullptr),
@@ -49,10 +49,10 @@ COpencvVideo::COpencvVideo()
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: ~COpencvVideo()
-// ÃèÊö: COpencvVideoÀàµÄÎö¹¹º¯Êı£¬Í£Ö¹ÊÓÆµ²¥·Å²¢ÊÍ·Å×ÊÔ´
-// ÊäÈë: ÎŞ
-// Êä³ö: ÎŞ
+// å‡½æ•°å: ~COpencvVideo()
+// æè¿°: COpencvVideoç±»çš„ææ„å‡½æ•°ï¼Œåœæ­¢è§†é¢‘æ’­æ”¾å¹¶é‡Šæ”¾èµ„æº
+// è¾“å…¥: æ— 
+// è¾“å‡º: æ— 
 //------------------------------------------------------------------
 
 COpencvVideo::~COpencvVideo()
@@ -63,10 +63,10 @@ COpencvVideo::~COpencvVideo()
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: OpenVideo()
-// ÃèÊö: ´ò¿ªÖ¸¶¨Â·¾¶µÄÊÓÆµÎÄ¼ş£¬»ñÈ¡ÊÓÆµ²ÎÊı
-// ÊäÈë: ÊÓÆµÎÄ¼şµÄÂ·¾¶
-// Êä³ö: ´ò¿ª³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
+// å‡½æ•°å: OpenVideo()
+// æè¿°: æ‰“å¼€æŒ‡å®šè·¯å¾„çš„è§†é¢‘æ–‡ä»¶ï¼Œè·å–è§†é¢‘å‚æ•°
+// è¾“å…¥: è§†é¢‘æ–‡ä»¶çš„è·¯å¾„
+// è¾“å‡º: æ‰“å¼€æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
 //------------------------------------------------------------------
 bool COpencvVideo::OpenVideo(const char* path)
 {
@@ -79,13 +79,13 @@ bool COpencvVideo::OpenVideo(const char* path)
 	EnterCriticalSection(&csPlaying);
 	m_videoPath = path;
 	LeaveCriticalSection(&csPlaying);
-	// »ñÈ¡ÊÓÆµ²ÎÊı
+	// è·å–è§†é¢‘å‚æ•°
 	int w = static_cast<int>(capture->get(cv::CAP_PROP_FRAME_WIDTH));
 	int h = static_cast<int>(capture->get(cv::CAP_PROP_FRAME_HEIGHT));
 	double fps = capture->get(cv::CAP_PROP_FPS);
 	m_totalFrames = static_cast<long>(capture->get(cv::CAP_PROP_FRAME_COUNT));
 
-	// ±¸ÓÃ·½Ê½»ñÈ¡×ÜÖ¡Êı£¨Ä³Ğ©¸ñÊ½¿ÉÄÜ²»Ö§³Ö£©
+	// å¤‡ç”¨æ–¹å¼è·å–æ€»å¸§æ•°ï¼ˆæŸäº›æ ¼å¼å¯èƒ½ä¸æ”¯æŒï¼‰
 	if (m_totalFrames <= 0) {
 		double duration = capture->get(cv::CAP_PROP_POS_MSEC);
 		if (duration > 0 && fps > 0) {
@@ -93,7 +93,7 @@ bool COpencvVideo::OpenVideo(const char* path)
 		}
 	}
 
-	// ÑéÖ¤³ß´çÓĞĞ§ĞÔ
+	// éªŒè¯å°ºå¯¸æœ‰æ•ˆæ€§
 	if (w <= 0 || h <= 0) {
 		delete capture;
 		return false;
@@ -105,14 +105,14 @@ bool COpencvVideo::OpenVideo(const char* path)
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: UpdateRECT()
-// ÃèÊö: ¸üĞÂÊÓÆµÏÔÊ¾µÄ¾ØĞÎÇøÓò£¬Ê¹ÊÓÆµ¾ÓÖĞÏÔÊ¾
-// ÊäÈë: Òª¸üĞÂµÄ¾ØĞÎÇøÓò
-// Êä³ö: ¸üĞÂ³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
+// å‡½æ•°å: UpdateRECT()
+// æè¿°: æ›´æ–°è§†é¢‘æ˜¾ç¤ºçš„çŸ©å½¢åŒºåŸŸï¼Œä½¿è§†é¢‘å±…ä¸­æ˜¾ç¤º
+// è¾“å…¥: è¦æ›´æ–°çš„çŸ©å½¢åŒºåŸŸ
+// è¾“å‡º: æ›´æ–°æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
 //------------------------------------------------------------------
 bool COpencvVideo::UpdateRECT(RECT rect)
 {
-	// ¾ÓÖĞÏÔÊ¾¼ÆËã
+	// å±…ä¸­æ˜¾ç¤ºè®¡ç®—
 	m_rect = rect;
 	cv::VideoCapture* capture = static_cast<cv::VideoCapture*>(m_pVideoCapture);
 	if (!capture)
@@ -130,10 +130,10 @@ bool COpencvVideo::UpdateRECT(RECT rect)
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: PlayVideo()
-// ÃèÊö: ²¥·ÅÊÓÆµ
-// ÊäÈë: ²¥·Å´°¿Ú¾ä±ú
-// Êä³ö: ÊÇ·ñ³É¹¦±êÖ¾
+// å‡½æ•°å: PlayVideo()
+// æè¿°: æ’­æ”¾è§†é¢‘
+// è¾“å…¥: æ’­æ”¾çª—å£å¥æŸ„
+// è¾“å‡º: æ˜¯å¦æˆåŠŸæ ‡å¿—
 //------------------------------------------------------------------
 
 bool COpencvVideo::PlayVideo(void* hWnd)
@@ -167,15 +167,15 @@ bool COpencvVideo::PlayVideo(void* hWnd)
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: StopVideo()
-// ÃèÊö: Í£Ö¹ÊÓÆµ²¥·Å£¬ÊÍ·ÅÏà¹Ø×ÊÔ´
-// ÊäÈë: ÎŞ
-// Êä³ö: ÎŞ
+// å‡½æ•°å: StopVideo()
+// æè¿°: åœæ­¢è§†é¢‘æ’­æ”¾ï¼Œé‡Šæ”¾ç›¸å…³èµ„æº
+// è¾“å…¥: æ— 
+// è¾“å‡º: æ— 
 //------------------------------------------------------------------
 void COpencvVideo::StopVideo()
 {
 	EnterCriticalSection(&csPlaying);
-	// Çå¿Õ´°¿ÚÄÚÈİ
+	// æ¸…ç©ºçª—å£å†…å®¹
 	if (m_hWnd) {
 		HDC hDC = GetDC(m_hWnd);
 		if (hDC) {
@@ -186,7 +186,7 @@ void COpencvVideo::StopVideo()
 			DeleteObject(hBrush);
 			ReleaseDC(m_hWnd, hDC);
 		}
-		// Ë¢ĞÂ´°¿Ú£¬È·±£Çå¿ÕÏÔÊ¾
+		// åˆ·æ–°çª—å£ï¼Œç¡®ä¿æ¸…ç©ºæ˜¾ç¤º
 		InvalidateRect(m_hWnd, NULL, TRUE);
 		UpdateWindow(m_hWnd);
 	}
@@ -195,7 +195,7 @@ void COpencvVideo::StopVideo()
 		m_bPaused = false;
 		LeaveCriticalSection(&csPlaying);
 
-		// µÈ´ıÏß³Ì°²È«ÍË³ö
+		// ç­‰å¾…çº¿ç¨‹å®‰å…¨é€€å‡º
 		WaitForSingleObject(hPlayingThread, INFINITE);
 		CloseHandle(hPlayingThread);
 		hPlayingThread = NULL;
@@ -204,7 +204,7 @@ void COpencvVideo::StopVideo()
 		LeaveCriticalSection(&csPlaying);
 	}
 	
-	// ÏÔÊ½ÊÍ·ÅVideoCapture×ÊÔ´
+	// æ˜¾å¼é‡Šæ”¾VideoCaptureèµ„æº
 	if (m_pVideoCapture) 
 	{
 		static_cast<cv::VideoCapture*>(m_pVideoCapture)->release();
@@ -215,10 +215,10 @@ void COpencvVideo::StopVideo()
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: PauseVideo()
-// ÃèÊö: ÔİÍ£ÊÓÆµ²¥·Å
-// ÊäÈë: ÎŞ
-// Êä³ö: ÎŞ
+// å‡½æ•°å: PauseVideo()
+// æè¿°: æš‚åœè§†é¢‘æ’­æ”¾
+// è¾“å…¥: æ— 
+// è¾“å‡º: æ— 
 //------------------------------------------------------------------
 void COpencvVideo::PauseVideo()
 {
@@ -232,10 +232,10 @@ void COpencvVideo::PauseVideo()
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: ResumeVideo()
-// ÃèÊö: »Ö¸´ÊÓÆµ²¥·Å
-// ÊäÈë: ÎŞ
-// Êä³ö: ÎŞ
+// å‡½æ•°å: ResumeVideo()
+// æè¿°: æ¢å¤è§†é¢‘æ’­æ”¾
+// è¾“å…¥: æ— 
+// è¾“å‡º: æ— 
 //------------------------------------------------------------------
 void COpencvVideo::ResumeVideo()
 {
@@ -250,10 +250,10 @@ void COpencvVideo::ResumeVideo()
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: IsPlaying()
-// ÃèÊö: ÅĞ¶ÏÊÓÆµÊÇ·ñÕıÔÚ²¥·Å
-// ÊäÈë: ÎŞ
-// Êä³ö: ÕıÔÚ²¥·Å·µ»Øtrue£¬·ñÔò·µ»Øfalse
+// å‡½æ•°å: IsPlaying()
+// æè¿°: åˆ¤æ–­è§†é¢‘æ˜¯å¦æ­£åœ¨æ’­æ”¾
+// è¾“å…¥: æ— 
+// è¾“å‡º: æ­£åœ¨æ’­æ”¾è¿”å›trueï¼Œå¦åˆ™è¿”å›false
 //------------------------------------------------------------------
 bool COpencvVideo::IsPlaying() const
 {
@@ -265,10 +265,10 @@ bool COpencvVideo::IsPlaying() const
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: IsPaused()
-// ÃèÊö: ÅĞ¶ÏÊÓÆµÊÇ·ñ´¦ÓÚÔİÍ£×´Ì¬
-// ÊäÈë: ÎŞ
-// Êä³ö: ´¦ÓÚÔİÍ£×´Ì¬·µ»Øtrue£¬·ñÔò·µ»Øfalse
+// å‡½æ•°å: IsPaused()
+// æè¿°: åˆ¤æ–­è§†é¢‘æ˜¯å¦å¤„äºæš‚åœçŠ¶æ€
+// è¾“å…¥: æ— 
+// è¾“å‡º: å¤„äºæš‚åœçŠ¶æ€è¿”å›trueï¼Œå¦åˆ™è¿”å›false
 //------------------------------------------------------------------
 bool COpencvVideo::IsPaused() const
 {
@@ -280,16 +280,16 @@ bool COpencvVideo::IsPaused() const
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: SetNotifyWindow()
-// ÃèÊö: ÉèÖÃÓÃÓÚ½ÓÊÕÊÓÆµ²¥·Å½ø¶ÈÍ¨ÖªµÄ´°¿Ú¾ä±ú
-// ÊäÈë: ´°¿Ú¾ä±ú
-// Êä³ö: ÎŞ
+// å‡½æ•°å: SetNotifyWindow()
+// æè¿°: è®¾ç½®ç”¨äºæ¥æ”¶è§†é¢‘æ’­æ”¾è¿›åº¦é€šçŸ¥çš„çª—å£å¥æŸ„
+// è¾“å…¥: çª—å£å¥æŸ„
+// è¾“å‡º: æ— 
 //------------------------------------------------------------------
 void COpencvVideo::SetNotifyWindow(HWND hWnd)
 {
 	EnterCriticalSection(&csPlaying);
 	m_hwndNotify = hWnd;
-	//×ö½ø¶ÈÌõÓÃ
+	//åšè¿›åº¦æ¡ç”¨
 	if (m_hwndNotify)
 	{
 		
@@ -299,10 +299,10 @@ void COpencvVideo::SetNotifyWindow(HWND hWnd)
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: GetTotalFrames()
-// ÃèÊö: »ñÈ¡ÊÓÆµµÄ×ÜÖ¡Êı
-// ÊäÈë: ÎŞ
-// Êä³ö: ÊÓÆµµÄ×ÜÖ¡Êı
+// å‡½æ•°å: GetTotalFrames()
+// æè¿°: è·å–è§†é¢‘çš„æ€»å¸§æ•°
+// è¾“å…¥: æ— 
+// è¾“å‡º: è§†é¢‘çš„æ€»å¸§æ•°
 //------------------------------------------------------------------
 long COpencvVideo::GetTotalFrames() const
 {
@@ -314,10 +314,10 @@ long COpencvVideo::GetTotalFrames() const
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: GetCurrentFrame()
-// ÃèÊö: »ñÈ¡ÊÓÆµµ±Ç°²¥·ÅµÄÖ¡Êı
-// ÊäÈë: ÎŞ
-// Êä³ö: ÊÓÆµµ±Ç°²¥·ÅµÄÖ¡Êı
+// å‡½æ•°å: GetCurrentFrame()
+// æè¿°: è·å–è§†é¢‘å½“å‰æ’­æ”¾çš„å¸§æ•°
+// è¾“å…¥: æ— 
+// è¾“å‡º: è§†é¢‘å½“å‰æ’­æ”¾çš„å¸§æ•°
 //------------------------------------------------------------------
 long COpencvVideo::GetCurrentFrame() const
 {
@@ -329,10 +329,10 @@ long COpencvVideo::GetCurrentFrame() const
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: SeekToPosition()
-// ÃèÊö: ½«ÊÓÆµ¶¨Î»µ½Ö¸¶¨µÄ²¥·ÅÎ»ÖÃ
-// ÊäÈë: ²¥·ÅÎ»ÖÃ£¬·¶Î§Îª0µ½1.0
-// Êä³ö: ¶¨Î»³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
+// å‡½æ•°å: SeekToPosition()
+// æè¿°: å°†è§†é¢‘å®šä½åˆ°æŒ‡å®šçš„æ’­æ”¾ä½ç½®
+// è¾“å…¥: æ’­æ”¾ä½ç½®ï¼ŒèŒƒå›´ä¸º0åˆ°1.0
+// è¾“å‡º: å®šä½æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
 //------------------------------------------------------------------
 bool COpencvVideo::SeekToPosition(double pos)
 {
@@ -347,11 +347,11 @@ bool COpencvVideo::SeekToPosition(double pos)
 	wasPaused = m_bPaused;
 
 	if (wasPlaying && !wasPaused) {
-		m_bPaused = true; // ÔİÍ£È·±£¶¨Î»×¼È·
+		m_bPaused = true; // æš‚åœç¡®ä¿å®šä½å‡†ç¡®
 	}
 	LeaveCriticalSection(&csPlaying);
 
-	// ¼ÆËãÄ¿±êÖ¡
+	// è®¡ç®—ç›®æ ‡å¸§
 	long targetFrame = static_cast<long>(pos * m_totalFrames);
 	Sleep(20);
 	bool success = capture->set(cv::CAP_PROP_POS_FRAMES, targetFrame);
@@ -362,7 +362,7 @@ bool COpencvVideo::SeekToPosition(double pos)
 	}
 	LeaveCriticalSection(&csPlaying);
 
-	// Èç¹û´¦ÓÚÔİÍ£×´Ì¬£¬¶ÁÈ¡²¢ÏÔÊ¾Ò»Ö¡
+	// å¦‚æœå¤„äºæš‚åœçŠ¶æ€ï¼Œè¯»å–å¹¶æ˜¾ç¤ºä¸€å¸§
 	if (wasPaused) {
 		cv::Mat frame;
 		*capture >> frame;
@@ -371,7 +371,7 @@ bool COpencvVideo::SeekToPosition(double pos)
 			if (hDC) {
 				RECT rc;
 				GetClientRect(m_hWnd, &rc);
-				//¶ÔÆë4×Ö½Ú·ñÔòÊÓÆµ²¥·Å³öÎÊÌâ
+				//å¯¹é½4å­—èŠ‚å¦åˆ™è§†é¢‘æ’­æ”¾å‡ºé—®é¢˜
 				int w = rc.right - rc.left;
 				int h = rc.bottom - rc.top;
 				float ratio = (float)h / (float)w;
@@ -409,10 +409,10 @@ bool COpencvVideo::SeekToPosition(double pos)
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: GetMyRect()
-// ÃèÊö: »ñÈ¡ÊÓÆµÏÔÊ¾µÄ¾ØĞÎÇøÓò
-// ÊäÈë: ÎŞ
-// Êä³ö: ÊÓÆµÏÔÊ¾µÄ¾ØĞÎÇøÓò
+// å‡½æ•°å: GetMyRect()
+// æè¿°: è·å–è§†é¢‘æ˜¾ç¤ºçš„çŸ©å½¢åŒºåŸŸ
+// è¾“å…¥: æ— 
+// è¾“å‡º: è§†é¢‘æ˜¾ç¤ºçš„çŸ©å½¢åŒºåŸŸ
 //------------------------------------------------------------------
 RECT COpencvVideo::GetMyRect()
 {
@@ -441,21 +441,21 @@ void OPENCVUTIL_API COpencvVideo::RefuseOribPaused()
 
 //------------------------------------------------------------------
 //
-// º¯ÊıÃû: PlayingThread()
-// ÃèÊö: ÊÓÆµ²¥·ÅµÄÏß³Ìº¯Êı£¬¸ºÔğ¶ÁÈ¡ÊÓÆµÖ¡²¢ÏÔÊ¾
-// ÊäÈë: Ö¸ÏòCOpencvVideo¶ÔÏóµÄÖ¸Õë
-// Êä³ö: Ïß³ÌÍË³öÂë
+// å‡½æ•°å: PlayingThread()
+// æè¿°: è§†é¢‘æ’­æ”¾çš„çº¿ç¨‹å‡½æ•°ï¼Œè´Ÿè´£è¯»å–è§†é¢‘å¸§å¹¶æ˜¾ç¤º
+// è¾“å…¥: æŒ‡å‘COpencvVideoå¯¹è±¡çš„æŒ‡é’ˆ
+// è¾“å‡º: çº¿ç¨‹é€€å‡ºç 
 //------------------------------------------------------------------
 DWORD WINAPI COpencvVideo::PlayingThread(LPVOID lpParam)
 {
 	COpencvVideo* pThis = static_cast<COpencvVideo*>(lpParam);
 	cv::VideoCapture* capture = static_cast<cv::VideoCapture*>(pThis->m_pVideoCapture);
 
-	// »ñÈ¡ÊÓÆµ²ÎÊı
+	// è·å–è§†é¢‘å‚æ•°
 	double fps = capture->get(cv::CAP_PROP_FPS);
 	int delay = fps > 0 ? static_cast<int>(1000 / fps) : 33;
 
-	// ³õÊ¼»¯BITMAPINFO
+	// åˆå§‹åŒ–BITMAPINFO
 	BITMAPINFOHEADER& bmiHeader = pThis->m_bmpInfo.bmiHeader;
 	bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 	bmiHeader.biPlanes = 1;
@@ -463,7 +463,7 @@ DWORD WINAPI COpencvVideo::PlayingThread(LPVOID lpParam)
 	bmiHeader.biCompression = BI_RGB;
 
 	DWORD lastNotifyTime = 0;
-	const DWORD notifyInterval = 100; // ½ø¶È¸üĞÂ¼ä¸ô100ms
+	const DWORD notifyInterval = 100; // è¿›åº¦æ›´æ–°é—´éš”100ms
 
 	while (true) {
 		EnterCriticalSection(&pThis->csPlaying);
@@ -478,7 +478,7 @@ DWORD WINAPI COpencvVideo::PlayingThread(LPVOID lpParam)
 			continue;
 		}
 
-		// ¼ì²éÊÓÆµÎÄ¼şÊÇ·ñ´æÔÚ
+		// æ£€æŸ¥è§†é¢‘æ–‡ä»¶æ˜¯å¦å­˜åœ¨
 		if (!std::filesystem::exists(pThis->m_videoPath)) {
 			pThis->StopVideo();
 			break;   
@@ -487,13 +487,13 @@ DWORD WINAPI COpencvVideo::PlayingThread(LPVOID lpParam)
 		cv::Mat frame;
 		*capture >> frame;
 
-		// ¼ì²éÊÇ·ñ²¥·Å½áÊø
+		// æ£€æŸ¥æ˜¯å¦æ’­æ”¾ç»“æŸ
 		if (frame.empty()) {
 			EnterCriticalSection(&pThis->csPlaying);
 			std::string videoPath = pThis->m_videoPath;
 			LeaveCriticalSection(&pThis->csPlaying);
 
-			// ÊÍ·Å¾É×ÊÔ´
+			// é‡Šæ”¾æ—§èµ„æº
 			if (capture) {
 				capture->release();
 			}
@@ -502,27 +502,27 @@ DWORD WINAPI COpencvVideo::PlayingThread(LPVOID lpParam)
 			capture = static_cast<cv::VideoCapture*>(pThis->m_pVideoCapture);
 			*capture >> frame;
 			if (!capture->isOpened()) break;
-			continue; // ¼ÌĞøÏÂÒ»ÂÖÑ­»·
+			continue; // ç»§ç»­ä¸‹ä¸€è½®å¾ªç¯
 		}
 
-		// ¸üĞÂµ±Ç°Ö¡
+		// æ›´æ–°å½“å‰å¸§
 		EnterCriticalSection(&pThis->csPlaying);
 		pThis->m_currentFrame = static_cast<long>(
 			capture->get(cv::CAP_PROP_POS_FRAMES));
 		LeaveCriticalSection(&pThis->csPlaying);
 
-		// ·¢ËÍ½ø¶ÈÍ¨Öª
+		// å‘é€è¿›åº¦é€šçŸ¥
 		DWORD currentTime = GetTickCount();
 		if (currentTime - lastNotifyTime >= notifyInterval) {
 
 			lastNotifyTime = currentTime;
 		}
-		// »æÖÆµ½´°¿Ú
+		// ç»˜åˆ¶åˆ°çª—å£
 		HDC hDC = GetDC(pThis->m_hWnd);
 		if (hDC) {
 			RECT rc;
 			GetClientRect(pThis->m_hWnd, &rc);
-			//¶ÔÆë4×Ö½Ú·ñÔòÊÓÆµ²¥·Å³öÎÊÌâ
+			//å¯¹é½4å­—èŠ‚å¦åˆ™è§†é¢‘æ’­æ”¾å‡ºé—®é¢˜
 			int w = rc.right - rc.left;
 			int h = rc.bottom - rc.top;
 			float ratio = (float)h / (float)w;

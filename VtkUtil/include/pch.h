@@ -1,4 +1,4 @@
-// pch.h: This is a precompiled header file.
+ï»¿// pch.h: This is a precompiled header file.
 // Files listed below are compiled only once, improving build performance for future builds.
 // This also affects IntelliSense performance, including code completion and many code browsing features.
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <numeric>
 
-// Qt Ïà¹ØÍ·ÎÄ¼þ
+// Qt ç›¸å…³å¤´æ–‡ä»¶
 #include <QObject>
 #include <QMainWindow>
 #include <QFileDialog>
@@ -27,7 +27,7 @@
 #include <QTimer>
 #include <QThreadPool>
 
-// VTK Ïà¹ØÍ·ÎÄ¼þ
+// VTK ç›¸å…³å¤´æ–‡ä»¶
 #include <vtkCamera.h>
 #include <vtkImageReslice.h>
 #include <vtkMatrix4x4.h>
@@ -39,7 +39,7 @@
 #include <vtkRenderer.h>
 #include <vtkSmoothPolyDataFilter.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
-#include <vtkAbstractVolumeMapper.h>  // ³éÏó»ùÀà
+#include <vtkAbstractVolumeMapper.h>  // æŠ½è±¡åŸºç±»
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkAxesActor.h>
 #include <vtkTextProperty.h>
@@ -56,5 +56,6 @@
 #include <vtkImageViewer2.h>
 #include <vtkPolyData.h>
 #include <vtkFloatArray.h>
+
 
 #endif //PCH_H

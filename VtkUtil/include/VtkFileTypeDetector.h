@@ -1,8 +1,9 @@
 ﻿// VtkFileTypeDetector.h
 #pragma once
 #include <string>
+#include "VtkUtil_Export.h"  // 导出宏头文件
 
-enum class VtkFileType {
+enum class VTKUTIL_API VtkFileType {
     DICOM,
     DICOM_SERIES,
     RAW,
@@ -10,7 +11,7 @@ enum class VtkFileType {
     UNKNOWN
 };
 
-class VtkFileTypeDetector {
+class  VTKUTIL_API VtkFileTypeDetector {
 public:
     VtkFileType detect(const std::string& path) const;
     

@@ -133,12 +133,13 @@ void Viewer2D::loadCompanyRawData(const std::string& path)
 
             if (x < nx - 1 && z < nz - 1) {
                 vtkIdType ids[4] = {
-                    id,
-                    id + 1,
-                    id + nz + 1,
-                    id + nz
+                    static_cast<vtkIdType>(id),
+                    static_cast<vtkIdType>(id + 1),
+                    static_cast<vtkIdType>(id + nz + 1),
+                    static_cast<vtkIdType>(id + nz)
                 };
                 cells->InsertNextCell(4, ids);
+
             }
         }
     }

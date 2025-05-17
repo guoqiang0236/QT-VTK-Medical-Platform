@@ -40,7 +40,7 @@
 #include <vtkRenderer.h>
 #include <vtkSmoothPolyDataFilter.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
-#include <vtkAbstractVolumeMapper.h>  // 抽象基类
+#include <vtkAbstractVolumeMapper.h>  
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkAxesActor.h>
 #include <vtkTextProperty.h>

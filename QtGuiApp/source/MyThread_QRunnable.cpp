@@ -1,11 +1,11 @@
-#include "MyThread_QRunnable.h"
+ï»¿#include "MyThread_QRunnable.h"
 #include <QThread>
 #include <QDebug>
 
 MyThread_Runnable::MyThread_Runnable(QObject* parent)
 {
     
-    // ÈÎÎñÖ´ĞĞÍê±Ï,¸Ã¶ÔÏó×Ô¶¯Ïú»Ù
+    // ä»»åŠ¡æ‰§è¡Œå®Œæ¯•,è¯¥å¯¹è±¡è‡ªåŠ¨é”€æ¯
     setAutoDelete(true);
    
 }
@@ -23,5 +23,5 @@ void MyThread_Runnable::run()
         QThread::usleep(100);
     }
 
-    qDebug() << "run() Ö´ĞĞÍê±Ï, ×ÓÏß³ÌÍË³ö...";
+    qDebug() << "run() æ‰§è¡Œå®Œæ¯•, å­çº¿ç¨‹é€€å‡º...";
 }

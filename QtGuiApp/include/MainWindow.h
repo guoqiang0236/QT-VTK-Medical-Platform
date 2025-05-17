@@ -49,14 +49,14 @@ private:
 private:
     std::mutex m_mutex;
     std::unique_ptr <Ui::MainWindow_UI> m_ui;
-    std::unique_ptr <QQuickWidget> m_LoadingWidget;
-    std::unique_ptr<VisualizationManager> m_VisualManager;
     MyThread* m_thread; 
 	MyThread_Work* m_thread_work;
 	MyThread_Runnable* m_thread_runnable;
 	QTimer* m_current_time;
     QThread* m_sub;
     QThread* m_numsub;
+    //VtkUtil
+    std::unique_ptr<VisualizationManager> m_VisualManager;
     //DcmtkUtil
 	DcmCStoreSender m_dcmCStoreSender;
     //OpenCVUtil

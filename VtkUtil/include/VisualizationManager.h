@@ -1,12 +1,13 @@
 ﻿// VisualizationManager.h
 #pragma once
 #include "pch.h"
+#include "VtkUtil_Export.h"  // 导出宏头文件
 #include "Viewer2D.h"
 #include "Viewer3D.h"
 #include "VtkFileTypeDetector.h"
 
 
-class VisualizationManager : public QObject {
+class VTKUTIL_API VisualizationManager : public QObject {
     Q_OBJECT
 public:
     explicit VisualizationManager(QObject* parent = nullptr);

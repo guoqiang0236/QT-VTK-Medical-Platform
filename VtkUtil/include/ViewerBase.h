@@ -21,7 +21,6 @@ protected:
 	
    
     void initializeImageReader(const std::string& path);
-    void setupRenderWindow();
     virtual void cleanup();
 
     QVTKOpenGLNativeWidget* m_vtkWidget;

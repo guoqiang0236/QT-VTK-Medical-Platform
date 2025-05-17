@@ -14,4 +14,3 @@ void registerMyStructMetaType()
 {
     qRegisterMetaType<MyStruct>("MyStruct");
 }
-声明为元类型
