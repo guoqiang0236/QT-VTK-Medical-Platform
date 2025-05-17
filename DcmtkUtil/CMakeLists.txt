@@ -40,7 +40,7 @@ set(DCMTK_LIBS
 
 # 链接DCMTK库
 target_include_directories(DcmtkUtil
-    PRIVATE
+    PUBLIC  
         ${DCMTK_ROOT}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

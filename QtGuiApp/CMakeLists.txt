@@ -3,6 +3,7 @@ project(QtGuiApp LANGUAGES CXX)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets Quick QuickWidgets)
 find_package(VTK REQUIRED)
+
 if(NOT VTK_FOUND)
     message(FATAL_ERROR "VTK not found!")
 endif()
@@ -28,16 +29,10 @@ add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
 target_include_directories(QtGuiApp PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/include"  # 头文件路径
     ${VTK_INCLUDE_DIRS}
-    "${CMAKE_SOURCE_DIR}/VtkUtil/include"
-    "${CMAKE_SOURCE_DIR}/DcmtkUtil/include"
 )
 # 添加预编译头支持
 target_precompile_headers(QtGuiApp PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
 
-
-# 路径配置
-set(DCMTK_ROOT ${CMAKE_SOURCE_DIR}/Packages/DCMTK3.6.9)
-message(STATUS "DCMTK ITEM Include dir: ${DCMTK_ROOT}/include")
 
 # 推荐用 target_include_directories
 target_include_directories(QtGuiApp
@@ -49,17 +44,6 @@ target_link_directories(QtGuiApp
     PRIVATE
         ${DCMTK_ROOT}/lib
         "${CMAKE_SOURCE_DIR}/lib"
-)
-# 调整库列表
-set(DCMTK_LIBS
-    iphlpapi
-    ws2_32
-    wsock32
-    netapi32
-    ofstd
-    oflog
-    dcmnet 
-    dcmdata
 )
 
 # 链接库（补充关键 VTK 模块）
@@ -92,7 +76,6 @@ target_link_libraries(QtGuiApp PRIVATE
     VTK::FiltersGeometry
     VTK::FiltersModeling
     VtkUtil
-    ${DCMTK_LIBS}
     DcmtkUtil
 )
 

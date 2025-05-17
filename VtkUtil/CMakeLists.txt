@@ -1,6 +1,12 @@
 # 设置CMake最低版本
 cmake_minimum_required(VERSION 3.20)
 
+# 找到Vtk库
+find_package(VTK REQUIRED)
+if (NOT VTK_FOUND)
+  message(FATAL_ERROR "CylinderExample: Unable to find the VTK build folder.")
+endif()
+
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"
     "include/*.h"
@@ -17,13 +23,9 @@ if(WIN32)
 endif()
 
 # 包含头文件目录
-target_include_directories(VtkUtil PRIVATE ${VTK_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(VtkUtil PUBLIC ${VTK_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# 找到Vtk库
-find_package(VTK REQUIRED)
-if (NOT VTK_FOUND)
-  message(FATAL_ERROR "CylinderExample: Unable to find the VTK build folder.")
-endif()
+
 # message(STATUS "VTK_VERSION: ${VTK_VERSION}")
 # message(STATUS "VTK_LIBRARIES: ${VTK_LIBRARIES}")
 # message(STATUS "VTK_INCLUDE_DIRS: ${VTK_INCLUDE_DIRS}")

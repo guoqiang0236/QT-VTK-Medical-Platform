@@ -4,7 +4,6 @@
 #include "MyThread.h"
 #include "MyThread_work.h"
 #include "MyThread_QRunnable.h"
-#include "MyCStoreSCP.h"
 #include <memory>
 #include <mutex>
 #include "DcmCStoreSender.h"
@@ -47,7 +46,7 @@ private:
     void UpdateSize();
     void loadStyleSheet(const QString& path); // 动态加载 QSS
     void InitThread();
-    void ViewDataset(DcmDataset* dataset);
+   
 	
 private:
     std::unique_ptr <Ui::MainWindow_UI> m_ui;
@@ -60,7 +59,6 @@ private:
     QThread* m_sub;
     QThread* m_numsub;
     //DCMTKSOP
-    std::unique_ptr <MyCStoreSCP> m_dcmtkscp;
     std::mutex m_mutex;
 	DcmCStoreSender m_dcmCStoreSender;
 };

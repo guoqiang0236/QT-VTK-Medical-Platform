@@ -19,7 +19,7 @@ endif()
 
 # 链接OpenCV库
 target_include_directories(OpenCVUtil
-    PRIVATE
+    PUBLIC
         ${OpenCV_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

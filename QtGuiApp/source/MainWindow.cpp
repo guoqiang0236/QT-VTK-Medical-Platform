@@ -24,8 +24,7 @@ MainWindow::MainWindow(QWidget* parent)
     m_thread_work(new MyThread_work(this)),
 	m_thread_runnable(new MyThread_Runnable(this)),
     m_sub(new QThread(this)),
-    m_numsub(new QThread(this)),
-    m_dcmtkscp(std::make_unique<MyCStoreSCP>())
+    m_numsub(new QThread(this))
 {
     //setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
@@ -400,106 +399,6 @@ void MainWindow::InitThread()
     */
 
 
-    
-    //多线程dcmtk接收
-    // 设置 SCP 的 AE Title 和监听端口
-    m_dcmtkscp->setAETitle("SCP_DEMO");
-    m_dcmtkscp->setPort(11112);
-
-    // 支持超声、二次捕获、CT等
-OFList<OFString> transferSyntaxes;
-transferSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-transferSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
-
-m_dcmtkscp->addPresentationContext(UID_UltrasoundImageStorage, transferSyntaxes);
-// 如需支持CT也可保留
-//m_dcmtkscp->addPresentationContext(UID_CTImageStorage, transferSyntaxes);
-    m_dcmtkscp->moveToThread(m_sub);
-   
-    // 启动监听的槽函数（假设你有 startSCP() 方法）
-    QObject::connect(m_sub, &QThread::started, [this]() {
-        m_dcmtkscp->start(); // start() 是 DcmSCP 的监听方法
-        });
-
-    // 处理信号
-    connect(m_dcmtkscp.get(), &MyCStoreSCP::dicomReceived, this, [this](std::shared_ptr<DcmDataset> datasetPtr) {
-        if (datasetPtr) ViewDataset(datasetPtr.get());
-        });
-
-
-    QObject::connect(m_sub, &QThread::finished, m_sub, &QObject::deleteLater);
-
-    m_sub->start();
 }
 
-void MainWindow::ViewDataset(DcmDataset* dataset)
-{
-    // 1. 获取图像尺寸和像素信息
-    Uint16 rows = 0, cols = 0, bitsAllocated = 0, samplesPerPixel = 1;
-    OFString photoMetric;
-    dataset->findAndGetUint16(DCM_Rows, rows);
-    dataset->findAndGetUint16(DCM_Columns, cols);
-    dataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
-    dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel);
-    dataset->findAndGetOFString(DCM_PhotometricInterpretation, photoMetric);
 
-    // 参数有效性检查
-    if (rows == 0 || cols == 0 || (samplesPerPixel != 1 && samplesPerPixel != 3) ||
-        (bitsAllocated != 8 && bitsAllocated != 16)) {
-        qDebug() << "DICOM参数异常: rows=" << rows << ", cols=" << cols
-            << ", bitsAllocated=" << bitsAllocated << ", samplesPerPixel=" << samplesPerPixel;
-        return;
-    }
-
-    // 2. 获取像素数据指针
-    const Uint8* pixelData = nullptr;
-    OFCondition cond = dataset->findAndGetUint8Array(DCM_PixelData, pixelData);
-    if (!cond.good() || !pixelData) {
-        qDebug() << "像素数据为空或获取失败";
-        return;
-    }
-
-    // 3. 创建 vtkImageData 并填充
-    auto imageData = vtkSmartPointer<vtkImageData>::New();
-    imageData->SetDimensions(cols, rows, 1);
-
-    size_t expectedSize = 0;
-    if (bitsAllocated == 8 && samplesPerPixel == 3 && photoMetric == "RGB") {
-        expectedSize = static_cast<size_t>(rows) * cols * 3 * sizeof(Uint8);
-        imageData->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
-    }
-    else if (bitsAllocated == 8 && samplesPerPixel == 1) {
-        expectedSize = static_cast<size_t>(rows) * cols * sizeof(Uint8);
-        imageData->AllocateScalars(VTK_UNSIGNED_CHAR, 1);
-    }
-    else if (bitsAllocated == 16 && samplesPerPixel == 1) {
-        expectedSize = static_cast<size_t>(rows) * cols * sizeof(Uint16);
-        imageData->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
-    }
-    else {
-        qDebug() << "不支持的像素格式: bitsAllocated=" << bitsAllocated
-            << ", samplesPerPixel=" << samplesPerPixel
-            << ", photoMetric=" << photoMetric.c_str();
-        return;
-    }
-
-    // 4. 拷贝像素数据
-    void* dest = imageData->GetScalarPointer();
-    if (!dest) {
-        qDebug() << "VTK内存分配失败";
-        return;
-    }
-    memcpy(dest, pixelData, expectedSize);
-
-    // 5. 添加垂直翻转（解决180度倒置问题）
-    auto flipFilter = vtkSmartPointer<vtkImageFlip>::New();
-    flipFilter->SetFilteredAxis(1);  // 沿Y轴翻转（垂直方向）
-    flipFilter->SetInputData(imageData);
-    flipFilter->Update();
-
-    // 6. 用 VTK 显示
-    auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-    viewer->SetInputConnection(flipFilter->GetOutputPort()); // 使用翻转后的数据
-    viewer->SetRenderWindow(m_VisualManager->getVTKWidget()->renderWindow());
-    viewer->Render();
-}
