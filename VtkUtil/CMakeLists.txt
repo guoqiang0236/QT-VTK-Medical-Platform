@@ -1,35 +1,56 @@
 # 设置CMake最低版本
 cmake_minimum_required(VERSION 3.20)
 
-# 找到Vtk库
+#设置c++标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 查找所需要的库
+find_package(Qt6 COMPONENTS Core REQUIRED)
 find_package(VTK REQUIRED)
 if (NOT VTK_FOUND)
   message(FATAL_ERROR "CylinderExample: Unable to find the VTK build folder.")
 endif()
 
+# 收集源文件（显式列出头文件）
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"
     "include/*.h"
 )
 
-
-
 # 创建动态库目标（SHARED表示生成DLL）
 add_library(VtkUtil SHARED ${SRC_FILES})
+
+
+# 添加预编译头支持
+target_precompile_headers(VtkUtil PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
 
 # 设置DLL导出宏（Windows下需要）
 if(WIN32)
     target_compile_definitions(VtkUtil PRIVATE VTKUTIL_EXPORTS)
 endif()
 
-# 包含头文件目录
-target_include_directories(VtkUtil PUBLIC ${VTK_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
-# message(STATUS "VTK_VERSION: ${VTK_VERSION}")
-# message(STATUS "VTK_LIBRARIES: ${VTK_LIBRARIES}")
-# message(STATUS "VTK_INCLUDE_DIRS: ${VTK_INCLUDE_DIRS}")
-target_link_libraries(VtkUtil PRIVATE ${VTK_LIBRARIES})
+# 库头文件目录
+target_include_directories(VtkUtil 
+    PUBLIC 
+        ${VTK_INCLUDE_DIRS} 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# 库lib目录
+target_link_directories(VtkUtil
+    PRIVATE
+        ${VTK_LIBRARY_DIRS}
+)
+
+# 链接lib库
+target_link_libraries(VtkUtil 
+    PRIVATE 
+        ${VTK_LIBRARIES}
+        Qt6::Core
+)
 
 
 

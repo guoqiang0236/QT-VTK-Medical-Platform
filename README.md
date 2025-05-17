@@ -13,9 +13,11 @@ QT-medical
 
 ### 环境要求
 
-- Qt 5.x 或更高版本
+- Qt 6.82
 - CMake 3.15 或更高版本
-- VTK 库
+- VTK 9.4.1
+- Dcmtk 3.6.9
+- Opencv 4100
 
 ### 构建步骤
 

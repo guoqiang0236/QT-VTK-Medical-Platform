@@ -1,32 +1,13 @@
+#设置cmake的最低版本要求
 cmake_minimum_required(VERSION 3.20)
 
+#设置c++标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
-# 自动追踪源文件变化（CONFIGURE_DEPENDS是CMake 3.20+特性）
-file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
-    "source/*.cpp"
-    "include/*.h"
-)
-
-# 创建动态库目标（SHARED表示生成DLL）
-add_library(DcmtkUtil SHARED ${SRC_FILES})
-
-
-
-# 设置DLL导出宏（Windows下需要）
-if(WIN32)
-    target_compile_definitions(DcmtkUtil PRIVATE DcmtkUtil_EXPORTS)
-endif()
-
-# 修改点2：替换为动态库必须的宏定义
-add_definitions(-DDCMTK_USE_DLL -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE)
-
-# 路径配置
+# 查找所需要的库
+find_package(Qt6 COMPONENTS Core REQUIRED)
 set(DCMTK_ROOT ${CMAKE_SOURCE_DIR}/Packages/DCMTK3.6.9)
-
-
 set(DCMTK_LIBS
     iphlpapi
     ws2_32
@@ -38,18 +19,45 @@ set(DCMTK_LIBS
     dcmnet
 )
 
-# 链接DCMTK库
+# 收集源文件（显式列出头文件）
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
+    "source/*.cpp"
+    "include/*.h"
+)
+
+# 创建动态库目标（SHARED表示生成DLL）
+add_library(DcmtkUtil SHARED ${SRC_FILES})
+
+# 添加预编译头支持
+target_precompile_headers(DcmtkUtil PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
+
+
+# 设置DLL导出宏（Windows下需要）
+if(WIN32)
+    target_compile_definitions(DcmtkUtil PRIVATE DcmtkUtil_EXPORTS)
+endif()
+
+#DCMTK动态库必须的宏定义
+add_definitions(-DDCMTK_USE_DLL -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE)
+
+
+
+# 库头文件目录
 target_include_directories(DcmtkUtil
     PUBLIC  
         ${DCMTK_ROOT}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+# 库lib目录
 target_link_directories(DcmtkUtil
     PRIVATE
         ${DCMTK_ROOT}/lib
 )
+
+# 链接lib库
 target_link_libraries(DcmtkUtil
     PRIVATE
         ${DCMTK_LIBS}
+        Qt6::Core
 )

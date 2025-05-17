@@ -38,7 +38,14 @@
 // 输入: 无
 // 输出: 无
 //------------------------------------------------------------------
-COpencvUtil::COpencvUtil() : isRecording(false), hRecordingThread(NULL), videoWriter(nullptr), m_cap(nullptr) {
+
+
+COpencvUtil::COpencvUtil(QObject* parent):
+	isRecording(false), 
+	hRecordingThread(NULL), 
+	videoWriter(nullptr),
+	m_cap(nullptr)
+{
 	// 初始化临界区，用于线程同步
 	InitializeCriticalSection(&csRecording);
 }

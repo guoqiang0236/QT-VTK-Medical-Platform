@@ -15,7 +15,7 @@ void MyThread_work::working()
     while (m_running) {
         emit numberGenerated(count);
         count++;
-        QThread::usleep(100);
+        QThread::usleep(10);
     }
 
     qDebug() << "run() 执行完毕, 子线程退出...";

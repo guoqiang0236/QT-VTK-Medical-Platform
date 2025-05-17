@@ -3,6 +3,7 @@
 #include "pch.h"
 #include "Viewer2D.h"
 #include "Viewer3D.h"
+#include "VtkFileTypeDetector.h"
 
 
 class VisualizationManager : public QObject {

@@ -1,4 +1,4 @@
-﻿/********************************************************************************
+/********************************************************************************
 ** Form generated from reading UI file 'MainWindow-MEDQT.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.8.2
@@ -46,16 +46,17 @@ public:
     QPushButton *pushButton_ti;
     QPushButton *pushButton_mian;
     QWidget *tab_4;
-    QPushButton *pushButton_2;
+    QGridLayout *gridLayout_9;
     QPushButton *pushButton_3;
     QPushButton *pushButton_4;
-    QPushButton *pushButton_5;
-    QPushButton *pushButton_shutdown;
     QPushButton *pushButton_7;
-    QPushButton *pushButton_8;
-    QPushButton *pushButton_9;
+    QPushButton *pushButton_5;
     QPushButton *pushButton_10;
-    QPushButton *pushButton_11;
+    QPushButton *pushButton_8;
+    QPushButton *pushButton_record;
+    QPushButton *pushButton_shutdown;
+    QPushButton *pushButton_9;
+    QPushButton *pushButton_2;
     QWidget *tab;
     QComboBox *comboBox;
     QLabel *label_5;
@@ -97,7 +98,7 @@ public:
     {
         if (MainWindow_UI->objectName().isEmpty())
             MainWindow_UI->setObjectName("MainWindow_UI");
-        MainWindow_UI->resize(1343, 897);
+        MainWindow_UI->resize(1358, 897);
         centralwidget = new QWidget(MainWindow_UI);
         centralwidget->setObjectName("centralwidget");
         centralwidget->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
@@ -193,86 +194,108 @@ public:
         tabWidget->addTab(tab_3, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName("tab_4");
-        pushButton_2 = new QPushButton(tab_4);
-        pushButton_2->setObjectName("pushButton_2");
-        pushButton_2->setGeometry(QRect(1, 1, 100, 100));
-        pushButton_2->setMinimumSize(QSize(100, 100));
-        pushButton_2->setMaximumSize(QSize(100, 100));
-        QIcon icon(QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
-        pushButton_2->setIcon(icon);
-        pushButton_2->setIconSize(QSize(100, 100));
+        gridLayout_9 = new QGridLayout(tab_4);
+        gridLayout_9->setObjectName("gridLayout_9");
         pushButton_3 = new QPushButton(tab_4);
         pushButton_3->setObjectName("pushButton_3");
-        pushButton_3->setGeometry(QRect(107, 1, 100, 100));
         pushButton_3->setMinimumSize(QSize(100, 100));
         pushButton_3->setMaximumSize(QSize(100, 100));
-        QIcon icon1(QIcon::fromTheme(QIcon::ThemeIcon::EditUndo));
-        pushButton_3->setIcon(icon1);
+        QIcon icon(QIcon::fromTheme(QIcon::ThemeIcon::EditUndo));
+        pushButton_3->setIcon(icon);
         pushButton_3->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_3, 0, 1, 1, 1);
+
         pushButton_4 = new QPushButton(tab_4);
         pushButton_4->setObjectName("pushButton_4");
-        pushButton_4->setGeometry(QRect(107, 107, 100, 100));
         pushButton_4->setMinimumSize(QSize(100, 100));
         pushButton_4->setMaximumSize(QSize(100, 100));
-        QIcon icon2(QIcon::fromTheme(QIcon::ThemeIcon::UserAvailable));
-        pushButton_4->setIcon(icon2);
+        QIcon icon1(QIcon::fromTheme(QIcon::ThemeIcon::UserAvailable));
+        pushButton_4->setIcon(icon1);
         pushButton_4->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_4, 1, 1, 1, 1);
+
+        pushButton_7 = new QPushButton(tab_4);
+        pushButton_7->setObjectName("pushButton_7");
+        pushButton_7->setMinimumSize(QSize(100, 100));
+        pushButton_7->setMaximumSize(QSize(100, 100));
+        QIcon icon2(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackPause));
+        pushButton_7->setIcon(icon2);
+        pushButton_7->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_7, 2, 0, 1, 1);
+
         pushButton_5 = new QPushButton(tab_4);
         pushButton_5->setObjectName("pushButton_5");
-        pushButton_5->setGeometry(QRect(1, 107, 100, 100));
         pushButton_5->setMinimumSize(QSize(100, 100));
         pushButton_5->setMaximumSize(QSize(100, 100));
         QIcon icon3(QIcon::fromTheme(QIcon::ThemeIcon::AudioVolumeHigh));
         pushButton_5->setIcon(icon3);
         pushButton_5->setIconSize(QSize(100, 100));
-        pushButton_shutdown = new QPushButton(tab_4);
-        pushButton_shutdown->setObjectName("pushButton_shutdown");
-        pushButton_shutdown->setGeometry(QRect(107, 213, 100, 100));
-        pushButton_shutdown->setMinimumSize(QSize(100, 100));
-        pushButton_shutdown->setMaximumSize(QSize(100, 100));
-        QIcon icon4(QIcon::fromTheme(QIcon::ThemeIcon::SystemShutdown));
-        pushButton_shutdown->setIcon(icon4);
-        pushButton_shutdown->setIconSize(QSize(100, 100));
-        pushButton_7 = new QPushButton(tab_4);
-        pushButton_7->setObjectName("pushButton_7");
-        pushButton_7->setGeometry(QRect(1, 213, 100, 100));
-        pushButton_7->setMinimumSize(QSize(100, 100));
-        pushButton_7->setMaximumSize(QSize(100, 100));
-        QIcon icon5(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackPause));
-        pushButton_7->setIcon(icon5);
-        pushButton_7->setIconSize(QSize(100, 100));
-        pushButton_8 = new QPushButton(tab_4);
-        pushButton_8->setObjectName("pushButton_8");
-        pushButton_8->setGeometry(QRect(107, 319, 100, 100));
-        pushButton_8->setMinimumSize(QSize(100, 100));
-        pushButton_8->setMaximumSize(QSize(100, 100));
-        QIcon icon6(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStop));
-        pushButton_8->setIcon(icon6);
-        pushButton_8->setIconSize(QSize(100, 100));
-        pushButton_9 = new QPushButton(tab_4);
-        pushButton_9->setObjectName("pushButton_9");
-        pushButton_9->setGeometry(QRect(1, 319, 100, 100));
-        pushButton_9->setMinimumSize(QSize(100, 100));
-        pushButton_9->setMaximumSize(QSize(100, 100));
-        QIcon icon7(QIcon::fromTheme(QIcon::ThemeIcon::GoNext));
-        pushButton_9->setIcon(icon7);
-        pushButton_9->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_5, 1, 0, 1, 1);
+
         pushButton_10 = new QPushButton(tab_4);
         pushButton_10->setObjectName("pushButton_10");
-        pushButton_10->setGeometry(QRect(107, 425, 100, 100));
         pushButton_10->setMinimumSize(QSize(100, 100));
         pushButton_10->setMaximumSize(QSize(100, 100));
-        QIcon icon8(QIcon::fromTheme(QIcon::ThemeIcon::WeatherClear));
-        pushButton_10->setIcon(icon8);
+        QIcon icon4(QIcon::fromTheme(QIcon::ThemeIcon::WeatherClear));
+        pushButton_10->setIcon(icon4);
         pushButton_10->setIconSize(QSize(100, 100));
-        pushButton_11 = new QPushButton(tab_4);
-        pushButton_11->setObjectName("pushButton_11");
-        pushButton_11->setGeometry(QRect(1, 425, 100, 100));
-        pushButton_11->setMinimumSize(QSize(100, 100));
-        pushButton_11->setMaximumSize(QSize(100, 100));
-        QIcon icon9(QIcon::fromTheme(QIcon::ThemeIcon::CameraPhoto));
-        pushButton_11->setIcon(icon9);
-        pushButton_11->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_10, 4, 1, 1, 1);
+
+        pushButton_8 = new QPushButton(tab_4);
+        pushButton_8->setObjectName("pushButton_8");
+        pushButton_8->setMinimumSize(QSize(100, 100));
+        pushButton_8->setMaximumSize(QSize(100, 100));
+        QIcon icon5(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStop));
+        pushButton_8->setIcon(icon5);
+        pushButton_8->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_8, 3, 1, 1, 1);
+
+        pushButton_record = new QPushButton(tab_4);
+        pushButton_record->setObjectName("pushButton_record");
+        pushButton_record->setMinimumSize(QSize(100, 100));
+        pushButton_record->setMaximumSize(QSize(100, 100));
+        QIcon icon6(QIcon::fromTheme(QIcon::ThemeIcon::CameraPhoto));
+        pushButton_record->setIcon(icon6);
+        pushButton_record->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_record, 4, 0, 1, 1);
+
+        pushButton_shutdown = new QPushButton(tab_4);
+        pushButton_shutdown->setObjectName("pushButton_shutdown");
+        pushButton_shutdown->setMinimumSize(QSize(100, 100));
+        pushButton_shutdown->setMaximumSize(QSize(100, 100));
+        QIcon icon7(QIcon::fromTheme(QIcon::ThemeIcon::SystemShutdown));
+        pushButton_shutdown->setIcon(icon7);
+        pushButton_shutdown->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_shutdown, 2, 1, 1, 1);
+
+        pushButton_9 = new QPushButton(tab_4);
+        pushButton_9->setObjectName("pushButton_9");
+        pushButton_9->setMinimumSize(QSize(100, 100));
+        pushButton_9->setMaximumSize(QSize(100, 100));
+        QIcon icon8(QIcon::fromTheme(QIcon::ThemeIcon::GoNext));
+        pushButton_9->setIcon(icon8);
+        pushButton_9->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_9, 3, 0, 1, 1);
+
+        pushButton_2 = new QPushButton(tab_4);
+        pushButton_2->setObjectName("pushButton_2");
+        pushButton_2->setMinimumSize(QSize(100, 100));
+        pushButton_2->setMaximumSize(QSize(100, 100));
+        QIcon icon9(QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
+        pushButton_2->setIcon(icon9);
+        pushButton_2->setIconSize(QSize(100, 100));
+
+        gridLayout_9->addWidget(pushButton_2, 0, 0, 1, 1);
+
         tabWidget->addTab(tab_4, QString());
         tab = new QWidget();
         tab->setObjectName("tab");
@@ -533,16 +556,16 @@ public:
         pushButton_ti->setText(QCoreApplication::translate("MainWindow_UI", "\344\275\223\347\273\230\345\210\266", nullptr));
         pushButton_mian->setText(QCoreApplication::translate("MainWindow_UI", "\351\235\242\347\273\230\345\210\266", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainWindow_UI", "\346\202\243\350\200\205\344\277\241\346\201\257", nullptr));
-        pushButton_2->setText(QString());
         pushButton_3->setText(QString());
         pushButton_4->setText(QString());
-        pushButton_5->setText(QString());
-        pushButton_shutdown->setText(QString());
         pushButton_7->setText(QString());
-        pushButton_8->setText(QString());
-        pushButton_9->setText(QString());
+        pushButton_5->setText(QString());
         pushButton_10->setText(QString());
-        pushButton_11->setText(QString());
+        pushButton_8->setText(QString());
+        pushButton_record->setText(QString());
+        pushButton_shutdown->setText(QString());
+        pushButton_9->setText(QString());
+        pushButton_2->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainWindow_UI", "\345\233\276\345\203\217\345\244\204\347\220\206", nullptr));
         comboBox->setItemText(0, QCoreApplication::translate("MainWindow_UI", "ElegantDark", nullptr));
         comboBox->setItemText(1, QCoreApplication::translate("MainWindow_UI", "AMOLED", nullptr));

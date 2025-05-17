@@ -1,6 +1,14 @@
+#设置cmake的最低版本要求
 cmake_minimum_required(VERSION 3.20)
+
+#设置c++标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 设置项目名称和版本
 project(QtGuiApp LANGUAGES CXX)
 
+# 查找所需要的库
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets Quick QuickWidgets)
 find_package(VTK REQUIRED)
 
@@ -8,45 +16,42 @@ if(NOT VTK_FOUND)
     message(FATAL_ERROR "VTK not found!")
 endif()
 # 启用 AUTOMOC（关键！）
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOMOC ON)   # 自动运行 moc，处理 Q_OBJECT 宏，生成元对象代码（信号槽机制依赖）
+set(CMAKE_AUTOUIC ON)   # 自动处理 .ui 文件，生成对应的界面代码
+set(CMAKE_AUTORCC ON)   # 自动处理 .qrc 资源文件，生成资源访问代码
 
 # 收集源文件（显式列出头文件）
 file(GLOB SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"
-    "include/*.h"  # 显式包含头文件以触发 moc
+    "include/*.h"  
 )
 
 qt_add_resources(RESOURCES resources.qrc)
 
-# 创建可执行文件
-# 根据构建类型动态设置 WIN32 选项
+
+
+
+# 创建可执行文件，根据构建类型动态设置 WIN32 选项
 #add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} res/icon/apprc.rc)  # Release 模式：无控制台
 add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
 
-# 包含目录（修正路径）
-target_include_directories(QtGuiApp PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/include"  # 头文件路径
-    ${VTK_INCLUDE_DIRS}
-)
 # 添加预编译头支持
 target_precompile_headers(QtGuiApp PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
 
-
-# 推荐用 target_include_directories
+# 库头文件目录
 target_include_directories(QtGuiApp
-    PRIVATE
-        ${DCMTK_ROOT}/include
+    PRIVATE 
+        ${VTK_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+# 库lib目录
 target_link_directories(QtGuiApp
     PRIVATE
-        ${DCMTK_ROOT}/lib
         "${CMAKE_SOURCE_DIR}/lib"
 )
 
-# 链接库（补充关键 VTK 模块）
+# 链接lib库
 target_link_libraries(QtGuiApp PRIVATE
     Qt6::Core
     Qt6::Gui
@@ -54,11 +59,11 @@ target_link_libraries(QtGuiApp PRIVATE
     Qt6::OpenGLWidgets
     Qt6::Quick
     Qt6::QuickWidgets
-    VTK::GUISupportQt  # 必须链接此模块以支持 QVTKOpenGLNativeWidget
+    VTK::GUISupportQt  
     VTK::RenderingOpenGL2
     VTK::InteractionStyle
     VTK::CommonCore
-    VTK::RenderingImage     # vtkImageViewer2 的依赖模块
+    VTK::RenderingImage     
     VTK::IOImage
     VTK::ViewsContext2D
     VTK::RenderingCore

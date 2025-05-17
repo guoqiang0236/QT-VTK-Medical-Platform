@@ -28,10 +28,14 @@
 #include "pch.h"
 #include <windows.h>
 #include <string>
+#include <QObject>
 
-class COpencvUtil {
+class COpencvUtil : public QObject
+{
+	Q_OBJECT
 public:
-	OPENCVUTIL_API COpencvUtil();
+	//OPENCVUTIL_API COpencvUtil();
+	explicit OPENCVUTIL_API COpencvUtil(QObject* parent = nullptr);
 	OPENCVUTIL_API ~COpencvUtil();
 
 	void OPENCVUTIL_API StartRecording(const RECT& rect, const char*  path);

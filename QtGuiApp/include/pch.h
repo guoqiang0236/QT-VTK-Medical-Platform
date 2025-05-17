@@ -51,6 +51,6 @@
 #include <vtkCubeAxesActor.h>
 #include <vtkImageReader.h>
 #include <vtkImageViewer2.h>
-#include <VtkFileTypeDetector.h>
+
 
 #endif // PCH_H
