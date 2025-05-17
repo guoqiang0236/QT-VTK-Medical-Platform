@@ -1,11 +1,9 @@
 ﻿// ViewerBase.h
 #pragma once
-
-
-
 #include "pch.h"
+#include "VtkUtil_Export.h"  // 导出宏头文件
 #include "BasebandReader.h"
-class ViewerBase:public QObject {
+class VTKUTIL_API ViewerBase:public QObject {
     Q_OBJECT
 public:
 	void setm_reader(vtkSmartPointer<vtkDICOMImageReader> reader) { m_dicomreader = reader; }

@@ -1,16 +1,17 @@
 ﻿// Viewer2D.h
 #pragma once
 #include "pch.h"
+#include "VtkUtil_Export.h"  // 导出宏头文件
 #include "myVtkInteractorStyleImage.h"
 #include "ViewerBase.h"
 #include "vtkFanShapeTimerCallback.h"
-enum class SliceOrientation {
+enum class VTKUTIL_API SliceOrientation {
     AXIAL = 0,
     CORONAL = 1,
     SAGITTAL = 2
 };
 
-class Viewer2D : public ViewerBase {
+class VTKUTIL_API  Viewer2D : public ViewerBase {
     Q_OBJECT
 public:
     explicit Viewer2D(QVTKOpenGLNativeWidget* widget);

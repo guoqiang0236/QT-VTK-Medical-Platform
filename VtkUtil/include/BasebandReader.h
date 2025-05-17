@@ -1,6 +1,6 @@
 ﻿#ifndef RAWREADER_H
 #define RAWREADER_H
-
+#include "VtkUtil_Export.h"  // 导出宏头文件
 #include <string>
 #include <vector>
 #include <complex>
@@ -8,7 +8,7 @@
 #include <cstdint>
 
 // 数据头结构定义
-struct BMFMDataHeader {
+struct  VTKUTIL_API BMFMDataHeader {
     char data_tag[10];
     uint16_t ping_number;
     uint32_t curr_sys_time;
@@ -78,7 +78,7 @@ struct BMFMDataHeader {
 };
 
 // RawReader 类定义
-class RawReader {
+class  VTKUTIL_API RawReader {
 public:
     RawReader();
     ~RawReader();

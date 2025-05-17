@@ -1,8 +1,9 @@
 ﻿// Viewer3D.h
 #pragma once
 #include "pch.h"
+#include "VtkUtil_Export.h"  // 导出宏头文件
 #include "ViewerBase.h"
-class Viewer3D : public ViewerBase {
+class VTKUTIL_API Viewer3D : public ViewerBase {
     Q_OBJECT
 public:
     explicit Viewer3D(QVTKOpenGLNativeWidget* widget);

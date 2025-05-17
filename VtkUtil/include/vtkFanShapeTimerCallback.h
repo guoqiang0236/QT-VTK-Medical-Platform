@@ -1,18 +1,14 @@
 ﻿#pragma once
 
 #include "pch.h"
-#include <vtkCallbackCommand.h>
-#include <vtkSmartPointer.h>
-#include <vtkPolyData.h>
-#include <vtkFloatArray.h>
-#include <vtkPointData.h>
-#include <vtkRenderWindowInteractor.h>
+#include "VtkUtil_Export.h"  // 导出宏头文件
 #include <vector>
 #include <complex>
 #include <iostream>
 #include <cmath>
+#include <vtkCallbackCommand.h>
 
-class vtkFanShapeTimerCallback : public vtkCallbackCommand {
+class VTKUTIL_API vtkFanShapeTimerCallback : public vtkCallbackCommand {
 public:
     vtkFanShapeTimerCallback() = default;
 

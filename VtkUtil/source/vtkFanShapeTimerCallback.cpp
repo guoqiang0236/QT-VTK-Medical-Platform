@@ -1,5 +1,5 @@
 ﻿#include "vtkFanShapeTimerCallback.h"
-
+#include "vtkPointData.h" 
 vtkFanShapeTimerCallback* vtkFanShapeTimerCallback::New() {
     vtkFanShapeTimerCallback* cb = new vtkFanShapeTimerCallback;
     cb->TimerCount = 0;

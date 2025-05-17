@@ -8,7 +8,7 @@
 #include <vtkErrorCode.h>
 #include <stdexcept>
 #include <vtkLookupTable.h>
-
+#include "vtkPointData.h" 
 Viewer2D::Viewer2D(QVTKOpenGLNativeWidget* widget)
     : ViewerBase(widget) 
 {
