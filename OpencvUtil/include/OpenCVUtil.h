@@ -14,7 +14,7 @@
 *                                                                           *
 *************************************************************************** /
 //
-// PROGRAM : COpencvUtil.h : Opencv video service class
+// PROGRAM : OpencvUtil.h : Opencv video service class
 //
 // HISTORY :
 //
@@ -30,16 +30,16 @@
 #include <string>
 #include <QObject>
 
-class COpencvUtil : public QObject
+class OpencvUtil : public QObject
 {
 	Q_OBJECT
 public:
-	//OPENCVUTIL_API COpencvUtil();
-	explicit OPENCVUTIL_API COpencvUtil(QObject* parent = nullptr);
-	OPENCVUTIL_API ~COpencvUtil();
+	explicit OPENCVUTIL_API OpencvUtil(QObject* parent = nullptr);
+	OPENCVUTIL_API ~OpencvUtil();
 
 	void OPENCVUTIL_API StartRecording(const RECT& rect, const char*  path);
 	void OPENCVUTIL_API StopRecording();
+	bool OPENCVUTIL_API GetIsRecording() const { return isRecording; }
 
 private:
 	bool isRecording;

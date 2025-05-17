@@ -19,6 +19,11 @@ set(DCMTK_LIBS
     dcmnet
 )
 
+# 启用 AUTOMOC（QT关键！）
+set(CMAKE_AUTOMOC ON)   # 自动运行 moc，处理 Q_OBJECT 宏，生成元对象代码（信号槽机制依赖）
+set(CMAKE_AUTOUIC ON)   # 自动处理 .ui 文件，生成对应的界面代码
+set(CMAKE_AUTORCC ON)   # 自动处理 .qrc 资源文件，生成资源访问代码
+
 # 收集源文件（显式列出头文件）
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"
@@ -60,4 +65,11 @@ target_link_libraries(DcmtkUtil
     PRIVATE
         ${DCMTK_LIBS}
         Qt6::Core
+)
+
+# 构建后复制 DCMTK 的 DLL 到输出目录
+add_custom_command(TARGET DcmtkUtil POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${DCMTK_ROOT}/bin
+        $<TARGET_FILE_DIR:DcmtkUtil>
 )

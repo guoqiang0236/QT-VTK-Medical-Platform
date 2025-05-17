@@ -12,6 +12,11 @@ if (NOT VTK_FOUND)
   message(FATAL_ERROR "CylinderExample: Unable to find the VTK build folder.")
 endif()
 
+# 启用 AUTOMOC（QT关键！）
+set(CMAKE_AUTOMOC ON)   # 自动运行 moc，处理 Q_OBJECT 宏，生成元对象代码（信号槽机制依赖）
+set(CMAKE_AUTOUIC ON)   # 自动处理 .ui 文件，生成对应的界面代码
+set(CMAKE_AUTORCC ON)   # 自动处理 .qrc 资源文件，生成资源访问代码
+
 # 收集源文件（显式列出头文件）
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"

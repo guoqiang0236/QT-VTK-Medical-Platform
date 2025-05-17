@@ -15,7 +15,7 @@
  *                                                                           *
  ****************************************************************************/
  //
- // PROGRAM : COpencvUtil.cpp : Opencv video service class
+ // PROGRAM : OpencvUtil.cpp : Opencv video service class
  //
  // HISTORY :
  //
@@ -33,14 +33,14 @@
 
 //------------------------------------------------------------------
 //
-// 函数名: COpencvUtil()
-// 描述: COpencvUtil类的构造函数，初始化成员变量
+// 函数名: OpencvUtil()
+// 描述: OpencvUtil类的构造函数，初始化成员变量
 // 输入: 无
 // 输出: 无
 //------------------------------------------------------------------
 
 
-COpencvUtil::COpencvUtil(QObject* parent):
+OpencvUtil::OpencvUtil(QObject* parent):
 	isRecording(false), 
 	hRecordingThread(NULL), 
 	videoWriter(nullptr),
@@ -52,12 +52,12 @@ COpencvUtil::COpencvUtil(QObject* parent):
 
 //------------------------------------------------------------------
 //
-// 函数名: ~COpencvUtil()
-// 描述: COpencvUtil类的析构函数，停止录制并释放资源
+// 函数名: ~OpencvUtil()
+// 描述: OpencvUtil类的析构函数，停止录制并释放资源
 // 输入: 无
 // 输出: 无
 //------------------------------------------------------------------
-COpencvUtil::~COpencvUtil() {
+OpencvUtil::~OpencvUtil() {
 	
 	StopRecording();
 	DeleteCriticalSection(&csRecording);
@@ -70,7 +70,7 @@ COpencvUtil::~COpencvUtil() {
 // 输入: 要录制的屏幕区域矩形，视频文件输出路径
 // 输出: 无
 //------------------------------------------------------------------
-void COpencvUtil::StartRecording(const RECT& rect, const char*  path) {
+void OpencvUtil::StartRecording(const RECT& rect, const char*  path) {
 	// 进入临界区，确保线程安全
 	EnterCriticalSection(&csRecording);
 	// 如果已经在录制，则直接返回
@@ -123,7 +123,7 @@ void COpencvUtil::StartRecording(const RECT& rect, const char*  path) {
 // 输入: 无
 // 输出: 无
 //------------------------------------------------------------------
-void COpencvUtil::StopRecording() {
+void OpencvUtil::StopRecording() {
 	EnterCriticalSection(&csRecording);
 	// 如果没有在录制，则直接返回
 	if (!isRecording) {
@@ -149,11 +149,11 @@ void COpencvUtil::StopRecording() {
 //
 // 函数名: RecordingThread()
 // 描述: 录制线程函数，负责不断捕捉屏幕区域并写入视频文件
-// 输入: 指向COpencvUtil对象的指针
+// 输入: 指向OpencvUtil对象的指针
 // 输出: 线程退出码
 //------------------------------------------------------------------
-DWORD WINAPI COpencvUtil::RecordingThread(LPVOID lpParam) {
-	COpencvUtil* pThis = static_cast<COpencvUtil*>(lpParam);
+DWORD WINAPI OpencvUtil::RecordingThread(LPVOID lpParam) {
+	OpencvUtil* pThis = static_cast<OpencvUtil*>(lpParam);
 	const RECT& rect = pThis->captureRect;
 	// 计算录制区域的宽度和高度
 	int width = rect.right - rect.left;

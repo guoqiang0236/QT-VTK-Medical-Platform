@@ -46,10 +46,10 @@ public:
 	void OPENCVUTIL_API ResumeVideo();
 	bool OPENCVUTIL_API IsPlaying() const;
 	bool OPENCVUTIL_API IsPaused() const;
-	void OPENCVUTIL_API SetNotifyWindow(HWND hWnd);    // ���ý���֪ͨ����
-	long OPENCVUTIL_API GetTotalFrames() const;       // ��ȡ��֡��
-	long OPENCVUTIL_API GetCurrentFrame() const;      // ��ȡ��ǰ֡
-	bool OPENCVUTIL_API SeekToPosition(double pos);   // ��ת��ָ��λ�ã�0.0~1.0��
+	void OPENCVUTIL_API SetNotifyWindow(HWND hWnd);   
+	long OPENCVUTIL_API GetTotalFrames() const;      
+	long OPENCVUTIL_API GetCurrentFrame() const;      
+	bool OPENCVUTIL_API SeekToPosition(double pos);   
 	RECT OPENCVUTIL_API GetMyRect();
 	void OPENCVUTIL_API SetbInSlider(bool flag);
 	void OPENCVUTIL_API SetbPaused(bool flag);

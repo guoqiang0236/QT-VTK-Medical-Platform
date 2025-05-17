@@ -4,13 +4,13 @@
 #include <Qobject>
 
 
-class MyThread_work : public QObject
+class MyThread_Work : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit MyThread_work(QObject* parent = nullptr);
-    ~MyThread_work();
+    explicit MyThread_Work(QObject* parent = nullptr);
+    ~MyThread_Work();
 
     // 设置任务
     void working();

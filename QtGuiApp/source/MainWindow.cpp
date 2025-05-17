@@ -21,15 +21,16 @@ MainWindow::MainWindow(QWidget* parent)
     m_VisualManager(std::make_unique<VisualizationManager>()),
     m_ui(std::make_unique<Ui::MainWindow_UI>()),
     m_thread(new MyThread(this)),
-    m_thread_work(new MyThread_work(this)),
+    m_thread_work(new MyThread_Work(this)),
 	m_thread_runnable(new MyThread_Runnable(this)),
     m_sub(new QThread(this)),
-    m_numsub(new QThread(this))
+    m_numsub(new QThread(this)),
+    m_opencvUtil(std::make_unique<OpencvUtil>())
 {
     //setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
     m_ui->setupUi(this);
-    initSlots();
+    InitSlots();
     UpdateSize();
     UpdateGUI();
     InitThread();
@@ -249,9 +250,37 @@ void MainWindow::Change_CurrentTime()
 	m_ui->label_currenttime->setText(currentTime);
 }
 
+void MainWindow::ControlRecording()
+{
+    if(!m_opencvUtil)
+		m_opencvUtil = std::make_unique<OpencvUtil>();
+
+	
+	if (!m_opencvUtil->GetIsRecording())
+	{
+        // 检查并创建 D:\data 文件夹
+        QString folderPath = "D:/data";
+        QDir dir(folderPath);
+        if (!dir.exists()) {
+            dir.mkpath(".");
+        }
+		std::string outputPath = folderPath.toStdString() + "/output.avi";
+        // 获取当前屏幕区域
+        RECT rect;
+        HWND hwnd = reinterpret_cast<HWND>(this->winId());
+        GetWindowRect(hwnd, &rect);
+        // 设置录制区域为当前窗口
+        m_opencvUtil->StartRecording(rect, outputPath.c_str());
+	}
+	else
+	{
+        m_opencvUtil->StopRecording();
+	}
+}
 
 
-void MainWindow::initSlots()
+
+void MainWindow::InitSlots()
 {
 	m_current_time = new QTimer(this);
 	connect(m_current_time, &QTimer::timeout, this, &MainWindow::Change_CurrentTime);
@@ -264,6 +293,7 @@ void MainWindow::initSlots()
     connect(m_ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::StyleChanged);
     connect(m_ui->pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
     connect(m_ui->comboBox_2, &QComboBox::currentTextChanged, this, &MainWindow::ViewChange);
+	connect(m_ui->pushButton_record, &QPushButton::clicked, this, &MainWindow::ControlRecording);
     if (!m_VisualManager)
         return;
     connect(m_VisualManager.get(), &VisualizationManager::loadDicomFileFinish, this, &MainWindow::LoadDicomFinished);
@@ -380,10 +410,10 @@ void MainWindow::InitThread()
         m_thread_work->moveToThread(m_numsub);
     }
     m_numsub->start();
-	connect(m_thread_work, &MyThread_work::numberGenerated, this, [this](int num) {
+	connect(m_thread_work, &MyThread_Work::numberGenerated, this, [this](int num) {
 		m_ui->label_showthreadnum->setText(QString::number(num));
 		});
-    connect(this, &MainWindow::numcounttaskstarted, m_thread_work, &MyThread_work::working);
+    connect(this, &MainWindow::numcounttaskstarted, m_thread_work, &MyThread_Work::working);
     emit numcounttaskstarted();
 
     //方式三 线程池

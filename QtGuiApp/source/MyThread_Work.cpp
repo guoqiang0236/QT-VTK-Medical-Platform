@@ -1,15 +1,15 @@
-﻿#include "MyThread_Work.h"
+﻿#include "MyThread_work.h"
 #include <QThread>
 #include <QDebug>
-MyThread_work::MyThread_work(QObject* parent)
+MyThread_Work::MyThread_Work(QObject* parent)
 {
 }
 
-MyThread_work::~MyThread_work()
+MyThread_Work::~MyThread_Work()
 {
 }
 
-void MyThread_work::working()
+void MyThread_Work::working()
 {
     int count = 0;
     while (m_running) {

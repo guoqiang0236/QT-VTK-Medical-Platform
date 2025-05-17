@@ -9,7 +9,6 @@
 #include <map>
 #include <algorithm>
 
-
 // Qt 相关头文件
 #include <QMainWindow>
 #include <QFileDialog>
@@ -23,6 +22,11 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QThreadPool>
+
+//自定义Qt类
+#include "MyThread.h"
+#include "MyThread_Work.h"
+#include "MyThread_QRunnable.h"
 
 // VTK 相关头文件
 #include <vtkCamera.h>

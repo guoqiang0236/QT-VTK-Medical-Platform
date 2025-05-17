@@ -1,12 +1,8 @@
 ﻿#ifndef MED_IMG_MAINWINDOW_H
 #define MED_IMG_MAINWINDOW_H
 #include "pch.h"
-#include "MyThread.h"
-#include "MyThread_work.h"
-#include "MyThread_QRunnable.h"
-#include <memory>
-#include <mutex>
 #include "DcmCStoreSender.h"
+#include "OpenCVUtil.h"
 class QVTKOpenGLNativeWidget;
 class vtkRenderer;
 class VisualizationManager;
@@ -37,11 +33,13 @@ private slots:
     void ShutDown();
     void OnAnimationFinished();
     void Change_CurrentTime();
+    void ControlRecording();
+
 signals:
     void numcounttaskstarted(); // 任务开始信号
 
 private:
-    void initSlots();
+    void InitSlots();
     void UpdateGUI();
     void UpdateSize();
     void loadStyleSheet(const QString& path); // 动态加载 QSS
@@ -49,18 +47,20 @@ private:
    
 	
 private:
+    std::mutex m_mutex;
     std::unique_ptr <Ui::MainWindow_UI> m_ui;
     std::unique_ptr <QQuickWidget> m_LoadingWidget;
     std::unique_ptr<VisualizationManager> m_VisualManager;
     MyThread* m_thread; 
-	MyThread_work* m_thread_work;
+	MyThread_Work* m_thread_work;
 	MyThread_Runnable* m_thread_runnable;
 	QTimer* m_current_time;
     QThread* m_sub;
     QThread* m_numsub;
-    //DCMTKSOP
-    std::mutex m_mutex;
+    //DcmtkUtil
 	DcmCStoreSender m_dcmCStoreSender;
+    //OpenCVUtil
+    std::unique_ptr<OpencvUtil> m_opencvUtil;
 };
 
 #endif // MED_IMG_MAINWINDOW_H
