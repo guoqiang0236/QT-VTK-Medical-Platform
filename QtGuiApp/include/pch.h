@@ -57,5 +57,7 @@
 #include <vtkImageReader.h>
 #include <vtkImageViewer2.h>
 
+//全局变量
+#include <GlobalConfig.h>
 
 #endif // PCH_H

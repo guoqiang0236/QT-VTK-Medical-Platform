@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 查找所需要的库
 set (OpenCV_DIR "${CMAKE_SOURCE_DIR}/Packages/OpenCV4100")
 find_package(OpenCV REQUIRED)
-find_package(Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt6 COMPONENTS Core Gui REQUIRED)
 
 # 启用 AUTOMOC（QT关键！）
 set(CMAKE_AUTOMOC ON)   # 自动运行 moc，处理 Q_OBJECT 宏，生成元对象代码（信号槽机制依赖）
@@ -50,6 +50,7 @@ target_link_directories(OpenCVUtil
 target_link_libraries(OpenCVUtil 
     PRIVATE
         Qt6::Core
+        Qt6::Gui
         ${OpenCV_LIBS}
 )
 

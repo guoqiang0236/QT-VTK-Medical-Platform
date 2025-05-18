@@ -11,8 +11,7 @@
 #include <QFileDialog>
 #include <memory>
 #include "VisualizationManager.h"
-#include "MainWindow-MEDQT.h"
-#include <GlobalConfig.h>
+#include "MainWindow-UI.h"
 #include <thread>
 #include <iostream>
 #include <vtkImageFlip.h>
@@ -347,7 +346,15 @@ void MainWindow::InitSlots()
 	connect(m_ui->Slider_CORONAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setCoronalSlice);
 	connect(m_ui->Slider_SAGITTAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setSagittalSlice);
 
- 
+    //testopencv
+	connect(m_ui->pushButton_opencvtest, &QPushButton::clicked, this, [this]() {
+        if (m_opencvDialog)
+        {
+
+            m_opencvDialog->show();
+		}   
+
+		});
 }
 
 void MainWindow::UpdateGUI()
@@ -400,6 +407,10 @@ void MainWindow::UpdateGUI()
 
     //禁止使用面绘制（卡顿）
     m_ui->pushButton_mian->setEnabled(false);
+
+    //opencvdialog
+    m_opencvDialog = std::make_unique<MyOpenCVDialog>(this);
+    m_opencvDialog->setWindowModality(Qt::ApplicationModal);
 }
 
 void MainWindow::UpdateSize()

@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'MainWindow-MEDQT.ui'
+** Form generated from reading UI file 'MainWindow-UI.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef MAINWINDOW_2D_MEDQT_H
-#define MAINWINDOW_2D_MEDQT_H
+#ifndef MAINWINDOW_2D_UI_H
+#define MAINWINDOW_2D_UI_H
 
 #include <QtCore/QVariant>
 #include <QtGui/QIcon>
@@ -60,6 +60,8 @@ public:
     QWidget *tab;
     QComboBox *comboBox;
     QLabel *label_5;
+    QPushButton *pushButton_opencvtest;
+    QFrame *frame_2;
     QFrame *frame_vtkrender;
     QGridLayout *gridLayout_2;
     QFrame *frame_XYZ;
@@ -98,13 +100,12 @@ public:
     {
         if (MainWindow_UI->objectName().isEmpty())
             MainWindow_UI->setObjectName("MainWindow_UI");
-        MainWindow_UI->resize(1358, 897);
+        MainWindow_UI->resize(1395, 897);
         centralwidget = new QWidget(MainWindow_UI);
         centralwidget->setObjectName("centralwidget");
         centralwidget->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
         gridLayout = new QGridLayout(centralwidget);
         gridLayout->setObjectName("gridLayout");
-        gridLayout->setContentsMargins(0, 0, 0, 0);
         frame_menu = new QFrame(centralwidget);
         frame_menu->setObjectName("frame_menu");
         frame_menu->setMaximumSize(QSize(208, 16777215));
@@ -314,6 +315,14 @@ public:
         label_5 = new QLabel(tab);
         label_5->setObjectName("label_5");
         label_5->setGeometry(QRect(3, 20, 61, 21));
+        pushButton_opencvtest = new QPushButton(tab);
+        pushButton_opencvtest->setObjectName("pushButton_opencvtest");
+        pushButton_opencvtest->setGeometry(QRect(40, 100, 121, 28));
+        frame_2 = new QFrame(tab);
+        frame_2->setObjectName("frame_2");
+        frame_2->setGeometry(QRect(40, 390, 120, 80));
+        frame_2->setFrameShape(QFrame::Shape::StyledPanel);
+        frame_2->setFrameShadow(QFrame::Shadow::Raised);
         tabWidget->addTab(tab, QString());
 
         verticalLayout->addWidget(tabWidget);
@@ -578,6 +587,7 @@ public:
         comboBox->setItemText(8, QCoreApplication::translate("MainWindow_UI", "Ubuntu", nullptr));
 
         label_5->setText(QCoreApplication::translate("MainWindow_UI", "\344\270\273\351\242\230", nullptr));
+        pushButton_opencvtest->setText(QCoreApplication::translate("MainWindow_UI", "OpenCVtest", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainWindow_UI", "\347\263\273\347\273\237\350\256\276\347\275\256", nullptr));
         label_AXIALMIN->setText(QCoreApplication::translate("MainWindow_UI", "\346\250\252\346\226\255\351\235\242", nullptr));
         label_AXIAL_2->setText(QCoreApplication::translate("MainWindow_UI", "0", nullptr));
@@ -600,4 +610,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // MAINWINDOW_2D_MEDQT_H
+#endif // MAINWINDOW_2D_UI_H

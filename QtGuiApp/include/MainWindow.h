@@ -3,6 +3,8 @@
 #include "pch.h"
 #include "DcmCStoreSender.h"
 #include "OpenCVUtil.h"
+#include "MyOpenCVDialog.h"
+
 class QVTKOpenGLNativeWidget;
 class vtkRenderer;
 class VisualizationManager;
@@ -64,6 +66,8 @@ private:
 	DcmCStoreSender m_dcmCStoreSender;
     //OpenCVUtil
     std::unique_ptr<OpencvUtil> m_opencvUtil;
+    std::unique_ptr<MyOpenCVDialog> m_opencvDialog; // OpenCV对话框指针
+    
 };
 
 #endif // MED_IMG_MAINWINDOW_H

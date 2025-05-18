@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1358</width>
+    <width>1395</width>
     <height>897</height>
    </rect>
   </property>
@@ -18,18 +18,6 @@
     <enum>Qt::LayoutDirection::LeftToRight</enum>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
-     <number>0</number>
-    </property>
     <item row="0" column="0">
      <widget class="QFrame" name="frame_menu">
       <property name="maximumSize">
@@ -566,6 +554,35 @@
            </property>
            <property name="buddy">
             <cstring>comboBox</cstring>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="pushButton_opencvtest">
+           <property name="geometry">
+            <rect>
+             <x>40</x>
+             <y>100</y>
+             <width>121</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>OpenCVtest</string>
+           </property>
+          </widget>
+          <widget class="QFrame" name="frame_2">
+           <property name="geometry">
+            <rect>
+             <x>40</x>
+             <y>390</y>
+             <width>120</width>
+             <height>80</height>
+            </rect>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
            </property>
           </widget>
          </widget>
