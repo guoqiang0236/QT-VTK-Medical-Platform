@@ -7,6 +7,7 @@ class VTKUTIL_API Viewer3D : public ViewerBase {
     Q_OBJECT
 public:
     explicit Viewer3D(QVTKOpenGLNativeWidget* widget);
+    
     ~Viewer3D();
 
     void loadDirectory(const std::string& path);
@@ -17,14 +18,13 @@ public:
     void setThreshold(double value);
     void setSmoothingFactor(int iterations, double relaxation);
     void updateRendering();
-    void DicomsToVolumeRendering();
-    void RawDataToVolumeRendering();
-    void DicomsToSurfaceRendering();
-    void RawDataToSurfaceRendering();
-
+    void VolumeRendering(vtkImageAlgorithm* imageReader);
+    void SurfaceRendering(vtkImageAlgorithm* imageReader);
 private:
     void setupPipeline();
     void resetCamera();
+
+    
 
 
     vtkSmartPointer<vtkMarchingCubes> m_marchingCubes;

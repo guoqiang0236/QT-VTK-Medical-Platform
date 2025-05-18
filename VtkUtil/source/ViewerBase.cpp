@@ -86,6 +86,18 @@ void ViewerBase::initializeReader(const std::string& path) {
     m_dicomreader->Update();
 }
 
+bool ViewerBase::GetIsGPU()
+{
+    if (!m_vtkWidget)
+        return false;
+    if (!m_vtkWidget->renderWindow())
+        return false;
+
+    vtkSmartPointer<vtkGPUVolumeRayCastMapper> tempMapper = vtkSmartPointer<vtkGPUVolumeRayCastMapper>::New();
+    return tempMapper->IsRenderSupported(m_vtkWidget->renderWindow(), nullptr);
+  
+}
+
 void ViewerBase::initializeImageReader(const std::string& path)
 {
 	m_imagereader = vtkSmartPointer<vtkImageReader>::New();
