@@ -27,6 +27,7 @@
 #include "MyThread.h"
 #include "MyThread_Work.h"
 #include "MyThread_QRunnable.h"
+#include "MyProgressDialog.h"
 
 // VTK 相关头文件
 #include <vtkCamera.h>

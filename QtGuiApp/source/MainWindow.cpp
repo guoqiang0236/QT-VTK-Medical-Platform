@@ -80,12 +80,24 @@ void MainWindow::ReadFiles()
 
     if (!folderPath.isEmpty() && m_VisualManager) 
     {    
+        // 显示进度对话框
+        if (!m_progressDialog)
+            m_progressDialog = std::make_unique<MyProgressDialog>("", this);
+
+        m_progressDialog->setWindowTitle("读取dicom文件夹中...");
+        m_progressDialog->setMaximumValue(0);
+        m_progressDialog->setLabelText("请稍候...");
+        m_progressDialog->setCancelButton(nullptr);
+        m_progressDialog->setWindowModality(Qt::ApplicationModal);
+        m_progressDialog->show();
+        qApp->processEvents();
         // 方案1: 转换为本地编码
         QByteArray utf8Path = folderPath.toUtf8();
         QString utf8FolderPath = QString::fromUtf8(utf8Path.constData());
         m_VisualManager->setFlieType(VtkFileType::DICOM_SERIES);
         m_VisualManager->loadFiles(utf8FolderPath);
-        
+
+        m_progressDialog->close();
     }
 }
 
@@ -99,6 +111,18 @@ void MainWindow::DataTo3DVolume()
 {
 	if (!m_VisualManager)
 		return;
+	// 显示进度对话框
+    if (!m_progressDialog)
+        m_progressDialog = std::make_unique<MyProgressDialog>("", this);
+    m_progressDialog->setWindowTitle("正在生成三维表面...");
+    m_progressDialog->setMaximumValue(0);
+    m_progressDialog->setLabelText("请稍候...");
+    m_progressDialog->setCancelButton(nullptr); 
+    m_progressDialog->setWindowModality(Qt::ApplicationModal);
+    m_progressDialog->show();
+    qApp->processEvents();
+
+    //根据文件类型操作
     switch (m_VisualManager->getFlieType())
     {   
 	case VtkFileType::DICOM_SERIES:
@@ -117,7 +141,7 @@ void MainWindow::DataTo3DVolume()
     default:
         break;
     }
-   
+    m_progressDialog->close();
    return;
 }
 
@@ -173,6 +197,11 @@ void MainWindow::LoadDicomFinished()
 
 void MainWindow::LoadDicomsFinished()
 {
+    //若有进度条，关闭
+    if (m_progressDialog)
+    {
+        m_progressDialog->close();
+    }
     if (!m_ui)
         return;
 	m_ui->label_AXIAL_2->setText("1");
@@ -190,6 +219,8 @@ void MainWindow::LoadDicomsFinished()
     m_ui->Slider_SAGITTAL->setMaximum(m_VisualManager->getm_sagittal_sliceall());
     m_ui->Slider_SAGITTAL->setValue(0);
     
+   
+    
     SetCurrentSliderEnable(true);
      // 禁止 AXIAL 滑块
     if(!m_VisualManager)
@@ -201,6 +232,8 @@ void MainWindow::LoadDicomsFinished()
     connect(m_VisualManager->getDicom2DViewer_axial(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentAXIALSliderValue);
     connect(m_VisualManager->getDicom2DViewer_coronal(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentCORONALSliderValue);
     connect(m_VisualManager->getDicom2DViewer_sagittal(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentSAGITTALSliderValue);
+
+   
 }
 
 void MainWindow::SetCurrentSliderEnable(bool enable)
@@ -278,6 +311,17 @@ void MainWindow::ControlRecording()
 	}
 }
 
+void MainWindow::ProgressChanged(int value, int max)
+{
+	if (m_progressDialog)
+	{
+		m_progressDialog->setProgress(value);
+		m_progressDialog->setMaximumValue(max);
+		m_progressDialog->setLabelText(QString("正在处理... %1/%2").arg(value).arg(max));
+		qApp->processEvents();
+	}
+}
+
 
 
 void MainWindow::InitSlots()
@@ -298,6 +342,7 @@ void MainWindow::InitSlots()
         return;
     connect(m_VisualManager.get(), &VisualizationManager::loadDicomFileFinish, this, &MainWindow::LoadDicomFinished);
     connect(m_VisualManager.get(), &VisualizationManager::loadDicomSeriesFinish, this, &MainWindow::LoadDicomsFinished);
+    connect(m_VisualManager.get(), &VisualizationManager::progressChanged, this, &MainWindow::ProgressChanged);
 	connect(m_ui->Slider_AXIAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setAxialSlice);
 	connect(m_ui->Slider_CORONAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setCoronalSlice);
 	connect(m_ui->Slider_SAGITTAL, &QSlider::valueChanged, m_VisualManager.get(), &VisualizationManager::setSagittalSlice);

@@ -36,7 +36,6 @@ public:
     void loadFile(const QString& filePath);
     void loadFiles(const QString& filePath);
     void loadRawData(const QString& filePath);
-
     void loadCompanyRawData(const QString& filePath);
     void loadDicomSingleFile(const QString& filePath);
     void loadDicomSeries(const QString& dirPath);
@@ -47,16 +46,13 @@ public:
     void VolumeRawData(const QString& dirPath);
     void SurFaceDicomSeries(const QString& dirPath);
     void SurFaceRawData(const QString& dirPath);
+
 signals: 
     void loadDicomFileFinish();
 	void loadDicomSeriesFinish();
     void sliceChanged(int slice);
-public slots:
-   
-	
-  
-    
-   
+    void progressChanged(int value, int max); // 当前进度，最大值
+
 private:
     void initializeResources();
     void cleanupCurrentViewer();
