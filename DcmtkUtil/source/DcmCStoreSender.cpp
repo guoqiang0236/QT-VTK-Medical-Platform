@@ -2,7 +2,6 @@
 
 #include "pch.h"
 #include "DcmCStoreSender.h"
-#include <iostream>
 #include <dcmtk/dcmnet/scu.h>
 #include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmnet/dicom.h>

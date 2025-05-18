@@ -30,7 +30,7 @@ add_subdirectory(VtkUtil)
 add_subdirectory(QtGuiApp)
 #add_subdirectory(QtGuiAppTests)
 add_subdirectory(DcmtkUtil)
-add_subdirectory(OpencvUtil)
+add_subdirectory(OpenCVUtil)
 
 # 设置 QtGuiApp 为 Visual Studio 的启动项目
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT QtGuiApp)

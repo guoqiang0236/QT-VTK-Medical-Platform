@@ -1,34 +1,27 @@
-// DcmCStoreSender.h
+﻿// DcmCStoreSender.h
 #ifndef DCM_CSTORE_SENDER_H
 #define DCM_CSTORE_SENDER_H
 
-#include <string>
+#include "pch.h"
+#include "DcmtkUtil_Export.h"
 #include <dcmtk/dcmnet/scu.h>
 #include <dcmtk/dcmdata/dctk.h>
-#include <iostream>
-#include <vector>
 
-#ifdef _WIN32
-  #ifdef DcmtkUtil_EXPORTS
-    #define DcmtkUtil_API __declspec(dllexport)
-  #else
-    #define DcmtkUtil_API __declspec(dllimport)
-  #endif
-#else
-  #define DcmtkUtil_API
-#endif
+
 
 struct DcmtkUtil_API DicomImageData {
-    std::string patientName;
-    std::string patientID;
+    std::string patientName = "";
+    std::string patientID = "";
     std::vector<unsigned char> pixelData;
-    unsigned int rows;
-    unsigned int cols;
-    unsigned int channels;
-    unsigned int total;
+    unsigned int rows = 0;
+    unsigned int cols = 0;
+    unsigned int channels = 0;
+    unsigned int total = 0;
 };
 
-class DcmtkUtil_API DcmCStoreSender {
+class DcmtkUtil_API DcmCStoreSender :public QObject 
+{
+    Q_OBJECT
 public:
     DcmCStoreSender();
     ~DcmCStoreSender();

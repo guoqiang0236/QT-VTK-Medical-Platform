@@ -12,6 +12,12 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <mutex>
+#include <string>
 
+
+//QT
+#include <QObject>
+#include <QDebug>
 
 #endif //PCH_H
