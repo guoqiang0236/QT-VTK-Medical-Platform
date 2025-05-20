@@ -2,8 +2,8 @@
 #define MED_IMG_MAINWINDOW_H
 #include "pch.h"
 #include "DcmCStoreSender.h"
-#include "OpenCVUtil.h"
 #include "MyOpenCVDialog.h"
+#include "OpenCVUtil.h"
 
 class QVTKOpenGLNativeWidget;
 class vtkRenderer;

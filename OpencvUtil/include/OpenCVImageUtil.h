@@ -10,23 +10,18 @@ class OPENCVUTIL_API OpenCVImageUtil : public QObject
 {
     Q_OBJECT
 public:
+    enum class ColorConvertType {
+        Gray = 0,
+        HSV = 1,
+        RGB = 2
+    };
     explicit OpenCVImageUtil(QObject* parent = nullptr);
-
-    // 打开图片，成功返回true
-    bool openImage(const QString& filePath);
-
-    // 获取当前图片（QImage格式，便于Qt界面显示）
+    bool openImage(const std::string& filePath);
     QImage getCurrentImage() const;
-
-    // 获取当前图片（cv::Mat格式，便于OpenCV处理）
     cv::Mat getCurrentMat() const;
 
-signals:
-    // 打开图片成功时触发
-    void imageOpened(const QImage& image);
-
-    // 打开图片失败时触发
-    void imageOpenFailed(const QString& error);
+    // 颜色空间转换接口
+    bool convertColor(int type);
 
 private:
     cv::Mat m_mat;

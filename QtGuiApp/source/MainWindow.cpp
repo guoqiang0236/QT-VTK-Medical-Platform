@@ -350,10 +350,8 @@ void MainWindow::InitSlots()
 	connect(m_ui->pushButton_opencvtest, &QPushButton::clicked, this, [this]() {
         if (m_opencvDialog)
         {
-
-            m_opencvDialog->show();
+            m_opencvDialog->exec(); // 模态对话框
 		}   
-
 		});
 }
 
