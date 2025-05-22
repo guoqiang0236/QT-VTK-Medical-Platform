@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 查找所需要的库
+set (OpenCV_DIR "${CMAKE_SOURCE_DIR}/Packages/OpenCV4100")
+find_package(OpenCV REQUIRED)
 find_package(Qt6 COMPONENTS Core REQUIRED)
 set(DCMTK_ROOT ${CMAKE_SOURCE_DIR}/Packages/DCMTK3.6.9)
 set(DCMTK_LIBS
@@ -50,6 +52,7 @@ add_definitions(-DDCMTK_USE_DLL -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE)
 # 库头文件目录
 target_include_directories(DcmtkUtil
     PUBLIC  
+        ${OpenCV_INCLUDE_DIRS}
         ${DCMTK_ROOT}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
@@ -58,6 +61,7 @@ target_include_directories(DcmtkUtil
 target_link_directories(DcmtkUtil
     PRIVATE
         ${DCMTK_ROOT}/lib
+        ${OpenCV_LIB_DIR}
 )
 
 # 链接lib库
@@ -65,6 +69,7 @@ target_link_libraries(DcmtkUtil
     PRIVATE
         ${DCMTK_LIBS}
         Qt6::Core
+        ${OpenCV_LIBS}
 )
 
 # 构建后复制 DCMTK 的 DLL 到输出目录

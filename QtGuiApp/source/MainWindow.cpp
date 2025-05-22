@@ -463,12 +463,14 @@ void MainWindow::InitThread()
     {
         m_thread_work->moveToThread(m_numsub);
     }
+    connect(m_thread_work, &MyThread_Work::numberGenerated, this, [this](int num) {
+        m_ui->label_showthreadnum->setText(QString::number(num));
+        });
+    connect(m_numsub, &QThread::started, m_thread_work, &MyThread_Work::working);
     m_numsub->start();
-	connect(m_thread_work, &MyThread_Work::numberGenerated, this, [this](int num) {
-		m_ui->label_showthreadnum->setText(QString::number(num));
-		});
-    connect(this, &MainWindow::numcounttaskstarted, m_thread_work, &MyThread_Work::working);
-    emit numcounttaskstarted();
+	
+        
+   
 
     //方式三 线程池
     /*QThreadPool::globalInstance()->setMaxThreadCount(4);

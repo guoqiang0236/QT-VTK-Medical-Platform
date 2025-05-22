@@ -4,7 +4,6 @@
 #include "DcmCStoreSender.h"
 #include "MyOpenCVDialog.h"
 #include "OpenCVUtil.h"
-
 class QVTKOpenGLNativeWidget;
 class vtkRenderer;
 class VisualizationManager;
@@ -39,7 +38,6 @@ private slots:
 	void ProgressChanged(int value, int max); // 进度条更新
 
 signals:
-    void numcounttaskstarted(); // 任务开始信号
 
 private:
     void InitSlots();
@@ -47,18 +45,19 @@ private:
     void UpdateSize();
     void loadStyleSheet(const QString& path); // 动态加载 QSS
     void InitThread();
+
    
 	
 private:
     std::mutex m_mutex; // 互斥锁
-    std::unique_ptr<Ui::MainWindow_UI> m_ui; // 主窗口UI界面指针
-    MyThread* m_thread; // QThread子类指针
-    MyThread_Work* m_thread_work; // 工作线程对象指针
-    MyThread_Runnable* m_thread_runnable; // 线程池任务对象指针
-    QTimer* m_current_time; // 定时器指针
-    QThread* m_sub; // 子线程指针
-    QThread* m_numsub; // 子线程指针2
-    std::unique_ptr<MyProgressDialog> m_progressDialog; // 进度对话框指针，用于显示耗时操作的进度提示
+    std::unique_ptr<Ui::MainWindow_UI> m_ui; 
+    MyThread* m_thread; 
+    MyThread_Work* m_thread_work; 
+    MyThread_Runnable* m_thread_runnable; 
+    QTimer* m_current_time; 
+    QThread* m_sub;
+    QThread* m_numsub; 
+    std::unique_ptr<MyProgressDialog> m_progressDialog; // 进度对话框指针
 
     //VtkUtil
     std::unique_ptr<VisualizationManager> m_VisualManager;

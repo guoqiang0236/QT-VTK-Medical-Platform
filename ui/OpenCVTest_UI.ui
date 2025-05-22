@@ -41,17 +41,24 @@
          <item row="0" column="0">
           <widget class="QPushButton" name="pushButton_openimage">
            <property name="text">
-            <string>打开图片路径</string>
+            <string>打开图片</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QFrame" name="frame_4">
            <property name="frameShape">
             <enum>QFrame::Shape::StyledPanel</enum>
            </property>
            <property name="frameShadow">
             <enum>QFrame::Shadow::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="pushButton_SCU">
+           <property name="text">
+            <string>开始监听DCMTK</string>
            </property>
           </widget>
          </item>

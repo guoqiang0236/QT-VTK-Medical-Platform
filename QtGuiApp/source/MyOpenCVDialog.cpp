@@ -2,7 +2,9 @@
 MyOpenCVDialog::MyOpenCVDialog(QWidget* parent)
     : QDialog(parent),
 	m_ui(std::make_unique<Ui::OpenCVDialog>()),
-	m_opencvImageUtil(std::make_unique<OpenCVImageUtil>())
+	m_opencvImageUtil(std::make_unique<OpenCVImageUtil>()),
+	m_thread(new QThread(this)),
+	m_thread_scpwork(new MyThread_DCMTK_SCP_Work(this))
 {
     m_ui->setupUi(this); // 关键：加载UI
 	UpdateGUI();
@@ -12,6 +14,15 @@ MyOpenCVDialog::MyOpenCVDialog(QWidget* parent)
 
 MyOpenCVDialog::~MyOpenCVDialog()
 {
+	if (m_thread->isRunning())
+	{
+		m_thread->quit();
+		m_thread->wait();
+	}
+	if (m_thread_scpwork) {
+		m_thread_scpwork->deleteLater();
+		m_thread_scpwork = nullptr;
+	}
   
 }
 
@@ -20,7 +31,7 @@ void MyOpenCVDialog::InitSlots()
 	disconnect(m_ui->pushButton_openimage, nullptr, this, nullptr);
 
 	connect(m_ui->pushButton_openimage, &QPushButton::clicked, this, &MyOpenCVDialog::on_pushButton_openimage_clicked);
-
+	connect(m_ui->pushButton_SCU, &QPushButton::clicked, this, &MyOpenCVDialog::StartOrStop_SCU);
 }
 
 void MyOpenCVDialog::UpdateGUI()
@@ -33,6 +44,49 @@ void MyOpenCVDialog::UpdateSize()
     QSize windowsize = config.getAdjustedSize();
     this->resize(windowsize);
 }
+
+
+
+void MyOpenCVDialog::StartOrStop_SCU()
+{
+	if (!bthreadrun)
+	{
+		// 启动
+		if (m_thread) {
+			delete m_thread;
+			m_thread = nullptr;
+		}
+		if (m_thread_scpwork) {
+			delete m_thread_scpwork;
+			m_thread_scpwork = nullptr;
+		}
+		m_thread = new QThread(this);
+		m_thread_scpwork = new MyThread_DCMTK_SCP_Work();
+		m_thread_scpwork->moveToThread(m_thread);
+
+		connect(m_thread, &QThread::started, m_thread_scpwork, &MyThread_DCMTK_SCP_Work::Working);
+		connect(m_thread, &QThread::finished, m_thread_scpwork, &QObject::deleteLater);
+
+		m_thread->start();
+		bthreadrun = true;
+	}
+//	else
+//	{
+//		// 停止
+//		if (m_thread_scpwork) {
+//			QMetaObject::invokeMethod(m_thread_scpwork, "StopWorking", Qt::QueuedConnection);
+//		}
+//		if (m_thread) {
+//			m_thread->quit();
+//			m_thread->wait();
+//			delete m_thread;
+//			m_thread = nullptr;
+//		}
+//		m_thread_scpwork = nullptr; // 已经在 finished 信号中 deleteLater
+//	}
+}
+
+
 
 void MyOpenCVDialog::on_pushButton_openimage_clicked()
 {
