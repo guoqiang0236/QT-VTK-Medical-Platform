@@ -3,16 +3,20 @@
 #include "pch.h"
 #include "VtkUtil_Export.h"  // 导出宏头文件
 #include "BasebandReader.h"
+#include "VtkFileTypeDetector.h"
+
 class VTKUTIL_API ViewerBase:public QObject {
     Q_OBJECT
 public:
-	void setm_reader(vtkSmartPointer<vtkDICOMImageReader> reader) { m_dicomreader = reader; }
-	vtkDICOMImageReader* getm_dicomreader() { return m_dicomreader.Get(); }
-	vtkImageReader* getm_imagereader() { return m_imagereader.Get(); }
-	void setm__imagereader(vtkSmartPointer<vtkImageReader> reader) { m_imagereader = reader; }
-    vtkRenderer* GetRenderer() const { return m_renderer; }
+    void setm_reader(vtkSmartPointer<vtkDICOMImageReader> reader);
+    vtkDICOMImageReader* getm_dicomreader();
+    vtkImageReader* getm_imagereader();
+    void setm__imagereader(vtkSmartPointer<vtkImageReader> reader);
+    vtkRenderer* GetRenderer() const;
     void initializeReader(const std::string& path);
     bool GetIsGPU();
+    VtkFileType GetFileType() const;
+    void SetFileType(VtkFileType fileType);
 protected:
     explicit ViewerBase(QVTKOpenGLNativeWidget* widget);
 
@@ -32,6 +36,6 @@ protected:
 	std::unique_ptr<RawReader> m_rawreader;
     std::unique_ptr<std::vector<BMFMDataHeader>> m_rawdataheaders = std::make_unique<std::vector<BMFMDataHeader>>();
     std::unique_ptr<std::vector<std::vector<std::complex<float>>>> m_rawdata_allData = std::make_unique<std::vector<std::vector<std::complex<float>>>>();
-
+    VtkFileType m_fileType;
   
 };

@@ -11,6 +11,7 @@ ViewerBase::ViewerBase(QVTKOpenGLNativeWidget* widget)
 	m_rawdata_allData(std::make_unique<std::vector<std::vector<std::complex<float>>>>())
 {
     m_vtkWidget->renderWindow()->AddRenderer(m_renderer);
+	m_fileType = VtkFileType::UNKNOWN;
 }
 
 
@@ -72,6 +73,26 @@ std::string ViewerBase::gbk_to_utf8(const char* strGBK)
     }
     return "";
 }
+void ViewerBase::setm_reader(vtkSmartPointer<vtkDICOMImageReader> reader)
+{
+    m_dicomreader = reader;
+}
+vtkDICOMImageReader* ViewerBase::getm_dicomreader()
+{
+    return m_dicomreader.Get();
+}
+vtkImageReader* ViewerBase::getm_imagereader()
+{
+    return m_imagereader.Get();
+}
+void ViewerBase::setm__imagereader(vtkSmartPointer<vtkImageReader> reader)
+{
+    m_imagereader = reader;
+}
+vtkRenderer* ViewerBase::GetRenderer() const
+{
+    return m_renderer;
+}
 void ViewerBase::initializeReader(const std::string& path) {
     if(!m_dicomreader)
         m_dicomreader = vtkSmartPointer<vtkDICOMImageReader>::New();
@@ -96,6 +117,16 @@ bool ViewerBase::GetIsGPU()
     vtkSmartPointer<vtkGPUVolumeRayCastMapper> tempMapper = vtkSmartPointer<vtkGPUVolumeRayCastMapper>::New();
     return tempMapper->IsRenderSupported(m_vtkWidget->renderWindow(), nullptr);
   
+}
+
+VtkFileType ViewerBase::GetFileType() const
+{
+    return m_fileType;
+}
+
+void ViewerBase::SetFileType(VtkFileType fileType)
+{
+    m_fileType = fileType;
 }
 
 void ViewerBase::initializeImageReader(const std::string& path)

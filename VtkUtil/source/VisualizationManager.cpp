@@ -138,14 +138,14 @@ void VisualizationManager::loadFile(const QString& filePath) {
 
 void VisualizationManager::loadFiles(const QString& filePath)
 {
-    _sleep(100);
+     
     emit progressChanged(10, 100);
     cleanupCurrentViewer();
     switch (m_fileType)
     {
     case VtkFileType::DICOM_SERIES:
     {
-        _sleep(100);
+         
         emit progressChanged(30, 100);
         loadDicomSeries(filePath);
         
@@ -248,7 +248,7 @@ void VisualizationManager::loadDicomSeries(const QString& dirPath) {
 	m_dicom2DViewer->setmessage("MAIN");
     m_dicom2DViewer->loadDicomDirectory(std::string(localPath.constData()));
 
-    _sleep(100);
+     
     emit progressChanged(50, 100);
 
     auto reader = m_dicom2DViewer->getm_dicomreader();
@@ -258,7 +258,7 @@ void VisualizationManager::loadDicomSeries(const QString& dirPath) {
 	m_dicom2DViewer_axial->setmessage("AXIAL");
     m_dicom2DViewer_axial->loadDicomDirectory(std::string(localPath.constData()));
     m_dicom2DViewer_axial->getInteractorStyle()->EnableMouseWheel(false);
-    _sleep(100);
+     
     emit progressChanged(60, 100);
 
     m_dicom2DViewer_coronal = std::make_unique<Viewer2D>(m_vtkWidget_coronal);
@@ -267,7 +267,7 @@ void VisualizationManager::loadDicomSeries(const QString& dirPath) {
     m_dicom2DViewer_coronal->setmessage("CORONAL");
     m_dicom2DViewer_coronal->loadDicomDirectory(std::string(localPath.constData()));
 	m_dicom2DViewer_coronal->getInteractorStyle()->EnableMouseWheel(false);
-    _sleep(100);
+     
     emit progressChanged(70, 100);
 
     m_dicom2DViewer_sagittal = std::make_unique<Viewer2D>(m_vtkWidget_sagittal);
@@ -276,7 +276,7 @@ void VisualizationManager::loadDicomSeries(const QString& dirPath) {
     m_dicom2DViewer_sagittal->setmessage("SAGITTAL");
     m_dicom2DViewer_sagittal->loadDicomDirectory(std::string(localPath.constData()));
 	m_dicom2DViewer_sagittal->getInteractorStyle()->EnableMouseWheel(false);
-    _sleep(100);
+     
     emit progressChanged(80, 100);
 
 	//获取每个视图的切片数
@@ -286,7 +286,7 @@ void VisualizationManager::loadDicomSeries(const QString& dirPath) {
 
     // 初始化信号槽
     initxyzSlots();
-    _sleep(100);
+     
     emit progressChanged(90, 100);
     emit loadDicomSeriesFinish();
     // 启动每个视图的交互器
@@ -303,67 +303,34 @@ void VisualizationManager::DataToVolume(const QString& dirPath)
 {
     emit progressChanged(0, 100);
     cleanupMainViewer();
-    _sleep(100);
+     
     emit progressChanged(10, 100);
-    switch (m_fileType)
-    {
-    case VtkFileType::DICOM:
-        break;
-    case VtkFileType::DICOM_SERIES:
-    {
-        _sleep(100);
-        emit progressChanged(30, 100);
-        VolumeDicomSeries(dirPath);
-        _sleep(100);
-        emit progressChanged(90, 100);
-		_sleep(100);
-        break;
-    }
-    case VtkFileType::RAW:
-        VolumeRawData(dirPath);
-        break;
-    case VtkFileType::UNKNOWN:
-        break;
-    default:
-        break;
-    }
-
+    emit progressChanged(30, 100);
+    VolumeTo3D(dirPath);
+     
+    emit progressChanged(90, 100);
+     
 }
 
-void VisualizationManager::VolumeDicomSeries(const QString& dirPath)
+
+void VisualizationManager::VolumeTo3D(const QString& dirPath)
 {
     m_dicom3DViewer = std::make_unique<Viewer3D>(m_vtkWidget);
     // 使用本地编码而不是UTF-8，适应Windows文件系统API
-    QByteArray localPath = QFile::encodeName(dirPath);
-    _sleep(100);
     emit progressChanged(50, 100);
-    m_dicom3DViewer->loadDirectory_Body(std::string(localPath.constData()));
+    QByteArray localPath = QFile::encodeName(dirPath);
+    m_dicom3DViewer->SetFileType(m_fileType);
+    m_dicom3DViewer->loadBody(std::string(localPath.constData()));
     emit progressChanged(80, 100);
-    
 }
 
-void VisualizationManager::VolumeRawData(const QString& dirPath)
+void VisualizationManager::SurFaceTo3D(const QString& dirPath)
 {
     m_dicom3DViewer = std::make_unique<Viewer3D>(m_vtkWidget);
     // 使用本地编码而不是UTF-8，适应Windows文件系统API
     QByteArray localPath = QFile::encodeName(dirPath);
-    m_dicom3DViewer->loadRawData_Body(std::string(localPath.constData()));
-}
-
-void VisualizationManager::SurFaceDicomSeries(const QString& dirPath)
-{
-    m_dicom3DViewer = std::make_unique<Viewer3D>(m_vtkWidget);
-    // 使用本地编码而不是UTF-8，适应Windows文件系统API
-    QByteArray localPath = QFile::encodeName(dirPath);
-    m_dicom3DViewer->loadDirectory_Surface(std::string(localPath.constData()));
-}
-
-void VisualizationManager::SurFaceRawData(const QString& dirPath)
-{
-    m_dicom3DViewer = std::make_unique<Viewer3D>(m_vtkWidget);
-    // 使用本地编码而不是UTF-8，适应Windows文件系统API
-    QByteArray localPath = QFile::encodeName(dirPath);
-    m_dicom3DViewer->loadRawData_Surface(std::string(localPath.constData()));
+    m_dicom3DViewer->SetFileType(m_fileType);
+    m_dicom3DViewer->loadSurface(std::string(localPath.constData()));
 }
 
 
@@ -371,22 +338,7 @@ void VisualizationManager::SurFaceRawData(const QString& dirPath)
 void VisualizationManager::DataToSurFace(const QString& dirPath)
 {
     cleanupMainViewer();
-    switch (m_fileType)
-    {
-    case VtkFileType::DICOM:
-        break;
-    case VtkFileType::DICOM_SERIES:
-        SurFaceDicomSeries(dirPath);
-        break;
-    case VtkFileType::RAW:
-		SurFaceRawData(dirPath);
-        break;
-    case VtkFileType::UNKNOWN:
-        break;
-    default:
-        break;
-    }
-    
+    SurFaceTo3D(dirPath);
 }
 
 void VisualizationManager::changeViewOrientation(int orientation) {

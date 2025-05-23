@@ -404,7 +404,7 @@ void MainWindow::UpdateGUI()
     m_ui->gridLayout_6->addWidget(m_VisualManager->getVTKWidget_Sagittal(), 0, 1, 1, 1);
 
     //禁止使用面绘制（卡顿）
-    m_ui->pushButton_mian->setEnabled(false);
+    //m_ui->pushButton_mian->setEnabled(false);
 
     //opencvdialog
     m_opencvDialog = std::make_unique<MyOpenCVDialog>(this);

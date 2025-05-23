@@ -42,10 +42,8 @@ public:
     void DataToSurFace(const QString& dirPath);
     void DataToVolume(const QString& dirPath);
     void initxyzSlots();
-    void VolumeDicomSeries(const QString& dirPath);
-    void VolumeRawData(const QString& dirPath);
-    void SurFaceDicomSeries(const QString& dirPath);
-    void SurFaceRawData(const QString& dirPath);
+    void VolumeTo3D(const QString& dirPath);
+    void SurFaceTo3D(const QString& dirPath);
 
 signals: 
     void loadDicomFileFinish();
