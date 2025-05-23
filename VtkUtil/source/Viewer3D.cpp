@@ -51,6 +51,7 @@ void Viewer3D::loadBody(const std::string& path)
         setupOrientationMarker();
         auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
         m_vtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);
+		m_vtkWidget->renderWindow()->GetInteractor()->SetDesiredUpdateRate(30);
         resetCamera();
         m_vtkWidget->renderWindow()->Render(); // 建议始终调用，保证渲染刷新
       
@@ -195,33 +196,60 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
         m_GPUvolumeMapper->SetSampleDistance(0.1f);
     }
 
-    // 3. 设置颜色传递函数
+    // 3. 设置颜色传递函数（决定不同灰度/密度值对应的颜色）
     if (!m_colorTransferFunction)
         m_colorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
-    m_colorTransferFunction->AddRGBPoint(-1000, 0.0, 0.0, 0.0);
-    m_colorTransferFunction->AddRGBPoint(0, 1.0, 0.5, 0.3);
-    m_colorTransferFunction->AddRGBPoint(500, 1.0, 1.0, 0.9);
-    m_colorTransferFunction->AddRGBPoint(1200, 1.0, 1.0, 1.0);
+   
+    m_colorTransferFunction->AddRGBPoint(-1000, 0.0, 0.0, 0.0); // -1000: 黑色（通常为空气）
+    m_colorTransferFunction->AddRGBPoint(0, 1.0, 0.5, 0.3); // 0: 棕色（可自定义，通常为软组织）
+    m_colorTransferFunction->AddRGBPoint(500, 1.0, 1.0, 0.9);  // 500: 浅黄色（如骨骼）
+    m_colorTransferFunction->AddRGBPoint(1200, 1.0, 1.0, 1.0);// 1200: 白色（高密度结构）
 
-    // 4. 设置透明度传递函数
+    // 4. 设置透明度传递函数（决定不同灰度/密度值的透明度）
     if (!m_opacityTransferFunction)
         m_opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    m_opacityTransferFunction->AddPoint(-1000, 0.0);
-    m_opacityTransferFunction->AddPoint(0, 0.0);
-    m_opacityTransferFunction->AddPoint(60, 0.0);
-    m_opacityTransferFunction->AddPoint(200, 0.2);
-    m_opacityTransferFunction->AddPoint(300, 0.4);
-    m_opacityTransferFunction->AddPoint(400, 0.6);
-    m_opacityTransferFunction->AddPoint(500, 0.8);
-    m_opacityTransferFunction->AddPoint(1200, 1.0);
+    m_opacityTransferFunction->AddPoint(-1000, 0.0);// -1000: 完全透明
+    m_opacityTransferFunction->AddPoint(0, 0.0); // 0: 依然透明
+    m_opacityTransferFunction->AddPoint(60, 0.0); // 60: 依然透明
+    m_opacityTransferFunction->AddPoint(200, 0.2); // 200: 开始有一点点不透明
+    m_opacityTransferFunction->AddPoint(300, 0.4); // 300: 更不透明
+    m_opacityTransferFunction->AddPoint(400, 0.6);// 400: 更加不透明
+    m_opacityTransferFunction->AddPoint(500, 0.8); // 500: 接近不透明
+    m_opacityTransferFunction->AddPoint(1200, 1.0);// 1200: 完全不透明
 
-    // 5. 设置体积属性
+    // 5. 设置体积属性（VolumeProperty 控制体绘制的光照、插值和材质效果）
     if (!m_volumeProperty)
         m_volumeProperty = vtkSmartPointer<vtkVolumeProperty>::New();
+
+    // 设置颜色映射（不同灰度/密度值对应的颜色）
     m_volumeProperty->SetColor(m_colorTransferFunction);
+
+    // 设置透明度映射（不同灰度/密度值对应的透明度）
     m_volumeProperty->SetScalarOpacity(m_opacityTransferFunction);
+
+    // 开启光照（Shading），让体绘制有立体感
     m_volumeProperty->ShadeOn();
+
+    // 设置插值方式为线性插值（提升渲染平滑度，避免马赛克感）
     m_volumeProperty->SetInterpolationTypeToLinear();
+
+    // 设置环境光系数（Ambient）：
+    // 环境光是场景中均匀分布的光线，数值越大，整体越亮但缺乏立体感。常用0.1~0.4。
+    m_volumeProperty->SetAmbient(0.3);
+
+    // 设置漫反射系数（Diffuse）：
+    // 漫反射决定了物体表面受光照后主要的亮度和立体感，数值越大，表面越有立体感。常用0.6~0.9。
+    m_volumeProperty->SetDiffuse(0.7);
+
+    // 设置高光系数（Specular）：
+    // 高光决定了表面反射光的强度，数值越大，表面越有光泽感。常用0.3~0.7。
+    m_volumeProperty->SetSpecular(0.5);
+
+    // 设置高光指数（SpecularPower）：
+    // 控制高光的锐利程度，值越大高光越尖锐、越小越柔和。常用10~50。
+    m_volumeProperty->SetSpecularPower(20.0);
+
+
 
     vtkSmartPointer<vtkVolume> volume = vtkSmartPointer<vtkVolume>::New();
     if (isGPU)
