@@ -78,3 +78,8 @@ add_custom_command(TARGET DcmtkUtil POST_BUILD
         ${DCMTK_ROOT}/bin
         $<TARGET_FILE_DIR:DcmtkUtil>
 )
+
+#使用 QT_NO_DEBUG_OUTPUT 宏禁止release模式下的调试输出
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif()

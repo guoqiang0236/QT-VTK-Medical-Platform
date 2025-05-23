@@ -1,4 +1,4 @@
-#include "MyOpenCVDialog.h"
+ï»¿#include "MyOpenCVDialog.h"
 MyOpenCVDialog::MyOpenCVDialog(QWidget* parent)
     : QDialog(parent),
 	m_ui(std::make_unique<Ui::OpenCVDialog>()),
@@ -6,7 +6,7 @@ MyOpenCVDialog::MyOpenCVDialog(QWidget* parent)
 	m_thread(new QThread(this)),
 	m_thread_scpwork(new MyThread_DCMTK_SCP_Work(this))
 {
-    m_ui->setupUi(this); // ¹Ø¼ü£º¼ÓÔØUI
+    m_ui->setupUi(this); // å…³é”®ï¼šåŠ è½½UI
 	UpdateGUI();
 	UpdateSize();
 	InitSlots();
@@ -51,7 +51,7 @@ void MyOpenCVDialog::StartOrStop_SCU()
 {
 	if (!bthreadrun)
 	{
-		// Æô¶¯
+		// å¯åŠ¨
 		if (m_thread) {
 			delete m_thread;
 			m_thread = nullptr;
@@ -72,7 +72,7 @@ void MyOpenCVDialog::StartOrStop_SCU()
 	}
 //	else
 //	{
-//		// Í£Ö¹
+//		// åœæ­¢
 //		if (m_thread_scpwork) {
 //			QMetaObject::invokeMethod(m_thread_scpwork, "StopWorking", Qt::QueuedConnection);
 //		}
@@ -82,7 +82,7 @@ void MyOpenCVDialog::StartOrStop_SCU()
 //			delete m_thread;
 //			m_thread = nullptr;
 //		}
-//		m_thread_scpwork = nullptr; // ÒÑ¾­ÔÚ finished ÐÅºÅÖÐ deleteLater
+//		m_thread_scpwork = nullptr; // å·²ç»åœ¨ finished ä¿¡å·ä¸­ deleteLater
 //	}
 }
 
@@ -101,11 +101,11 @@ void MyOpenCVDialog::on_pushButton_openimage_clicked()
 	QImage image = m_opencvImageUtil->getCurrentImage();
 	QPixmap pixmap = QPixmap::fromImage(image);
 
-	// ´´½¨»ò»ñÈ¡ scene
+	// åˆ›å»ºæˆ–èŽ·å– scene
 	QGraphicsScene* scene = new QGraphicsScene(this);
 	scene->addPixmap(pixmap);
 	scene->setSceneRect(pixmap.rect());
 	
-	// ÉèÖÃ scene µ½ graphicsView
+	// è®¾ç½® scene åˆ° graphicsView
 	m_ui->graphicsView->setScene(scene);
 }

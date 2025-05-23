@@ -57,12 +57,13 @@ target_link_libraries(VtkUtil
         Qt6::Core
 )
 
-
-
-
 # 自动初始化VTK模块
 vtk_module_autoinit(
     TARGETS VtkUtil
     MODULES ${VTK_LIBRARIES}
 )
 
+#使用 QT_NO_DEBUG_OUTPUT 宏禁止release模式下的调试输出
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif()

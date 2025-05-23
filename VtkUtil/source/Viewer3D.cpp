@@ -12,6 +12,7 @@
 #include <vtkTextProperty.h>
 #include <vtkImageThreshold.h>
 #include <vtkFlyingEdges3D.h>
+#include <QMessageBox>
 Viewer3D::Viewer3D(QVTKOpenGLNativeWidget* widget)
     : ViewerBase(widget)
 {
@@ -57,7 +58,7 @@ void Viewer3D::loadBody(const std::string& path)
       
     }
     catch (const std::exception& e) {
-        throw std::runtime_error("3D rendering failed: " + std::string(e.what()));
+        QMessageBox::critical(nullptr, "渲染失败", QString("3D渲染失败: %1").arg(e.what()));
     }
 }
 void Viewer3D::loadDirectory(const std::string& path) {
@@ -69,7 +70,7 @@ void Viewer3D::loadDirectory(const std::string& path) {
         m_vtkWidget->renderWindow()->Render();
     }
     catch (const std::exception& e) {
-        throw std::runtime_error("3D rendering failed: " + std::string(e.what()));
+        QMessageBox::critical(nullptr, "渲染失败", QString("3D渲染失败: %1").arg(e.what()));
     }
 }
 
@@ -108,7 +109,7 @@ void Viewer3D::loadSurface(const std::string& path)
         m_vtkWidget->renderWindow()->Render();
     }
     catch (const std::exception& e) {
-        throw std::runtime_error("3D rendering failed: " + std::string(e.what()));
+        QMessageBox::critical(nullptr, "渲染失败", QString("3D渲染失败: %1").arg(e.what()));
     }
 }
 
@@ -179,7 +180,7 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
 {
     // 1. 检查数据有效性
     if (!imageReader || !imageReader->GetOutput()) {
-        throw std::runtime_error("体数据无效: ");
+        QMessageBox::critical(nullptr, "渲染失败", QString("体数据无效"));
     }
     // 2. 检查是否支持 GPU 渲染
     bool isGPU = GetIsGPU();

@@ -62,3 +62,8 @@ add_custom_command(TARGET OpenCVUtil POST_BUILD
     "${OpenCV_DIR}/x64/vc17/bin/opencv_world4100.dll"
     $<TARGET_FILE_DIR:OpenCVUtil>
 )
+
+#使用 QT_NO_DEBUG_OUTPUT 宏禁止release模式下的调试输出
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif()

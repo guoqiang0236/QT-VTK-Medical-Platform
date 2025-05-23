@@ -91,4 +91,7 @@ if(TARGET VTK::moc)
     add_dependencies(QtGuiApp VTK::moc)
 endif()
 
-
+#使用 QT_NO_DEBUG_OUTPUT 宏禁止release模式下的调试输出
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif()

@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <vtkLookupTable.h>
 #include "vtkPointData.h" 
+#include <QMessageBox>
 Viewer2D::Viewer2D(QVTKOpenGLNativeWidget* widget)
     : ViewerBase(widget) 
 {
@@ -52,11 +53,11 @@ void Viewer2D::loadDicomDirectory(const std::string& path)
     }
     catch (const std::runtime_error& e) {
         std::cerr << "Runtime error: " << e.what() << std::endl;
-        throw std::runtime_error("2D DICOM series loading failed: " + std::string(e.what()));
+        QMessageBox::critical(nullptr, "加载失败", QString("2D DICOM系列加载失败: %1").arg(e.what()));
     }
     catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
-        throw std::runtime_error("An error occurred: " + std::string(e.what()));
+        QMessageBox::critical(nullptr, "错误", QString("发生错误: %1").arg(e.what()));
     }
 }
 
@@ -77,11 +78,11 @@ void Viewer2D::loadRawData()
     }
     catch (const std::runtime_error& e) {
         std::cerr << "Runtime error: " << e.what() << std::endl;
-        throw std::runtime_error("2D rawdata loading failed: " + std::string(e.what()));
+        QMessageBox::critical(nullptr, "加载失败", QString("2D RAWDATA系列加载失败: %1").arg(e.what()));
     }
     catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
-        throw std::runtime_error("An error occurred: " + std::string(e.what()));
+        QMessageBox::critical(nullptr, "错误", QString("发生错误: %1").arg(e.what()));
     }
 }
 
@@ -201,7 +202,7 @@ void Viewer2D::loadCompanyRawData(const std::string& path)
 
 void Viewer2D::setupViewer() {
     if (!m_dicomreader || m_dicomreader->GetErrorCode() != vtkErrorCode::NoError) {
-        throw std::runtime_error("Invalid DICOM data");
+        QMessageBox::critical(nullptr, "加载失败", QString("Invalid DICOM data"));
     }
     m_imageViewer->SetRenderWindow(m_vtkWidget->renderWindow());
     m_imageViewer->SetInputConnection(m_dicomreader->GetOutputPort());
@@ -218,7 +219,7 @@ void Viewer2D::setupViewer() {
 void Viewer2D::setuprawviewer()
 {
     if (!m_imagereader || m_imagereader->GetErrorCode() != vtkErrorCode::NoError) {
-        throw std::runtime_error("Invalid raw data");
+        QMessageBox::critical(nullptr, "加载失败", QString("Invalid RAW data"));
     }
     m_reslice->SetInputConnection(m_imagereader->GetOutputPort());
     m_matrix->Identity(); // 单位矩阵表示 XY 平面
@@ -322,7 +323,7 @@ void Viewer2D::setViewOrientation(SliceOrientation orientation) {
 void Viewer2D::setrawdataViewOrientation(SliceOrientation orientation)
 {
     if (!m_imagereader || m_imagereader->GetErrorCode() != vtkErrorCode::NoError) {
-        throw std::runtime_error("Invalid raw data");
+        QMessageBox::critical(nullptr, "加载失败", QString("Invalid RAW data"));
     }
     m_reslice->SetInputConnection(m_imagereader->GetOutputPort());
    
