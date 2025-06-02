@@ -3,6 +3,8 @@
 #include "pch.h"
 #include "VtkUtil_Export.h"  // 导出宏头文件
 #include "ViewerBase.h"
+
+class vtkImageResample;
 class VTKUTIL_API Viewer3D : public ViewerBase {
     Q_OBJECT
 public:
@@ -38,6 +40,7 @@ private:
     vtkSmartPointer<vtkOrientationMarkerWidget> m_orientationMarker; 
     vtkSmartPointer<vtkAxesActor> m_axes; 
     vtkSmartPointer<vtkColorTransferFunction> m_colorTransferFunction;
+    vtkSmartPointer<vtkImageResample> m_resample;
     vtkSmartPointer<vtkPiecewiseFunction> m_opacityTransferFunction;
     vtkSmartPointer<vtkVolumeProperty> m_volumeProperty;
     vtkSmartPointer<vtkCubeAxesActor> m_cubeAxesActor;

@@ -13,6 +13,7 @@
 #include <vtkImageThreshold.h>
 #include <vtkFlyingEdges3D.h>
 #include <QMessageBox>
+#include <vtkImageResample.h>
 Viewer3D::Viewer3D(QVTKOpenGLNativeWidget* widget)
     : ViewerBase(widget)
 {
@@ -182,18 +183,27 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
     if (!imageReader || !imageReader->GetOutput()) {
         QMessageBox::critical(nullptr, "渲染失败", QString("体数据无效"));
     }
+	//对体数据进行重采样（可选，通常用于降低分辨率或调整体数据大小）
+    if(!m_resample)
+        m_resample = vtkSmartPointer<vtkImageResample>::New();
+
+    m_resample->SetInputConnection(imageReader->GetOutputPort());
+    m_resample->SetAxisMagnificationFactor(0, 0.5); // X方向
+    m_resample->SetAxisMagnificationFactor(1, 0.5); // Y方向
+    m_resample->SetAxisMagnificationFactor(2, 0.5); // Z方向
+    m_resample->Update();
     // 2. 检查是否支持 GPU 渲染
     bool isGPU = GetIsGPU();
     if (isGPU) {
         if (!m_GPUvolumeMapper)
             m_GPUvolumeMapper = vtkSmartPointer<vtkGPUVolumeRayCastMapper>::New();
-        m_GPUvolumeMapper->SetInputConnection(imageReader->GetOutputPort());
+        m_GPUvolumeMapper->SetInputConnection(m_resample->GetOutputPort());
 		m_GPUvolumeMapper->SetSampleDistance(0.1f);
     }
     else {
         if (!m_CPUvolumeMapper)
             m_CPUvolumeMapper = vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
-        m_CPUvolumeMapper->SetInputConnection(imageReader->GetOutputPort());
+        m_CPUvolumeMapper->SetInputConnection(m_resample->GetOutputPort());
         m_GPUvolumeMapper->SetSampleDistance(0.1f);
     }
 
@@ -236,7 +246,7 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
 
     // 设置环境光系数（Ambient）：
     // 环境光是场景中均匀分布的光线，数值越大，整体越亮但缺乏立体感。常用0.1~0.4。
-    m_volumeProperty->SetAmbient(0.3);
+    m_volumeProperty->SetAmbient(0.2);
 
     // 设置漫反射系数（Diffuse）：
     // 漫反射决定了物体表面受光照后主要的亮度和立体感，数值越大，表面越有立体感。常用0.6~0.9。
