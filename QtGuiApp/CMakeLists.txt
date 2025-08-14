@@ -84,6 +84,7 @@ target_link_libraries(QtGuiApp PRIVATE
     VtkUtil
     DcmtkUtil
     OpenCVUtil
+    singleton
 )
 
 # 设置 VTK 模块依赖（确保头文件正确处理）

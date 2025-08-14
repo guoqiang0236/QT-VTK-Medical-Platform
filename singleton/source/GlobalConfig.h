@@ -2,10 +2,10 @@
 #include <string>
 #include <memory>
 #include <QSize>
-
+#include "header.h"
 namespace sysconfig {
 
-    class GlobalConfig {
+    class GLOBALCONFIG_API GlobalConfig {
     public:
 
         GlobalConfig(const GlobalConfig&) = delete;
