@@ -24,6 +24,7 @@ public:
     void SurfaceRendering(vtkImageAlgorithm* imageReader);
     void setupCubeAxes();
     void setupOrientationMarker();
+    double CalculateOptimalResampleFactor(int totalVoxels);
 private:
     void setupPipeline();
     void resetCamera();

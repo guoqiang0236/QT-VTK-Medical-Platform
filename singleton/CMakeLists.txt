@@ -55,8 +55,8 @@ target_link_libraries(singleton
 # 构建后复制 DCMTK 的 DLL 到输出目录
 add_custom_command(TARGET singleton POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${DCMTK_ROOT}/bin
         $<TARGET_FILE_DIR:singleton>
+        ${CMAKE_SOURCE_DIR}/bin/$<CONFIG>
 )
 
 #使用 QT_NO_DEBUG_OUTPUT 宏禁止release模式下的调试输出

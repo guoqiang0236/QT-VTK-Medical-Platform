@@ -274,7 +274,33 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
     
 }
 
+double Viewer3D::CalculateOptimalResampleFactor(int totalVoxels)
+{
+    // 定义阈值（根据实际硬件调整）
+    const int VOXEL_THRESHOLD_HIGH = 200 * 1024 * 1024;  // 200M体素 (如 512×512×768)
+    const int VOXEL_THRESHOLD_MEDIUM = 100 * 1024 * 1024; // 100M体素 (如 512×512×384)
+    const int VOXEL_THRESHOLD_LOW = 50 * 1024 * 1024;    // 50M体素 (如 512×512×192)
 
+    // GPU/CPU 性能差异调整
+    bool isGPU = GetIsGPU();
+
+    if (totalVoxels > VOXEL_THRESHOLD_HIGH) {
+        // 超大数据集：激进降采样
+        return isGPU ? 0.4 : 0.3;  // GPU: 40%, CPU: 30%
+    }
+    else if (totalVoxels > VOXEL_THRESHOLD_MEDIUM) {
+        // 大数据集：中度降采样
+        return isGPU ? 0.6 : 0.5;  // GPU: 60%, CPU: 50%
+    }
+    else if (totalVoxels > VOXEL_THRESHOLD_LOW) {
+        // 中等数据集：轻度降采样
+        return isGPU ? 0.8 : 0.7;  // GPU: 80%, CPU: 70%
+    }
+    else {
+        // 小数据集：保持原始分辨率或轻微降采样
+        return isGPU ? 1.0 : 0.9;  // GPU: 100%, CPU: 90%
+    }
+}
 
 
 void Viewer3D::SurfaceRendering(vtkImageAlgorithm* imageReader)
