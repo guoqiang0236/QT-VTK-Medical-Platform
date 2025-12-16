@@ -14,6 +14,8 @@
 #include <vtkFlyingEdges3D.h>
 #include <QMessageBox>
 #include <vtkImageResample.h>
+#include <vtkImageData.h>
+
 Viewer3D::Viewer3D(QVTKOpenGLNativeWidget* widget)
     : ViewerBase(widget)
 {
@@ -186,11 +188,15 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
 	//对体数据进行重采样（可选，通常用于降低分辨率或调整体数据大小）
     if(!m_resample)
         m_resample = vtkSmartPointer<vtkImageResample>::New();
+	imageReader->Update();
+	int* dims = imageReader->GetOutput()->GetDimensions();
+	int totalVoxels = dims[0] * dims[1] * dims[2];
 
+	float resampleFactor = CalculateOptimalResampleFactor(totalVoxels);
     m_resample->SetInputConnection(imageReader->GetOutputPort());
-    m_resample->SetAxisMagnificationFactor(0, 0.5); // X方向
-    m_resample->SetAxisMagnificationFactor(1, 0.5); // Y方向
-    m_resample->SetAxisMagnificationFactor(2, 0.5); // Z方向
+    m_resample->SetAxisMagnificationFactor(0, resampleFactor); // X方向
+    m_resample->SetAxisMagnificationFactor(1, resampleFactor); // Y方向
+    m_resample->SetAxisMagnificationFactor(2, resampleFactor); // Z方向
     m_resample->Update();
     // 2. 检查是否支持 GPU 渲染
     bool isGPU = GetIsGPU();
@@ -198,35 +204,49 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
         if (!m_GPUvolumeMapper)
             m_GPUvolumeMapper = vtkSmartPointer<vtkGPUVolumeRayCastMapper>::New();
         m_GPUvolumeMapper->SetInputConnection(m_resample->GetOutputPort());
-		m_GPUvolumeMapper->SetSampleDistance(0.1f);
+		m_GPUvolumeMapper->SetSampleDistance(0.5f/ resampleFactor);
     }
     else {
         if (!m_CPUvolumeMapper)
             m_CPUvolumeMapper = vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
         m_CPUvolumeMapper->SetInputConnection(m_resample->GetOutputPort());
-        m_GPUvolumeMapper->SetSampleDistance(0.1f);
+        m_CPUvolumeMapper->SetSampleDistance(0.5f / resampleFactor);
     }
 
     // 3. 设置颜色传递函数（决定不同灰度/密度值对应的颜色）
     if (!m_colorTransferFunction)
         m_colorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
-   
-    m_colorTransferFunction->AddRGBPoint(-1000, 0.0, 0.0, 0.0); // -1000: 黑色（通常为空气）
-    m_colorTransferFunction->AddRGBPoint(0, 1.0, 0.5, 0.3); // 0: 棕色（可自定义，通常为软组织）
-    m_colorTransferFunction->AddRGBPoint(500, 1.0, 1.0, 0.9);  // 500: 浅黄色（如骨骼）
-    m_colorTransferFunction->AddRGBPoint(1200, 1.0, 1.0, 1.0);// 1200: 白色（高密度结构）
+
+    m_colorTransferFunction->AddRGBPoint(-1000, 0.0, 0.0, 0.0);      // 空气: 黑色
+    m_colorTransferFunction->AddRGBPoint(-500, 0.5, 0.5, 0.5);       // 肺部: 深灰
+    m_colorTransferFunction->AddRGBPoint(-100, 0.73, 0.25, 0.30);    // 脂肪: 深红褐色
+    m_colorTransferFunction->AddRGBPoint(-50, 0.88, 0.60, 0.54);     // 脂肪过渡: 浅红褐
+    m_colorTransferFunction->AddRGBPoint(20, 0.96, 0.76, 0.69);      // 软组织: 粉肉色 ✅
+    m_colorTransferFunction->AddRGBPoint(60, 0.94, 0.65, 0.58);      // 肌肉: 偏红的肉色 ✅
+    m_colorTransferFunction->AddRGBPoint(100, 0.90, 0.70, 0.65);     // 致密软组织
+    m_colorTransferFunction->AddRGBPoint(300, 1.0, 0.92, 0.80);      // 骨骼开始: 米黄色
+    m_colorTransferFunction->AddRGBPoint(500, 1.0, 0.98, 0.94);      // 骨骼: 象牙白
+    m_colorTransferFunction->AddRGBPoint(1200, 1.0, 1.0, 1.0);       // 高密度骨骼: 纯白
 
     // 4. 设置透明度传递函数（决定不同灰度/密度值的透明度）
     if (!m_opacityTransferFunction)
         m_opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    m_opacityTransferFunction->AddPoint(-1000, 0.0);// -1000: 完全透明
-    m_opacityTransferFunction->AddPoint(0, 0.0); // 0: 依然透明
-    m_opacityTransferFunction->AddPoint(60, 0.0); // 60: 依然透明
-    m_opacityTransferFunction->AddPoint(200, 0.2); // 200: 开始有一点点不透明
-    m_opacityTransferFunction->AddPoint(300, 0.4); // 300: 更不透明
-    m_opacityTransferFunction->AddPoint(400, 0.6);// 400: 更加不透明
-    m_opacityTransferFunction->AddPoint(500, 0.8); // 500: 接近不透明
-    m_opacityTransferFunction->AddPoint(1200, 1.0);// 1200: 完全不透明
+    //m_opacityTransferFunction->AddPoint(-1000, 0.0);// -1000: 完全透明
+    //m_opacityTransferFunction->AddPoint(0, 0.0); // 0: 依然透明
+    //m_opacityTransferFunction->AddPoint(60, 0.0); // 60: 依然透明
+    //m_opacityTransferFunction->AddPoint(200, 0.2); // 200: 开始有一点点不透明
+    //m_opacityTransferFunction->AddPoint(300, 0.4); // 300: 更不透明
+    //m_opacityTransferFunction->AddPoint(400, 0.6);// 400: 更加不透明
+    //m_opacityTransferFunction->AddPoint(500, 0.8); // 500: 接近不透明
+    //m_opacityTransferFunction->AddPoint(1200, 1.0);// 1200: 完全不透明
+
+    // 窗口级别设置(Window/Level),常用于医学影像
+    m_opacityTransferFunction->AddPoint(-1000, 0.0); // 空气
+    m_opacityTransferFunction->AddPoint(-200, 0.0);
+    m_opacityTransferFunction->AddPoint(-50, 0.2);   // 脂肪显示
+    m_opacityTransferFunction->AddPoint(50, 0.8);    // 软组织最亮
+    m_opacityTransferFunction->AddPoint(100, 0.3);   // 开始衰减
+    m_opacityTransferFunction->AddPoint(200, 0.0);   // 骨骼隐藏 ✅
 
     // 5. 设置体积属性（VolumeProperty 控制体绘制的光照、插值和材质效果）
     if (!m_volumeProperty)
