@@ -179,6 +179,8 @@ void Viewer3D::resetCamera() {
     m_vtkWidget->renderWindow()->Render();
 }
 
+
+
 void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
 {
     // 1. 检查数据有效性
@@ -240,14 +242,27 @@ void Viewer3D::VolumeRendering(vtkImageAlgorithm* imageReader)
     //m_opacityTransferFunction->AddPoint(500, 0.8); // 500: 接近不透明
     //m_opacityTransferFunction->AddPoint(1200, 1.0);// 1200: 完全不透明
 
-    // 窗口级别设置(Window/Level),常用于医学影像
-    m_opacityTransferFunction->AddPoint(-1000, 0.0); // 空气
-    m_opacityTransferFunction->AddPoint(-200, 0.0);
-    m_opacityTransferFunction->AddPoint(-50, 0.2);   // 脂肪显示
-    m_opacityTransferFunction->AddPoint(50, 0.8);    // 软组织最亮
-    m_opacityTransferFunction->AddPoint(100, 0.3);   // 开始衰减
-    m_opacityTransferFunction->AddPoint(200, 0.0);   // 骨骼隐藏 ✅
+    //// 窗口级别设置(Window/Level),常用于医学影像
+    //m_opacityTransferFunction->AddPoint(-1000, 0.0); // 空气
+    //m_opacityTransferFunction->AddPoint(-200, 0.0);
+    //m_opacityTransferFunction->AddPoint(-50, 0.2);   // 脂肪显示
+    //m_opacityTransferFunction->AddPoint(50, 0.8);    // 软组织最亮
+    //m_opacityTransferFunction->AddPoint(100, 0.3);   // 开始衰减
+    //m_opacityTransferFunction->AddPoint(200, 0.0);   // 骨骼隐藏 ✅
 
+    //初始化透明度控制点数组
+    m_opacityPoints.clear();
+    m_opacityPoints = {
+        {-1000, 0.0},  // 索引 0: 空气
+        {-200, 0.0},   // 索引 1: 空气/肺部边界
+        {-50, 0.2},    // 索引 2: 脂肪
+        {50, 0.8},     // 索引 3: 软组织
+        {100, 0.3},    // 索引 4: 软组织/骨骼过渡
+        {200, 0.0}     // 索引 5: 骨骼隐藏
+    };
+
+    // 使用统一的更新函数设置所有控制点
+    updateOpacityTransferFunction();
     // 5. 设置体积属性（VolumeProperty 控制体绘制的光照、插值和材质效果）
     if (!m_volumeProperty)
         m_volumeProperty = vtkSmartPointer<vtkVolumeProperty>::New();
@@ -322,6 +337,41 @@ double Viewer3D::CalculateOptimalResampleFactor(int totalVoxels)
     }
 }
 
+void Viewer3D::setOpacityPoint(int index, double huValue, double opacity)
+{
+    if (!m_opacityTransferFunction) return;
+
+    // 确保 index 在有效范围内
+    if (index < 0 || index >= static_cast<int>(m_opacityPoints.size())) {
+        qWarning() << "Invalid opacity point index:" << index;
+        return;
+    }
+
+    // 更新内部存储的控制点
+    m_opacityPoints[index].huValue = huValue;
+    m_opacityPoints[index].opacity = opacity;
+
+    // 触发传递函数更新
+    updateOpacityTransferFunction();
+}
+
+void Viewer3D::updateOpacityTransferFunction()
+{
+    if (!m_opacityTransferFunction) return;
+
+    // 清除所有现有控制点
+    m_opacityTransferFunction->RemoveAllPoints();
+
+    // 根据 m_opacityPoints 重新添加所有控制点
+    for (const auto& point : m_opacityPoints) {
+        m_opacityTransferFunction->AddPoint(point.huValue, point.opacity);
+    }
+
+    // 刷新渲染
+    if (m_vtkWidget && m_vtkWidget->renderWindow()) {
+        m_vtkWidget->renderWindow()->Render();
+    }
+}
 
 void Viewer3D::SurfaceRendering(vtkImageAlgorithm* imageReader)
 {
@@ -397,4 +447,145 @@ void Viewer3D::setupOrientationMarker()
 
 Viewer3D::~Viewer3D() {
     if (m_actor) m_renderer->RemoveActor(m_actor);
+}
+
+
+void Viewer3D::setAirOpacity(double opacity) {
+    if (!m_opacityTransferFunction) return;
+
+    // 更新空气区域的透明度 (HU: -1000 到 -200)
+    m_opacityTransferFunction->RemovePoint(-1000);
+    m_opacityTransferFunction->RemovePoint(-200);
+
+    m_opacityTransferFunction->AddPoint(-1000, opacity);
+    m_opacityTransferFunction->AddPoint(-200, opacity);
+
+    m_vtkWidget->renderWindow()->Render();
+}
+
+void Viewer3D::setFatOpacity(double opacity) {
+    if (!m_opacityTransferFunction) return;
+
+    // 更新脂肪区域的透明度 (HU: -50)
+    m_opacityTransferFunction->RemovePoint(-50);
+    m_opacityTransferFunction->AddPoint(-50, opacity);
+
+    m_vtkWidget->renderWindow()->Render();
+}
+
+void Viewer3D::setSoftTissueOpacity(double opacity) {
+    if (!m_opacityTransferFunction) return;
+
+    // 更新软组织区域的透明度 (HU: 50)
+    m_opacityTransferFunction->RemovePoint(50);
+    m_opacityTransferFunction->AddPoint(50, opacity);
+
+    m_vtkWidget->renderWindow()->Render();
+}
+
+void Viewer3D::setBoneOpacity(double opacity) {
+    if (!m_opacityTransferFunction) return;
+
+    // 更新骨骼区域的透明度 (HU: 100, 200)
+    m_opacityTransferFunction->RemovePoint(100);
+    m_opacityTransferFunction->RemovePoint(200);
+
+    m_opacityTransferFunction->AddPoint(100, opacity * 0.3); // 骨骼开始
+    m_opacityTransferFunction->AddPoint(200, opacity);       // 骨骼完全
+
+    m_vtkWidget->renderWindow()->Render();
+}
+
+void Viewer3D::setWindowLevel(double level) {
+    // 窗位调整:平移整个透明度曲线
+    // 这是高级功能,需要重建整个传递函数
+    if (!m_opacityTransferFunction) return;
+
+    // 实现窗位调整逻辑(根据需求实现)
+    m_vtkWidget->renderWindow()->Render();
+}
+
+void Viewer3D::setWindowWidth(double width) {
+    // 窗宽调整:拉伸/压缩透明度曲线
+    if (!m_opacityTransferFunction) return;
+
+    // 实现窗宽调整逻辑(根据需求实现)
+    m_vtkWidget->renderWindow()->Render();
+}
+
+
+// 在 Viewer3D.cpp 末尾添加
+
+void Viewer3D::setOpacityPreset(OpacityPreset preset)
+{
+    m_opacityPoints.clear();
+
+    switch (preset) {
+    case OpacityPreset::SOFT_TISSUE_ONLY:
+        // 仅显示软组织
+        m_opacityPoints = {
+            {-1000, 0.0},
+            {-200, 0.0},
+            {-50, 0.2},
+            {50, 0.8},
+            {100, 0.3},
+            {200, 0.0}
+        };
+        break;
+
+    case OpacityPreset::BONE_ONLY:
+        // 仅显示骨骼
+        m_opacityPoints = {
+            {-1000, 0.0},
+            {0, 0.0},
+            {60, 0.0},
+            {200, 0.2},
+            {300, 0.4},
+            {400, 0.6},
+            {500, 0.8},
+            {1200, 1.0}
+        };
+        break;
+
+    case OpacityPreset::COMPREHENSIVE:
+        // 综合显示（软组织+骨骼）
+        m_opacityPoints = {
+            {-1000, 0.0},
+            {-500, 0.0},
+            {-50, 0.15},
+            {50, 0.3},
+            {150, 0.5},
+            {300, 0.7},
+            {800, 0.95},
+            {3000, 1.0}
+        };
+        break;
+
+    case OpacityPreset::CT_ANGIO:
+        // CT血管造影（突出血管）
+        m_opacityPoints = {
+            {-1000, 0.0},
+            {-100, 0.0},
+            {100, 0.3},
+            {200, 0.9},  // 造影剂增强区域
+            {300, 0.6},
+            {500, 0.3},
+            {1200, 0.1}
+        };
+        break;
+
+    default:
+        // 默认预设
+        m_opacityPoints = {
+            {-1000, 0.0},
+            {-200, 0.0},
+            {-50, 0.2},
+            {50, 0.8},
+            {100, 0.3},
+            {200, 0.0}
+        };
+        break;
+    }
+
+    updateOpacityTransferFunction();
 }

@@ -4,16 +4,28 @@
 #include "VtkUtil_Export.h"  // 导出宏头文件
 #include "ViewerBase.h"
 
+
+// 先定义透明度控制点结构
+struct OpacityControlPoint {
+    double huValue;
+    double opacity;
+};
+
+// 定义透明度预设枚举
+enum class OpacityPreset {
+    SOFT_TISSUE_ONLY,   // 仅软组织
+    BONE_ONLY,          // 仅骨骼
+    COMPREHENSIVE,      // 综合显示
+    CT_ANGIO,           // CT血管造影
+    CUSTOM              // 自定义
+};
+
 class vtkImageResample;
 class VTKUTIL_API Viewer3D : public ViewerBase {
     Q_OBJECT
 public:
     explicit Viewer3D(QVTKOpenGLNativeWidget* widget);
-
-  
-    
     ~Viewer3D();
-
     void loadDirectory(const std::string& path);
     void loadBody(const std::string& path);
     void loadSurface(const std::string& path);
@@ -25,12 +37,29 @@ public:
     void setupCubeAxes();
     void setupOrientationMarker();
     double CalculateOptimalResampleFactor(int totalVoxels);
+
+    // 动态控制透明度传递函数的公共接口
+    void setOpacityPoint(int index, double huValue, double opacity);
+    void updateOpacityTransferFunction();
+    void setOpacityPreset(OpacityPreset preset);
 private:
     void setupPipeline();
     void resetCamera();
 
     
+public slots:
+ 
+    void setAirOpacity(double opacity);         // 控制空气透明度
+    void setFatOpacity(double opacity);         // 控制脂肪透明度  
+    void setSoftTissueOpacity(double opacity);  // 控制软组织透明度
+    void setBoneOpacity(double opacity);        // 控制骨骼透明度
+    void setWindowLevel(double level);          // 控制窗位
+    void setWindowWidth(double width);          // 控制窗宽
 
+
+private:
+
+    
 
     vtkSmartPointer<vtkMarchingCubes> m_marchingCubes;
     vtkSmartPointer<vtkSmoothPolyDataFilter> m_smoother;
@@ -48,4 +77,7 @@ private:
     double m_threshold = 70.0;
     int m_smoothIterations = 50;
     double m_smoothRelaxation = 0.1;
+
+  
+    std::vector<OpacityControlPoint> m_opacityPoints;
 };
