@@ -336,7 +336,7 @@ void MainWindow::InitSlots()
     connect(m_ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::StyleChanged);
     connect(m_ui->pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
     connect(m_ui->comboBox_2, &QComboBox::currentTextChanged, this, &MainWindow::ViewChange);
-	connect(m_ui->pushButton_record, &QPushButton::clicked, this, &MainWindow::ControlRecording);
+	connect(m_ui->pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ControlRecording);
     if (!m_VisualManager)
         return;
     connect(m_VisualManager.get(), &VisualizationManager::loadDicomFileFinish, this, &MainWindow::LoadDicomFinished);
