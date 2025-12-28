@@ -22,9 +22,9 @@ set(CMAKE_AUTOUIC ON)   # 自动处理 .ui 文件，生成对应的界面代码
 set(CMAKE_AUTORCC ON)   # 自动处理 .qrc 资源文件，生成资源访问代码
 
 # 收集源文件（显式列出头文件）
-file(GLOB SRC_FILES CONFIGURE_DEPENDS
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"
-    "include/*.h"  
+    "source/*.h"  
 )
 
 qt_add_resources(RESOURCES resources.qrc)
@@ -37,7 +37,7 @@ qt_add_resources(RESOURCES resources.qrc)
 add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
 
 # 添加预编译头支持
-target_precompile_headers(QtGuiApp PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
+target_precompile_headers(QtGuiApp PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/source/pch.h")
 
 # 库头文件目录
 target_include_directories(QtGuiApp

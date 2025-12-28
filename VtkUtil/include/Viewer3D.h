@@ -37,7 +37,10 @@ public:
     void setupCubeAxes();
     void setupOrientationMarker();
     double CalculateOptimalResampleFactor(int totalVoxels);
-
+    // 新增方法:控制坐标轴显示/隐藏
+    void setCubeAxesVisibility(bool visible);
+    // 新增方法:控制方向标显示/隐藏
+    void setOrientationMarkerVisibility(bool visible);
     // 动态控制透明度传递函数的公共接口
     void setOpacityPoint(int index, double huValue, double opacity);
     void updateOpacityTransferFunction();

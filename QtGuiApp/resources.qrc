@@ -13,5 +13,11 @@
         <file>res/QSS/Ubuntu.qss</file>
         <file>res/icon/favicon.ico</file>
         <file>res/picture/loading.jpg</file>
+        <file>source/pannellitem/imageswitch/image/imageswitch/btncheckoff1.png</file>
+        <file>source/pannellitem/imageswitch/image/imageswitch/btncheckoff2.png</file>
+        <file>source/pannellitem/imageswitch/image/imageswitch/btncheckoff3.png</file>
+        <file>source/pannellitem/imageswitch/image/imageswitch/btncheckon1.png</file>
+        <file>source/pannellitem/imageswitch/image/imageswitch/btncheckon2.png</file>
+        <file>source/pannellitem/imageswitch/image/imageswitch/btncheckon3.png</file>
     </qresource>
 </RCC>

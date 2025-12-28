@@ -141,7 +141,9 @@ void MainWindow::DataTo3DVolume()
         break;
     }
     m_progressDialog->close();
-   return;
+
+    // 3D渲染完成后显示3D面板
+    Show3DPanel(true);
 }
 
 void MainWindow::DataTo3DSurface()
@@ -168,7 +170,8 @@ void MainWindow::DataTo3DSurface()
         break;
     }
     
-    return;
+    // 3D渲染完成后显示3D面板
+    Show3DPanel(true);
 }
 
 void MainWindow::StyleChanged(const QString& style)
@@ -203,6 +206,10 @@ void MainWindow::LoadDicomsFinished()
     }
     if (!m_ui)
         return;
+
+    // 加载2D DICOM完成后,隐藏3D面板
+    Show3DPanel(false);
+
 	m_ui->label_AXIAL_2->setText("1");
     m_ui->label_AXIALMAX->setText(QString::number(m_VisualManager->getm_axial_sliceall()+1));
     m_ui->Slider_AXIAL->setMaximum(m_VisualManager->getm_axial_sliceall());
@@ -354,8 +361,8 @@ void MainWindow::InitSlots()
 		}   
 		});
 
-    // 初始化3D透明度滑块 (调用封装的函数)
-    Init3DOpacitySliders();
+    // 初始化3D面板 (重命名)
+    Init3DPanel();
 }
 
 void MainWindow::UpdateGUI()
@@ -490,31 +497,51 @@ void MainWindow::InitThread()
 
 }
 
-void MainWindow::Init3DOpacitySliders()
+void MainWindow::Init3DPanel()
 {
-    // 初始化滑块范围和默认值
-    m_ui->horizontalSlider_air_opacity->setRange(0, 100);
-    m_ui->horizontalSlider_air_opacity->setValue(0); // 空气默认完全透明
+    if (!m_ui)
+        return;
 
+    // 初始化时隐藏3D面板
+    if (m_ui->groupBox_Pannel3D)
+        m_ui->groupBox_Pannel3D->setVisible(false);
+
+    // ==================== 透明度滑块初始化 ====================
+
+    // 脂肪透明度滑块
     m_ui->horizontalSlider_fat_opacity->setRange(0, 100);
-    m_ui->horizontalSlider_fat_opacity->setValue(20); // 脂肪默认 0.2
+    m_ui->horizontalSlider_fat_opacity->setValue(20);
+    m_ui->horizontalSlider_fat_opacity->setTickPosition(QSlider::TicksBelow);  // 刻度显示在下方
+    m_ui->horizontalSlider_fat_opacity->setTickInterval(10);  // 每10个单位显示一个刻度
 
+    // 软组织透明度滑块
     m_ui->horizontalSlider_soft_tissue_opacity->setRange(0, 100);
-    m_ui->horizontalSlider_soft_tissue_opacity->setValue(80); // 软组织默认 0.8
+    m_ui->horizontalSlider_soft_tissue_opacity->setValue(80);
+    m_ui->horizontalSlider_soft_tissue_opacity->setTickPosition(QSlider::TicksBelow);
+    m_ui->horizontalSlider_soft_tissue_opacity->setTickInterval(10);
 
-    m_ui->horizontalSlider_bone_opacity->setRange(0, 100);
-    m_ui->horizontalSlider_bone_opacity->setValue(0); // 骨骼默认隐藏
+    // 骨骼过渡透明度滑块
+    m_ui->horizontalSlider_bone_transition_opacity->setRange(0, 100);
+    m_ui->horizontalSlider_bone_transition_opacity->setValue(30);
+    m_ui->horizontalSlider_bone_transition_opacity->setTickPosition(QSlider::TicksBelow);
+    m_ui->horizontalSlider_bone_transition_opacity->setTickInterval(10);
 
-    // 空气透明度 (控制索引 0 和 1)
-    connect(m_ui->horizontalSlider_air_opacity, &QSlider::valueChanged, this, [this](int value) {
-        double opacity = value / 100.0; // 转换为 0.0-1.0
-        if (m_VisualManager && m_VisualManager->get3DViewer()) {
-            m_VisualManager->get3DViewer()->setOpacityPoint(0, -1000, opacity);
-            m_VisualManager->get3DViewer()->setOpacityPoint(1, -200, opacity);
-        }
-        });
+    // 骨骼完全透明度滑块
+    m_ui->horizontalSlider_bone_full_opacity->setRange(0, 100);
+    m_ui->horizontalSlider_bone_full_opacity->setValue(0);
+    m_ui->horizontalSlider_bone_full_opacity->setTickPosition(QSlider::TicksBelow);
+    m_ui->horizontalSlider_bone_full_opacity->setTickInterval(10);
 
-    // 脂肪透明度 (索引 2)
+    // ==================== 开关控件初始化 ====================
+
+    // 坐标轴开关 (默认开启)
+    if (m_ui->widget_object_cubeAxes) {
+        m_ui->widget_object_cubeAxes->setChecked(true);
+    }
+
+    // ==================== 信号槽连接 ====================
+
+    // 脂肪透明度 (索引 2, HU值 -50)
     connect(m_ui->horizontalSlider_fat_opacity, &QSlider::valueChanged, this, [this](int value) {
         double opacity = value / 100.0;
         if (m_VisualManager && m_VisualManager->get3DViewer()) {
@@ -522,7 +549,7 @@ void MainWindow::Init3DOpacitySliders()
         }
         });
 
-    // 软组织透明度 (索引 3)
+    // 软组织透明度 (索引 3, HU值 50)
     connect(m_ui->horizontalSlider_soft_tissue_opacity, &QSlider::valueChanged, this, [this](int value) {
         double opacity = value / 100.0;
         if (m_VisualManager && m_VisualManager->get3DViewer()) {
@@ -530,14 +557,45 @@ void MainWindow::Init3DOpacitySliders()
         }
         });
 
-    // 骨骼透明度 (索引 4 和 5)
-    connect(m_ui->horizontalSlider_bone_opacity, &QSlider::valueChanged, this, [this](int value) {
+    // 骨骼过渡透明度 (索引 4, HU值 100)
+    connect(m_ui->horizontalSlider_bone_transition_opacity, &QSlider::valueChanged, this, [this](int value) {
         double opacity = value / 100.0;
         if (m_VisualManager && m_VisualManager->get3DViewer()) {
-            m_VisualManager->get3DViewer()->setOpacityPoint(4, 100, opacity * 0.3);
+            m_VisualManager->get3DViewer()->setOpacityPoint(4, 100, opacity);
+        }
+        });
+
+    // 骨骼完全透明度 (索引 5, HU值 200)
+    connect(m_ui->horizontalSlider_bone_full_opacity, &QSlider::valueChanged, this, [this](int value) {
+        double opacity = value / 100.0;
+        if (m_VisualManager && m_VisualManager->get3DViewer()) {
             m_VisualManager->get3DViewer()->setOpacityPoint(5, 200, opacity);
         }
         });
+
+    // 坐标轴开关
+    if (m_ui->widget_object_cubeAxes) {
+        connect(m_ui->widget_object_cubeAxes, &ImageSwitch::checkedChanged, this, [this](bool checked) {
+            if (m_VisualManager && m_VisualManager->get3DViewer()) {
+                m_VisualManager->get3DViewer()->setCubeAxesVisibility(checked);
+            }
+            });
+    }
 }
+void MainWindow::Show3DPanel(bool show)
+{
+    if (!m_ui || !m_ui->groupBox_Pannel3D)
+        return;
 
+    m_ui->groupBox_Pannel3D->setVisible(show);
 
+    // 如果显示面板,同步当前3D渲染器的状态
+    if (show && m_VisualManager && m_VisualManager->get3DViewer()) {
+        // 同步开关状态到3D渲染器
+        if (m_ui->widget_object_cubeAxes) {
+            m_VisualManager->get3DViewer()->setCubeAxesVisibility(
+                m_ui->widget_object_cubeAxes->getChecked()
+            );
+        }
+    }
+}

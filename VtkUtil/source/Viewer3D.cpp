@@ -337,6 +337,36 @@ double Viewer3D::CalculateOptimalResampleFactor(int totalVoxels)
     }
 }
 
+void Viewer3D::setCubeAxesVisibility(bool visible)
+{
+    if (m_cubeAxesActor) {
+        m_cubeAxesActor->SetVisibility(visible);
+        if (m_vtkWidget && m_vtkWidget->renderWindow()) {
+            m_vtkWidget->renderWindow()->Render();
+        }
+    }
+}
+
+void Viewer3D::setOrientationMarkerVisibility(bool visible)
+{
+    if (m_orientationMarker) {
+        if (visible) {
+            // 显示方向标
+            m_orientationMarker->SetEnabled(1);
+            m_orientationMarker->On();  // 显式开启
+        }
+        else {
+            // 隐藏方向标
+            m_orientationMarker->SetEnabled(0);
+            m_orientationMarker->Off();  // 显式关闭 (关键!)
+        }
+
+        if (m_vtkWidget && m_vtkWidget->renderWindow()) {
+            m_vtkWidget->renderWindow()->Render();
+        }
+    }
+}
+
 void Viewer3D::setOpacityPoint(int index, double huValue, double opacity)
 {
     if (!m_opacityTransferFunction) return;

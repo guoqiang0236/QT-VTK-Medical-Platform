@@ -25,6 +25,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <qvtkopenglnativewidget.h>
+#include "pannellitem/imageswitch/imageswitch.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -48,21 +49,24 @@ public:
     QPushButton *pushButton_mian;
     QWidget *tab_4;
     QGridLayout *gridLayout_9;
+    QSpacerItem *verticalSpacer;
     QGroupBox *groupBox_Pannel3D;
     QGridLayout *gridLayout_10;
-    QGridLayout *gridLayout_air_opacity;
-    QLabel *label_air_opacity;
-    QSlider *horizontalSlider_air_opacity;
+    QGridLayout *gridLayout_bone_full_opacity;
+    QSlider *horizontalSlider_bone_full_opacity;
+    QLabel *label_bone_full_opacity;
+    QGridLayout *gridLayout_cubeAxes;
+    ImageSwitch *widget_object_cubeAxes;
+    QLabel *label_object_cubeAxes;
     QGridLayout *gridLayout_fat_opacity;
     QLabel *label_fat_opacity;
     QSlider *horizontalSlider_fat_opacity;
     QGridLayout *gridLayout_soft_tissue_opacity;
     QLabel *label_soft_tissue_opacity;
     QSlider *horizontalSlider_soft_tissue_opacity;
-    QGridLayout *gridLayout_bone_opacity;
-    QLabel *label_bone_opacity;
-    QSlider *horizontalSlider_bone_opacity;
-    QSpacerItem *verticalSpacer;
+    QGridLayout *gridLayout_bone_transition_opacity;
+    QSlider *horizontalSlider_bone_transition_opacity;
+    QLabel *label__bone_transition_opacity;
     QWidget *tab;
     QComboBox *comboBox;
     QLabel *label_5;
@@ -204,26 +208,51 @@ public:
         tab_4->setObjectName("tab_4");
         gridLayout_9 = new QGridLayout(tab_4);
         gridLayout_9->setObjectName("gridLayout_9");
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        gridLayout_9->addItem(verticalSpacer, 1, 0, 1, 1);
+
         groupBox_Pannel3D = new QGroupBox(tab_4);
         groupBox_Pannel3D->setObjectName("groupBox_Pannel3D");
-        groupBox_Pannel3D->setMinimumSize(QSize(0, 400));
+        groupBox_Pannel3D->setMinimumSize(QSize(0, 500));
         gridLayout_10 = new QGridLayout(groupBox_Pannel3D);
         gridLayout_10->setObjectName("gridLayout_10");
-        gridLayout_air_opacity = new QGridLayout();
-        gridLayout_air_opacity->setObjectName("gridLayout_air_opacity");
-        label_air_opacity = new QLabel(groupBox_Pannel3D);
-        label_air_opacity->setObjectName("label_air_opacity");
+        gridLayout_bone_full_opacity = new QGridLayout();
+        gridLayout_bone_full_opacity->setObjectName("gridLayout_bone_full_opacity");
+        horizontalSlider_bone_full_opacity = new QSlider(groupBox_Pannel3D);
+        horizontalSlider_bone_full_opacity->setObjectName("horizontalSlider_bone_full_opacity");
+        horizontalSlider_bone_full_opacity->setOrientation(Qt::Orientation::Horizontal);
 
-        gridLayout_air_opacity->addWidget(label_air_opacity, 0, 0, 1, 1);
+        gridLayout_bone_full_opacity->addWidget(horizontalSlider_bone_full_opacity, 1, 0, 1, 1);
 
-        horizontalSlider_air_opacity = new QSlider(groupBox_Pannel3D);
-        horizontalSlider_air_opacity->setObjectName("horizontalSlider_air_opacity");
-        horizontalSlider_air_opacity->setOrientation(Qt::Orientation::Horizontal);
+        label_bone_full_opacity = new QLabel(groupBox_Pannel3D);
+        label_bone_full_opacity->setObjectName("label_bone_full_opacity");
 
-        gridLayout_air_opacity->addWidget(horizontalSlider_air_opacity, 1, 0, 1, 1);
+        gridLayout_bone_full_opacity->addWidget(label_bone_full_opacity, 0, 0, 1, 1);
 
 
-        gridLayout_10->addLayout(gridLayout_air_opacity, 0, 0, 1, 1);
+        gridLayout_10->addLayout(gridLayout_bone_full_opacity, 4, 0, 1, 1);
+
+        gridLayout_cubeAxes = new QGridLayout();
+        gridLayout_cubeAxes->setSpacing(0);
+        gridLayout_cubeAxes->setObjectName("gridLayout_cubeAxes");
+        gridLayout_cubeAxes->setContentsMargins(-1, 10, -1, 10);
+        widget_object_cubeAxes = new ImageSwitch(groupBox_Pannel3D);
+        widget_object_cubeAxes->setObjectName("widget_object_cubeAxes");
+        widget_object_cubeAxes->setMinimumSize(QSize(100, 25));
+        widget_object_cubeAxes->setMaximumSize(QSize(100, 25));
+
+        gridLayout_cubeAxes->addWidget(widget_object_cubeAxes, 0, 1, 1, 1);
+
+        label_object_cubeAxes = new QLabel(groupBox_Pannel3D);
+        label_object_cubeAxes->setObjectName("label_object_cubeAxes");
+        label_object_cubeAxes->setMinimumSize(QSize(50, 25));
+        label_object_cubeAxes->setMaximumSize(QSize(200, 25));
+
+        gridLayout_cubeAxes->addWidget(label_object_cubeAxes, 0, 0, 1, 1);
+
+
+        gridLayout_10->addLayout(gridLayout_cubeAxes, 0, 0, 1, 1);
 
         gridLayout_fat_opacity = new QGridLayout();
         gridLayout_fat_opacity->setObjectName("gridLayout_fat_opacity");
@@ -257,28 +286,24 @@ public:
 
         gridLayout_10->addLayout(gridLayout_soft_tissue_opacity, 2, 0, 1, 1);
 
-        gridLayout_bone_opacity = new QGridLayout();
-        gridLayout_bone_opacity->setObjectName("gridLayout_bone_opacity");
-        label_bone_opacity = new QLabel(groupBox_Pannel3D);
-        label_bone_opacity->setObjectName("label_bone_opacity");
+        gridLayout_bone_transition_opacity = new QGridLayout();
+        gridLayout_bone_transition_opacity->setObjectName("gridLayout_bone_transition_opacity");
+        horizontalSlider_bone_transition_opacity = new QSlider(groupBox_Pannel3D);
+        horizontalSlider_bone_transition_opacity->setObjectName("horizontalSlider_bone_transition_opacity");
+        horizontalSlider_bone_transition_opacity->setOrientation(Qt::Orientation::Horizontal);
 
-        gridLayout_bone_opacity->addWidget(label_bone_opacity, 0, 0, 1, 1);
+        gridLayout_bone_transition_opacity->addWidget(horizontalSlider_bone_transition_opacity, 1, 0, 1, 1);
 
-        horizontalSlider_bone_opacity = new QSlider(groupBox_Pannel3D);
-        horizontalSlider_bone_opacity->setObjectName("horizontalSlider_bone_opacity");
-        horizontalSlider_bone_opacity->setOrientation(Qt::Orientation::Horizontal);
+        label__bone_transition_opacity = new QLabel(groupBox_Pannel3D);
+        label__bone_transition_opacity->setObjectName("label__bone_transition_opacity");
 
-        gridLayout_bone_opacity->addWidget(horizontalSlider_bone_opacity, 1, 0, 1, 1);
+        gridLayout_bone_transition_opacity->addWidget(label__bone_transition_opacity, 0, 0, 1, 1);
 
 
-        gridLayout_10->addLayout(gridLayout_bone_opacity, 3, 0, 1, 1);
+        gridLayout_10->addLayout(gridLayout_bone_transition_opacity, 3, 0, 1, 1);
 
 
         gridLayout_9->addWidget(groupBox_Pannel3D, 0, 0, 1, 1);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
-
-        gridLayout_9->addItem(verticalSpacer, 1, 0, 1, 1);
 
         tabWidget->addTab(tab_4, QString());
         tab = new QWidget();
@@ -552,10 +577,11 @@ public:
         pushButton_mian->setText(QCoreApplication::translate("MainWindow_UI", "\351\235\242\347\273\230\345\210\266", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("MainWindow_UI", "\346\202\243\350\200\205\344\277\241\346\201\257", nullptr));
         groupBox_Pannel3D->setTitle(QCoreApplication::translate("MainWindow_UI", "3D\344\272\244\344\272\222", nullptr));
-        label_air_opacity->setText(QCoreApplication::translate("MainWindow_UI", "\347\251\272\346\260\224\351\200\217\346\230\216\345\272\246", nullptr));
+        label_bone_full_opacity->setText(QCoreApplication::translate("MainWindow_UI", "\351\252\250\351\252\274\345\256\214\345\205\250\351\200\217\346\230\216\345\272\246", nullptr));
+        label_object_cubeAxes->setText(QCoreApplication::translate("MainWindow_UI", "\345\235\220\346\240\207\350\275\264", nullptr));
         label_fat_opacity->setText(QCoreApplication::translate("MainWindow_UI", "\350\204\202\350\202\252\351\200\217\346\230\216\345\272\246", nullptr));
         label_soft_tissue_opacity->setText(QCoreApplication::translate("MainWindow_UI", "\350\275\257\347\273\204\347\273\207\351\200\217\346\230\216\345\272\246", nullptr));
-        label_bone_opacity->setText(QCoreApplication::translate("MainWindow_UI", "\351\252\250\351\252\274\351\200\217\346\230\216\345\272\246", nullptr));
+        label__bone_transition_opacity->setText(QCoreApplication::translate("MainWindow_UI", "\351\252\250\351\252\274\350\277\207\346\270\241\351\200\217\346\230\216\345\272\246", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QCoreApplication::translate("MainWindow_UI", "\345\233\276\345\203\217\345\244\204\347\220\206", nullptr));
         comboBox->setItemText(0, QCoreApplication::translate("MainWindow_UI", "ElegantDark", nullptr));
         comboBox->setItemText(1, QCoreApplication::translate("MainWindow_UI", "AMOLED", nullptr));
