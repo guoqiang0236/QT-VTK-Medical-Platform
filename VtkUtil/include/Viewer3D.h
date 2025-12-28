@@ -49,14 +49,9 @@ private:
     
 public slots:
  
-    void setAirOpacity(double opacity);         // 控制空气透明度
-    void setFatOpacity(double opacity);         // 控制脂肪透明度  
-    void setSoftTissueOpacity(double opacity);  // 控制软组织透明度
-    void setBoneOpacity(double opacity);        // 控制骨骼透明度
-    void setWindowLevel(double level);          // 控制窗位
-    void setWindowWidth(double width);          // 控制窗宽
 
-
+    // 新增: 通过索引控制透明度点
+    void setOpacityPointByIndex(int index, double opacity);
 private:
 
     

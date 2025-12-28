@@ -353,6 +353,9 @@ void MainWindow::InitSlots()
             m_opencvDialog->exec(); // 模态对话框
 		}   
 		});
+
+    // 初始化3D透明度滑块 (调用封装的函数)
+    Init3DOpacitySliders();
 }
 
 void MainWindow::UpdateGUI()
@@ -485,6 +488,56 @@ void MainWindow::InitThread()
     */
 
 
+}
+
+void MainWindow::Init3DOpacitySliders()
+{
+    // 初始化滑块范围和默认值
+    m_ui->horizontalSlider_air_opacity->setRange(0, 100);
+    m_ui->horizontalSlider_air_opacity->setValue(0); // 空气默认完全透明
+
+    m_ui->horizontalSlider_fat_opacity->setRange(0, 100);
+    m_ui->horizontalSlider_fat_opacity->setValue(20); // 脂肪默认 0.2
+
+    m_ui->horizontalSlider_soft_tissue_opacity->setRange(0, 100);
+    m_ui->horizontalSlider_soft_tissue_opacity->setValue(80); // 软组织默认 0.8
+
+    m_ui->horizontalSlider_bone_opacity->setRange(0, 100);
+    m_ui->horizontalSlider_bone_opacity->setValue(0); // 骨骼默认隐藏
+
+    // 空气透明度 (控制索引 0 和 1)
+    connect(m_ui->horizontalSlider_air_opacity, &QSlider::valueChanged, this, [this](int value) {
+        double opacity = value / 100.0; // 转换为 0.0-1.0
+        if (m_VisualManager && m_VisualManager->get3DViewer()) {
+            m_VisualManager->get3DViewer()->setOpacityPoint(0, -1000, opacity);
+            m_VisualManager->get3DViewer()->setOpacityPoint(1, -200, opacity);
+        }
+        });
+
+    // 脂肪透明度 (索引 2)
+    connect(m_ui->horizontalSlider_fat_opacity, &QSlider::valueChanged, this, [this](int value) {
+        double opacity = value / 100.0;
+        if (m_VisualManager && m_VisualManager->get3DViewer()) {
+            m_VisualManager->get3DViewer()->setOpacityPoint(2, -50, opacity);
+        }
+        });
+
+    // 软组织透明度 (索引 3)
+    connect(m_ui->horizontalSlider_soft_tissue_opacity, &QSlider::valueChanged, this, [this](int value) {
+        double opacity = value / 100.0;
+        if (m_VisualManager && m_VisualManager->get3DViewer()) {
+            m_VisualManager->get3DViewer()->setOpacityPoint(3, 50, opacity);
+        }
+        });
+
+    // 骨骼透明度 (索引 4 和 5)
+    connect(m_ui->horizontalSlider_bone_opacity, &QSlider::valueChanged, this, [this](int value) {
+        double opacity = value / 100.0;
+        if (m_VisualManager && m_VisualManager->get3DViewer()) {
+            m_VisualManager->get3DViewer()->setOpacityPoint(4, 100, opacity * 0.3);
+            m_VisualManager->get3DViewer()->setOpacityPoint(5, 200, opacity);
+        }
+        });
 }
 
 

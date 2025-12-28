@@ -20,6 +20,7 @@ public:
 	Viewer2D* getDicom2DViewer_axial() const;
 	Viewer2D* getDicom2DViewer_coronal() const;
 	Viewer2D* getDicom2DViewer_sagittal() const;
+    Viewer3D* get3DViewer() const { return m_dicom3DViewer.get(); } // 新增: 获取3D查看器
 	int getm_axial_sliceall() const { return m_axial_sliceall; }
 	int getm_coronal_sliceall() const { return m_coronal_sliceall; }
 	int getm_sagittal_sliceall() const { return m_sagittal_sliceall; }

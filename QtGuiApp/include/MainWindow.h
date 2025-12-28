@@ -45,6 +45,7 @@ private:
     void UpdateSize();
     void loadStyleSheet(const QString& path); // 动态加载 QSS
     void InitThread();
+    void Init3DOpacitySliders();
 
    
 	

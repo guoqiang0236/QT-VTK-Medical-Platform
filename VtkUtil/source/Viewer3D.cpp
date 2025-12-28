@@ -450,67 +450,24 @@ Viewer3D::~Viewer3D() {
 }
 
 
-void Viewer3D::setAirOpacity(double opacity) {
+
+
+
+void Viewer3D::setOpacityPointByIndex(int index, double opacity)
+{
     if (!m_opacityTransferFunction) return;
 
-    // 更新空气区域的透明度 (HU: -1000 到 -200)
-    m_opacityTransferFunction->RemovePoint(-1000);
-    m_opacityTransferFunction->RemovePoint(-200);
+    // 确保 index 在有效范围内
+    if (index < 0 || index >= static_cast<int>(m_opacityPoints.size())) {
+        qWarning() << "Invalid opacity point index:" << index;
+        return;
+    }
 
-    m_opacityTransferFunction->AddPoint(-1000, opacity);
-    m_opacityTransferFunction->AddPoint(-200, opacity);
+    // 更新内部存储的控制点(只修改透明度,保持HU值不变)
+    m_opacityPoints[index].opacity = opacity;
 
-    m_vtkWidget->renderWindow()->Render();
-}
-
-void Viewer3D::setFatOpacity(double opacity) {
-    if (!m_opacityTransferFunction) return;
-
-    // 更新脂肪区域的透明度 (HU: -50)
-    m_opacityTransferFunction->RemovePoint(-50);
-    m_opacityTransferFunction->AddPoint(-50, opacity);
-
-    m_vtkWidget->renderWindow()->Render();
-}
-
-void Viewer3D::setSoftTissueOpacity(double opacity) {
-    if (!m_opacityTransferFunction) return;
-
-    // 更新软组织区域的透明度 (HU: 50)
-    m_opacityTransferFunction->RemovePoint(50);
-    m_opacityTransferFunction->AddPoint(50, opacity);
-
-    m_vtkWidget->renderWindow()->Render();
-}
-
-void Viewer3D::setBoneOpacity(double opacity) {
-    if (!m_opacityTransferFunction) return;
-
-    // 更新骨骼区域的透明度 (HU: 100, 200)
-    m_opacityTransferFunction->RemovePoint(100);
-    m_opacityTransferFunction->RemovePoint(200);
-
-    m_opacityTransferFunction->AddPoint(100, opacity * 0.3); // 骨骼开始
-    m_opacityTransferFunction->AddPoint(200, opacity);       // 骨骼完全
-
-    m_vtkWidget->renderWindow()->Render();
-}
-
-void Viewer3D::setWindowLevel(double level) {
-    // 窗位调整:平移整个透明度曲线
-    // 这是高级功能,需要重建整个传递函数
-    if (!m_opacityTransferFunction) return;
-
-    // 实现窗位调整逻辑(根据需求实现)
-    m_vtkWidget->renderWindow()->Render();
-}
-
-void Viewer3D::setWindowWidth(double width) {
-    // 窗宽调整:拉伸/压缩透明度曲线
-    if (!m_opacityTransferFunction) return;
-
-    // 实现窗宽调整逻辑(根据需求实现)
-    m_vtkWidget->renderWindow()->Render();
+    // 触发传递函数更新
+    updateOpacityTransferFunction();
 }
 
 
