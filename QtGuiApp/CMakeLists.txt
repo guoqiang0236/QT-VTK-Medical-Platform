@@ -1,98 +1,135 @@
-#设置cmake的最低版本要求
+# ============================================================================
+# 项目配置
+# ============================================================================
 cmake_minimum_required(VERSION 3.20)
+project(QtGuiApp LANGUAGES CXX)
 
-#设置c++标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 设置项目名称和版本
-project(QtGuiApp LANGUAGES CXX)
+# ============================================================================
+# 查找依赖库
+# ============================================================================
+find_package(Qt6 REQUIRED COMPONENTS 
+    Core 
+    Gui 
+    Widgets 
+    OpenGLWidgets 
+    Quick 
+    QuickWidgets
+)
 
-# 查找所需要的库
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets Quick QuickWidgets)
 find_package(VTK REQUIRED)
-
 if(NOT VTK_FOUND)
     message(FATAL_ERROR "VTK not found!")
 endif()
 
-# 启用 AUTOMOC（QT关键！）
-set(CMAKE_AUTOMOC ON)   # 自动运行 moc，处理 Q_OBJECT 宏，生成元对象代码（信号槽机制依赖）
-set(CMAKE_AUTOUIC ON)   # 自动处理 .ui 文件，生成对应的界面代码
-set(CMAKE_AUTORCC ON)   # 自动处理 .qrc 资源文件，生成资源访问代码
+# ============================================================================
+# Qt 自动化工具
+# ============================================================================
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
 
-# 收集源文件（显式列出头文件）
+# ============================================================================
+# 源文件收集
+# ============================================================================
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "source/*.cpp"
-    "source/*.h"  
+    "source/*.h"
 )
+
+file(GLOB UI_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ui/*.ui)
 
 qt_add_resources(RESOURCES resources.qrc)
 
-
-
-
-# 创建可执行文件，根据构建类型动态设置 WIN32 选项
-#add_executable(QtGuiApp WIN32 ${SRC_FILES} ${RESOURCES} res/icon/apprc.rc)  # Release 模式：无控制台
-add_executable(QtGuiApp ${SRC_FILES} ${RESOURCES}  res/icon/apprc.rc)
-
-# 添加预编译头支持
-target_precompile_headers(QtGuiApp PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/source/pch.h")
-
-# 库头文件目录
-target_include_directories(QtGuiApp
-    PRIVATE 
-        ${VTK_INCLUDE_DIRS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+# ============================================================================
+# 创建可执行文件
+# ============================================================================
+add_executable(QtGuiApp 
+    ${SRC_FILES} 
+    ${UI_FILES} 
+    ${RESOURCES}
+    res/icon/apprc.rc
 )
 
-# 库lib目录
-target_link_directories(QtGuiApp
-    PRIVATE
-        "${CMAKE_SOURCE_DIR}/lib"
+# 仅在 Release 配置下设置为 WIN32 应用程序(无控制台)
+set_target_properties(QtGuiApp PROPERTIES
+    WIN32_EXECUTABLE $<CONFIG:Release>
 )
 
-# 链接lib库
+target_precompile_headers(QtGuiApp PRIVATE 
+    "${CMAKE_CURRENT_SOURCE_DIR}/source/pch.h"
+)
+
+# ============================================================================
+# 包含目录
+# ============================================================================
+target_include_directories(QtGuiApp PRIVATE 
+    ${VTK_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# ============================================================================
+# 链接目录
+# ============================================================================
+target_link_directories(QtGuiApp PRIVATE 
+    "${CMAKE_SOURCE_DIR}/lib"
+)
+
+# ============================================================================
+# 链接库
+# ============================================================================
 target_link_libraries(QtGuiApp PRIVATE
+    # Qt6 库
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
     Qt6::OpenGLWidgets
     Qt6::Quick
     Qt6::QuickWidgets
-    VTK::GUISupportQt  
+    
+    # VTK 库
+    VTK::GUISupportQt
     VTK::RenderingOpenGL2
-    VTK::InteractionStyle
-    VTK::CommonCore
-    VTK::RenderingImage     
-    VTK::IOImage
-    VTK::ViewsContext2D
     VTK::RenderingCore
-    VTK::CommonColor
-    VTK::CommonDataModel
-    VTK::ImagingCore
-    VTK::InteractionImage
+    VTK::RenderingImage
+    VTK::RenderingAnnotation
+    VTK::RenderingVolume
     VTK::RenderingContextOpenGL2
     VTK::RenderingFreeType
     VTK::RenderingGL2PSOpenGL2
     VTK::RenderingVolumeOpenGL2
-    VTK::RenderingAnnotation 
-    VTK::RenderingVolume
+    VTK::InteractionStyle
+    VTK::InteractionImage
+    VTK::CommonCore
+    VTK::CommonColor
+    VTK::CommonDataModel
+    VTK::IOImage
+    VTK::ImagingCore
+    VTK::ViewsContext2D
     VTK::FiltersGeneral
     VTK::FiltersGeometry
     VTK::FiltersModeling
+    
+    # 自定义库
     VtkUtil
     DcmtkUtil
     OpenCVUtil
     singleton
 )
 
-# 设置 VTK 模块依赖（确保头文件正确处理）
+# ============================================================================
+# VTK 依赖配置
+# ============================================================================
 if(TARGET VTK::moc)
     add_dependencies(QtGuiApp VTK::moc)
 endif()
 
-#使用 QT_NO_DEBUG_OUTPUT 宏禁止release模式下的调试输出
+# ============================================================================
+# 编译选项
+# ============================================================================
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DQT_NO_DEBUG_OUTPUT)
 endif()

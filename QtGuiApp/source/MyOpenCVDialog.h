@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include <QDialog>
-#include "OpenCVTest_UI.h" // 这是由 .ui 文件生成的头文件
+#include "ui_OpenCVTest_UI.h" // 这是由 .ui 文件生成的头文件
 #include "OpenCVImageUtil.h"
 #include "MyThread_DCMTK_SCP_Work.h"
 

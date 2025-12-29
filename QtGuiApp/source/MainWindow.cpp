@@ -11,7 +11,7 @@
 #include <QFileDialog>
 #include <memory>
 #include "VisualizationManager.h"
-#include "MainWindow-UI.h"
+#include "ui_MainWindow-UI.h"
 #include <thread>
 #include <iostream>
 #include <vtkImageFlip.h>
