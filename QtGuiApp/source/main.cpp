@@ -2,9 +2,12 @@
 #include <QQmlApplicationEngine>
 #include <QWindow>
 #include <QTimer>
+#include <QTranslator>
+#include <QLocale>
+#include <QDebug>
 #include "MainWindow.h"
 #include "CustomSplashScreen.h"
-#include<vtkAutoInit.h>
+#include <vtkAutoInit.h>
 #include <vtkOutputWindow.h>
 #include <QFile>
 #include <GlobalConfig.h>
@@ -30,6 +33,26 @@ int main(int argc, char* argv[]) {
     //loading加载界面
     //CustomSplashScreen loadingflash;
     //loadingflash.init();
+   
+     // ==================== 加载翻译文件 ====================
+    QTranslator translator;
+    QString locale = QLocale::system().name();
+    QString translationFile = QString("QtGuiApp_%1").arg(locale);
+
+
+	//加载翻译文件
+    bool loaded = false;
+    QString  translationpath = QCoreApplication::applicationDirPath() + "/translations";
+    if (translator.load(translationFile, translationpath)) 
+    {
+        app.installTranslator(&translator);
+        qDebug() << "成功加载翻译:" << translationFile << "from" << translationpath;
+        loaded = true;
+    }
+
+    if (!loaded) {
+        qDebug() << "警告: 未能加载翻译文件:" << translationFile;
+    }
     // 加载样式表
     QFile qss(":/res/QSS/ElegantDark.qss");
     if (qss.open(QFile::ReadOnly)) {

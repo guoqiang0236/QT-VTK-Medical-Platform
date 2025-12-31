@@ -9,6 +9,9 @@
 #include <QDebug>
 #include <QIcon>
 #include <QFileDialog>
+#include <QTranslator>
+#include <QEvent>
+#include <QCoreApplication>
 #include <memory>
 #include "VisualizationManager.h"
 #include "ui_MainWindow-UI.h"
@@ -24,7 +27,8 @@ MainWindow::MainWindow(QWidget* parent)
 	m_thread_runnable(new MyThread_Runnable(this)),
     m_sub(new QThread(this)),
     m_numsub(new QThread(this)),
-    m_opencvUtil(std::make_unique<OpencvUtil>())
+    m_opencvUtil(std::make_unique<OpencvUtil>()),
+    m_translator(nullptr) 
 {
     //setWindowFlags(Qt::FramelessWindowHint);
     setWindowIcon(QIcon(":/res/icon/favicon.ico")); // 覆盖可能的默认值
@@ -53,7 +57,18 @@ MainWindow::~MainWindow()
             m_numsub->wait();
         }
     }
-};
+}
+void MainWindow::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        // 当语言改变时，重新翻译UI
+        if (m_ui) {
+            m_ui->retranslateUi(this);
+        }
+    }
+    QMainWindow::changeEvent(event);
+}
+;
 
 void MainWindow::ReadFile()
 {
@@ -238,7 +253,7 @@ void MainWindow::LoadDicomsFinished()
     connect(m_VisualManager->getDicom2DViewer_axial(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentAXIALSliderValue);
     connect(m_VisualManager->getDicom2DViewer_coronal(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentCORONALSliderValue);
     connect(m_VisualManager->getDicom2DViewer_sagittal(), &Viewer2D::sliceChanged, this, &MainWindow::SetCurrentSAGITTALSliderValue);
-
+    
    
 }
 
@@ -328,6 +343,25 @@ void MainWindow::ProgressChanged(int value, int max)
 	}
 }
 
+void MainWindow::LanguageChanged(int index)
+{
+    QString locale;
+    switch (index)
+    {
+    case 0: // 简体中文
+        locale = "zh_CN";
+        break;
+    case 1: // 英语
+        locale = "en_US";
+        break;
+    default:
+        locale = "zh_CN";
+        break;
+    }
+
+    switchLanguage(locale);
+}
+
 
 
 void MainWindow::InitSlots()
@@ -344,6 +378,8 @@ void MainWindow::InitSlots()
     connect(m_ui->pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ShutDown);
     connect(m_ui->comboBox_2, &QComboBox::currentTextChanged, this, &MainWindow::ViewChange);
 	connect(m_ui->pushButton_shutdown, &QPushButton::clicked, this, &MainWindow::ControlRecording);
+    connect(m_ui->comboBox_language, QOverload<int>::of(&QComboBox::currentIndexChanged),
+        this, &MainWindow::LanguageChanged);
     if (!m_VisualManager)
         return;
     connect(m_VisualManager.get(), &VisualizationManager::loadDicomFileFinish, this, &MainWindow::LoadDicomFinished);
@@ -598,4 +634,82 @@ void MainWindow::Show3DPanel(bool show)
             );
         }
     }
+}
+
+void MainWindow::switchLanguage(const QString& locale)
+{
+    // 移除旧的翻译器
+    if (m_translator) {
+        qApp->removeTranslator(m_translator);
+        delete m_translator;
+        m_translator = nullptr;
+    }
+
+    // 创建新的翻译器
+    m_translator = new QTranslator(this);
+
+    // 加载新的翻译文件
+    QString translationFile = QString("QtGuiApp_%1").arg(locale);
+    QString translationPath = QCoreApplication::applicationDirPath() + "/translations";
+
+    if (m_translator->load(translationFile, translationPath))
+    {
+        qApp->installTranslator(m_translator);
+        qDebug() << "成功切换语言:" << translationFile;
+
+        // 重新翻译所有UI
+        retranslateUI();
+    }
+    else
+    {
+        qWarning() << "无法加载翻译文件:" << translationFile << "from" << translationPath;
+    }
+}
+
+void MainWindow::retranslateUI()
+{
+    // 重新翻译主窗口UI
+    if (m_ui) {
+        m_ui->retranslateUi(this);
+    }
+
+    // 重新翻译进度对话框（如果存在）
+    if (m_progressDialog) {
+        // 保存当前状态
+        bool wasVisible = m_progressDialog->isVisible();
+        QString currentText = m_progressDialog->labelText();
+        int currentValue = m_progressDialog->value();
+        int maxValue = m_progressDialog->maximum();
+
+        // 重新创建以应用新语言
+        m_progressDialog.reset();
+        m_progressDialog = std::make_unique<MyProgressDialog>("", this);
+
+        // 恢复状态
+        if (wasVisible) {
+            m_progressDialog->setProgress(currentValue);
+            m_progressDialog->setMaximumValue(maxValue);
+            m_progressDialog->setLabelText(currentText);
+            m_progressDialog->show();
+        }
+    }
+
+    // 重新翻译 OpenCV 对话框（如果存在）
+    if (m_opencvDialog) {
+        // 如果 MyOpenCVDialog 有 retranslateUi 方法，调用它
+        // m_opencvDialog->retranslateUi();
+
+        // 或者重新创建对话框
+        bool wasVisible = m_opencvDialog->isVisible();
+        m_opencvDialog.reset();
+        m_opencvDialog = std::make_unique<MyOpenCVDialog>(this);
+        m_opencvDialog->setWindowModality(Qt::ApplicationModal);
+        if (wasVisible) {
+            m_opencvDialog->show();
+        }
+    }
+
+    // 强制刷新窗口
+    this->update();
+    qApp->processEvents();
 }

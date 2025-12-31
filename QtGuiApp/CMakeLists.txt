@@ -17,6 +17,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     OpenGLWidgets 
     Quick 
     QuickWidgets
+    LinguistTools
 )
 
 find_package(VTK REQUIRED)
@@ -45,16 +46,39 @@ file(GLOB UI_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ui/*.ui)
 qt_add_resources(RESOURCES resources.qrc)
 
 # ============================================================================
+# 翻译文件配置
+# ============================================================================
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/translations)
+
+set(TS_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/translations/QtGuiApp_zh_CN.ts
+    ${CMAKE_CURRENT_SOURCE_DIR}/translations/QtGuiApp_en_US.ts
+)
+
+# ✅ 使用 qt_create_translation 从源代码提取翻译字符串并生成 .ts 文件
+qt_create_translation(QM_FILES 
+    ${CMAKE_CURRENT_SOURCE_DIR}/source  # 扫描源代码目录
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui      # 扫描 UI 文件目录
+    ${TS_FILES}
+    OPTIONS -no-obsolete
+)
+
+# ✅ 修复：使用 qt_add_translation 代替 qt_create_translation（更稳定）
+# 如果你需要从源代码提取翻译，手动运行 lupdate
+# qt_add_translation(QM_FILES ${TS_FILES})
+
+
+# ============================================================================
 # 创建可执行文件
 # ============================================================================
 add_executable(QtGuiApp 
     ${SRC_FILES} 
     ${UI_FILES} 
     ${RESOURCES}
+    ${QM_FILES}
     res/icon/apprc.rc
 )
 
-# 仅在 Release 配置下设置为 WIN32 应用程序(无控制台)
 set_target_properties(QtGuiApp PROPERTIES
     WIN32_EXECUTABLE $<CONFIG:Release>
 )
@@ -82,7 +106,6 @@ target_link_directories(QtGuiApp PRIVATE
 # 链接库
 # ============================================================================
 target_link_libraries(QtGuiApp PRIVATE
-    # Qt6 库
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
@@ -90,7 +113,6 @@ target_link_libraries(QtGuiApp PRIVATE
     Qt6::Quick
     Qt6::QuickWidgets
     
-    # VTK 库
     VTK::GUISupportQt
     VTK::RenderingOpenGL2
     VTK::RenderingCore
@@ -113,7 +135,6 @@ target_link_libraries(QtGuiApp PRIVATE
     VTK::FiltersGeometry
     VTK::FiltersModeling
     
-    # 自定义库
     VtkUtil
     DcmtkUtil
     OpenCVUtil
@@ -133,3 +154,37 @@ endif()
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DQT_NO_DEBUG_OUTPUT)
 endif()
+
+
+# 调试：输出最终的 QM 文件路径
+message(STATUS "🎯 Translation files will be copied after build completes")
+
+# ============================================================================
+# 安装翻译文件
+# ============================================================================
+install(FILES ${QM_FILES} DESTINATION translations)
+
+
+# ============================================================================
+# ✅ 复制翻译文件到输出目录（移到最后）
+# ============================================================================
+# 等待 QM 文件生成后再复制
+foreach(QM_FILE IN LISTS QM_FILES)
+    get_filename_component(QM_FILENAME ${QM_FILE} NAME)
+    
+    # 为每个构建配置复制
+    foreach(CONFIG IN ITEMS DEBUG RELEASE)
+        string(TOUPPER ${CONFIG} CONFIG_UPPER)
+        set(OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG_UPPER}}/translations)
+        
+        add_custom_command(TARGET QtGuiApp POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_DIR}
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${QM_FILE}
+                ${OUTPUT_DIR}/${QM_FILENAME}
+            COMMENT "📦 Copying ${QM_FILENAME} to ${OUTPUT_DIR}"
+            VERBATIM
+        )
+    endforeach()
+    
+endforeach()

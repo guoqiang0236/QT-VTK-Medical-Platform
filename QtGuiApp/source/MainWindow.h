@@ -16,7 +16,8 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
-
+protected:
+    void changeEvent(QEvent* event) override;
 private slots:
     void ReadFile();
     void ReadFiles();
@@ -36,6 +37,7 @@ private slots:
     void Change_CurrentTime();
     void ControlRecording();
 	void ProgressChanged(int value, int max); // 进度条更新
+    void LanguageChanged(int index);
 
 signals:
 
@@ -47,7 +49,8 @@ private:
     void InitThread();
     void Init3DPanel();
     void Show3DPanel(bool show); 
-
+    void switchLanguage(const QString& locale); 
+    void retranslateUI(); 
    
 	
 private:
@@ -69,6 +72,7 @@ private:
     std::unique_ptr<OpencvUtil> m_opencvUtil;
     std::unique_ptr<MyOpenCVDialog> m_opencvDialog; // OpenCV对话框指针
     
+    QTranslator* m_translator;
 };
 
 #endif // MED_IMG_MAINWINDOW_H
